@@ -143,6 +143,9 @@ class Plugin {
 			return;
 		}
 
+		// Initialize price history manager.
+		new WooCommerce\Price_History();
+
 		// Initialize admin components.
 		if ( is_admin() ) {
 			$this->initialize_admin_components();
@@ -160,6 +163,7 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function initialize_admin_components(): void {
+		new Admin\Price_History_Tools();
 	}
 
 	/**
@@ -196,6 +200,17 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function activate(): void {
+		// Create database tables on activation.
+		if ( class_exists( 'MultiStore\Plugin\Database\Price_History_Table' ) ) {
+			$table = new Database\Price_History_Table();
+			$table->create_table();
+		}
+
+		// Schedule price history cleanup cron.
+		if ( ! wp_next_scheduled( 'multistore_cleanup_price_history' ) ) {
+			wp_schedule_event( time(), 'daily', 'multistore_cleanup_price_history' );
+		}
+
 		flush_rewrite_rules();
 	}
 
@@ -205,6 +220,12 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function deactivate(): void {
+		// Clear scheduled cron events.
+		$timestamp = wp_next_scheduled( 'multistore_cleanup_price_history' );
+		if ( $timestamp ) {
+			wp_unschedule_event( $timestamp, 'multistore_cleanup_price_history' );
+		}
+
 		flush_rewrite_rules();
 	}
 }

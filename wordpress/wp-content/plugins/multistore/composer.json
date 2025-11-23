@@ -1,0 +1,40 @@
+{
+    "name": "multistore/plugin",
+    "description": "Custom plugin for MultiStore website",
+    "type": "wordpress-plugin",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "humbug/php-scoper": "^0.18"
+    },
+    "autoload": {
+        "psr-4": {
+            "MultiStore\\Plugin\\": "includes/"
+        }
+    },
+    "scripts": {
+        "scope-dependencies": [
+            "@composer install --no-dev --optimize-autoloader",
+            "php-scoper add-prefix --output-dir=vendor-scoped --force",
+            "composer dump-autoload --working-dir=vendor-scoped --optimize --classmap-authoritative"
+        ],
+        "post-update-cmd": [
+            "@scope-dependencies"
+        ],
+        "post-install-cmd": [
+            "@scope-dependencies"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "*": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

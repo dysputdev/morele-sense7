@@ -1,0 +1,19 @@
+# Composer
+/vendor/
+/vendor-scoped/
+composer.lock
+.phpunit.result.cache
+.php-scoper.cache
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

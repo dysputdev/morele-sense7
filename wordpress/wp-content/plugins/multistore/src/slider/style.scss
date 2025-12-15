@@ -1,0 +1,178 @@
+/**
+ * Slider Styles with CSS Grid
+ */
+
+// arrow styles
+// - center-inside
+// - center-outside
+// - top-center
+// - top-right
+// - top-left
+// - bottom-center
+// - bottom-right
+// - bottom-left
+
+// pagination styles
+// - bottom-outside
+// - bottom-inside
+// - top-outside
+// - top-inside
+
+.multistore-block-slider {
+	.splide {
+		margin-inline: auto;
+		position: relative;
+		display: grid;
+		grid-template-areas: "top" "main" "bottom";
+	}
+
+	.splide[data-arrows-desktop-visible="true"] {
+		--arrow-position: absolute;
+		--arrow-align-items: space-between;
+		--arrow-area: main;
+
+		--pagination-position: absolute;
+		--pagination-align-items: space-between;
+		--pagination-area: main;
+
+		--center-y: -50%;
+		--spacing: 0;
+
+		--pagination-position-top: 0;
+		--pagination-position-bottom: 0;
+
+		&[data-arrows-desktop-position^="top"] {
+			--arrow-area: top;
+		}
+
+		&[data-arrows-desktop-position^="bottom"] {
+			--arrow-area: bottom;
+		}
+
+		&[data-arrows-desktop-position^="top"],
+		&[data-arrows-desktop-position^="bottom"] {
+			--arrow-position: static;
+			--center-y: 0;
+			--spacing: var(--wp--preset--spacing--50);
+		}
+
+		&[data-arrows-desktop-position$="left"] {
+			--arrow-align-items: flex-start;
+		}
+		
+		&[data-arrows-desktop-position$="center"] {
+			--arrow-align-items: center;
+		}
+
+		&[data-arrows-desktop-position$="right"] {
+			--arrow-align-items: flex-end;
+		}
+
+
+		&[data-pagination-desktop-visible="true"] {
+			--pagination-position: absolute;
+			--pagination-align-items: center;
+			--pagination-area: main;
+
+			&[data-pagination-desktop-position$="outside"] {
+				--pagination-position: static;
+				&[data-pagination-desktop-position^="top"] {
+					--pagination-area: top;
+				}
+				&[data-pagination-desktop-position^="bottom"] {
+					--pagination-area: bottom;
+				}
+			}
+
+			&[data-pagination-desktop-position$="inside"] {
+				--pagination-position: absolute;
+				&[data-pagination-desktop-position^="top"] {
+					--pagination-position-top: 1rem;
+					--pagination-position-bottom: auto;
+				}
+				&[data-pagination-desktop-position^="bottom"] {
+					--pagination-position-bottom: 1rem;
+					--pagination-position-top: auto;
+				}
+			}
+		}
+
+		.splide__track {
+			grid-area: main;
+		}
+
+		.splide__arrows {
+			display: flex;
+			width: 100%;
+			justify-content: var(--arrow-align-items);
+			padding: var(--spacing);
+			grid-area: var(--arrow-area);
+			.splide__arrow {
+				position: var(--arrow-position);
+				transform: translateY(var(--center-y));
+			}
+		}
+
+		.splide__pagination {
+			grid-area: var(--pagination-area);
+			position: var(--pagination-position);
+			top: var(--pagination-position-top);
+			bottom: var(--pagination-position-bottom);
+		}
+	}
+	// .splide[data-arrows-tablet-visible]
+	// .splide[data-arrows-mobile-visible]
+
+	// data-arrows-desktop-position
+	// data-arrows-tablet-position
+	// data-arrows-mobile-position
+
+	// data-pagination-desktop-visible
+	// data-pagination-tablet-visible
+	// data-pagination-mobile-visible
+
+	// data-pagination-desktop-position
+	// data-pagination-tablet-position
+	// data-pagination-mobile-position
+
+	// ============================================
+	// ARROW BASE STYLES
+	// ============================================
+	.splide__arrow {
+		background: rgba(255, 255, 255, 0.9);
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		border-radius: 50%;
+		width: 2.5rem;
+		height: 2.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		padding: 0;
+
+		svg {
+			width: 1rem;
+			height: 1rem;
+			fill: currentColor;
+		}
+
+		&--prev svg {
+			transform: rotate(180deg);
+		}
+
+		&:hover {
+			background: white;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+		}
+
+		&:disabled {
+			opacity: 0.3;
+		}
+	}
+
+
+	.splide__slide > .wp-block-cover {
+		height: 100%;
+	}
+}

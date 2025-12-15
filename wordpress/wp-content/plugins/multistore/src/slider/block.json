@@ -1,0 +1,111 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "version": "0.1.2",
+    "name": "multistore/slider",
+    "title": "Slider",
+    "category": "formatting",
+    "icon": "images-alt2",
+    "keywords": ["slider"],
+	"attributes": {
+        "desktop": {
+            "type": "object",
+            "default": {
+                "type": "slide",
+                "rewind": false,
+                "speed": 400,
+                "rewindSpeed": 0,
+                "rewindByDrag": false,
+                "width": "",
+                "height": "",
+                "fixedWidth": "",
+                "fixedHeight": "",
+                "heightRatio": 0,
+                "autoWidth": false,
+                "autoHeight": false,
+                "perPage": 1,
+                "perMove": 0,
+                "clones": 0,
+                "start": 0,
+                "focus": "0",
+                "gap": "0",
+                "padding": "0",
+                "arrows": true,
+                "arrowsPosition": "center-inside",
+                "arrowsStyle": "default",
+                "arrowsClass": "",
+                "arrowPath": "",
+                "pagination": true,
+                "paginationType": "bullets",
+                "paginationPosition": "bottom-outside",
+                "paginationClass": "",
+                "easing": "cubic-bezier(0.25, 1, 0.5, 1)",
+                "drag": true,
+                "dragFree": false,
+                "dragMinThreshold": 10,
+                "flickPower": 600,
+                "flickMaxPages": 1,
+                "waitForTransition": false,
+                "autoplay": false,
+                "interval": 5000,
+                "pauseOnHover": true,
+                "pauseOnFocus": true,
+                "resetProgress": true,
+                "lazyLoad": "off",
+                "preloadPages": 1,
+                "keyboard": true,
+                "wheel": false,
+                "wheelSleep": 0,
+                "releaseWheel": false,
+                "direction": "ltr",
+                "cover": false,
+                "slideClass": "splide__slide",
+                "isNavigation": false,
+                "trimSpace": true,
+                "updateOnMove": false,
+                "throttle": 100,
+                "destroy": false,
+                "breakpoints": false,
+                "reducedMotion": true,
+                "live": true
+            }
+        },
+        "tablet": {
+            "type": "object",
+            "default": {}
+        },
+        "mobile": {
+            "type": "object",
+            "default": {}
+        }
+	},
+	"supports": {
+        "align": [ "wide", "full" ],
+        "anchor": true,
+        "customClassName": true,
+        "color": {
+            "background": true,
+            "gradients": true
+        },
+        "background": {
+            "backgroundImage": true,
+            "backgroundSize": true
+        },
+        "spacing": {
+            "padding": true,
+            "blockGap": true
+        }
+    },
+    "allowedBlocks": [
+        "multistore/slider-slide"
+    ],
+	"textdomain": "multistore",
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./index.css",
+    "style": [
+		"file:./index.css",
+		"file:./style-index.css"
+	],
+    "viewScript": "file:./view.js",
+    "render": "file:./render.php"
+}

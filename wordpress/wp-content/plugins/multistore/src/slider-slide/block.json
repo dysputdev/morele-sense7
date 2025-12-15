@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "version": "0.1.1",
+    "name": "multistore/slider-slide",
+    "title": "Slide",
+    "icon": "slides",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "media": {
+            "type": "string",
+            "default": ""
+        },
+        "mediaSize": {
+            "type": "string",
+            "default": "thumbnail"
+        },
+        "mediaPosition": {
+            "type": "string",
+            "enum": [
+                "cover",
+                "contain"
+            ]
+        },
+        "customSize": {
+            "type": "number",
+            "default": 0
+        }
+    },
+    "supports": {
+        "anchor": true,
+        "spacing": {
+            "padding": true,
+            "margin": true
+        }
+    },
+    "parent": [
+        "multistore/slider"
+    ],
+    "textdomain": "multistore",
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php"
+}

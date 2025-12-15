@@ -1,0 +1,28 @@
+import Splide from "@splidejs/splide";
+
+document.addEventListener( 'DOMContentLoaded', () => {
+
+	const sliders = document.querySelectorAll('.splide');
+
+	if ( ! sliders.length ) {
+		return;
+	}
+
+	sliders.forEach( ( slider ) => {
+		// Get configuration from data attribute
+		let config = {};
+		const configData = slider.getAttribute('data-splide');
+
+		if (configData) {
+			try {
+				config = JSON.parse(configData);
+			} catch (e) {
+				console.error('Failed to parse Splide config:', e);
+			}
+		}
+
+		// Initialize Splide with configuration
+		let splide = new Splide( slider, config ).mount();
+	} );
+
+} );

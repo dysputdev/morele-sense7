@@ -55,8 +55,8 @@ wp
 # Note: If you wish to whitelist plugins,
 # uncomment the next line
 /wordpress/wp-content/plugins/*
-!/wordpress/wp-content/plugins/sense7
-/wordpress/wp-content/plugins/sense7/build
+!/wordpress/wp-content/plugins/multistore
+/wordpress/wp-content/plugins/multistore/build
 
 # All themes
 #
@@ -68,3 +68,6 @@ wp
 /wordpress/feed
 
 docker-compose.override.yaml
+.claude
+CLAUDE.md
+.views

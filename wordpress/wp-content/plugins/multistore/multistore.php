@@ -226,6 +226,7 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function initialize_frontend_components(): void {
+		new Frontend\Price_History_Display();
 	}
 
 	/**

@@ -1,0 +1,55 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/store-selector",
+	"version": "1.0.0",
+	"title": "Selektor Sklepu",
+	"category": "widgets",
+	"description": "Wyświetla selektor kraju i języka sklepu dla WordPress Multisite z Polylang",
+	"attributes": {
+		"showFlags": {
+			"type": "boolean",
+			"default": true
+		},
+		"showLanguageNames": {
+			"type": "boolean",
+			"default": true
+		},
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"description": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"align": [
+			"left",
+			"center",
+			"right",
+			"wide",
+			"full"
+		],
+		"color": {
+			"text": true,
+			"background": true,
+			"link": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

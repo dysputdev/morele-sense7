@@ -1,0 +1,30 @@
+/**
+ * Store Selector Block Editor Styles
+ *
+ * @package MultiStore\Plugin\Block\StoreSelector
+ */
+
+.multistore-block-store-selector {
+	// In editor, show container when block is selected
+	&.is-selected {
+		.multistore-block-store-selector__container {
+			display: block;
+			// position: static;
+			// margin-top: 1rem;
+		}
+	}
+
+	// Editor-specific adjustments
+	// .multistore-block-store-selector__container {
+	// 	border: 2px dashed rgba(255, 255, 255, 0.2);
+	// }
+
+	.multistore-block-store-selector__button {
+		pointer-events: none;
+	}
+
+	.multistore-block-store-selector__language-link {
+		cursor: default;
+		pointer-events: none;
+	}
+}

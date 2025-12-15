@@ -17,5 +17,10 @@
     "devDependencies": {
         "@wordpress/plugins": "^7.18.0",
         "@wordpress/scripts": "^30.19.0"
+    },
+    "dependencies": {
+        "@splidejs/splide": "^4.1.4",
+        "@wordpress/icons": "^11.3.0",
+        "uuid": "^13.0.0"
     }
 }

@@ -1,0 +1,7 @@
+.multistore-block-megamenu.is-selected, 
+.multistore-block-megamenu:has(.is-selected) {
+	display: block;
+	visibility: visible;
+	position: relative;
+	
+}

@@ -1,0 +1,41 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/megamenu",
+	"version": "0.1.0",
+	"title": "Mega Menu",
+	"category": "theme",
+	"icon": "menu",
+	"description": "Rozbudowane mega menu z możliwością dodawania wielu kolumn i treści.",
+	"keywords": ["menu", "navigation", "mega menu", "dropdown"],
+	"example": {},
+	"supports": {
+		"html": false,
+		"innerBlocks": true,
+		"align": ["wide", "full"],
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": true
+		},
+		"anchor": true,
+		"alignWide": true,
+		"layout": true,
+		"className": true,
+		"shadow": true,
+		"color": {
+			"background": true,
+			"gradients": true,
+			"link": true,
+			"text": true
+		}
+	},
+	"attributes": {
+
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

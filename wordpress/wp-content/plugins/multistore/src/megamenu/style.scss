@@ -1,0 +1,15 @@
+.multistore-block-megamenu {
+	position: absolute;
+	width: 100%;
+	left: auto;
+	right: auto;
+	z-index: 1000;
+	display: none;
+	visibility: hidden;
+	pointer-events: none;
+	&.open {
+		pointer-events: all;
+		display: block;
+		visibility: visible;
+	}
+}

@@ -1,0 +1,57 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/price-lowest",
+	"version": "1.0.0",
+	"title": "Najniższa Cena 30 Dni",
+	"category": "woocommerce",
+	"description": "Wyświetla najniższą cenę produktu z ostatnich 30 dni (Omnibus)",
+	"attributes": {
+		"currencyFormat": {
+			"type": "string",
+			"enum": ["default", "no_symbol", "symbol_only", "code"],
+			"default": "default"
+		},
+		"prefix": {
+			"type": "string",
+			"default": ""
+		},
+		"suffix": {
+			"type": "string",
+			"default": ""
+		},
+		"showDaysAgo": {
+			"type": "boolean",
+			"default": false
+		},
+		"showEmpty": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"usesContext": ["postId", "multistore/postId"],
+	"supports": {
+		"align": ["left", "center", "right"],
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"fontWeight": true,
+			"fontStyle": true,
+			"textDecoration": true,
+			"textAlign": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

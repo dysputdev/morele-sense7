@@ -1,0 +1,53 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/price-regular",
+	"version": "1.0.0",
+	"title": "Cena Regularna",
+	"category": "woocommerce",
+	"description": "Wyświetla regularną cenę produktu WooCommerce",
+	"attributes": {
+		"currencyFormat": {
+			"type": "string",
+			"enum": ["default", "no_symbol", "symbol_only", "code"],
+			"default": "default"
+		},
+		"prefix": {
+			"type": "string",
+			"default": ""
+		},
+		"suffix": {
+			"type": "string",
+			"default": ""
+		},
+		"showEmpty": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"usesContext": ["postId", "multistore/postId"],
+	"supports": {
+		"align": ["left", "center", "right"],
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"fontWeight": true,
+			"fontStyle": true,
+			"textDecoration": true,
+			"textAlign": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,18 @@
+.multistore-block-price-lowest {
+	&__wrapper {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.25em;
+	}
+
+	&__prefix,
+	&__suffix,
+	&__days {
+		opacity: 0.8;
+		font-size: 0.9em;
+	}
+
+	&__value {
+		font-weight: inherit;
+	}
+}

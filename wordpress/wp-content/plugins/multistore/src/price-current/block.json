@@ -1,0 +1,49 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/price-current",
+	"version": "1.0.0",
+	"title": "Cena Aktualna",
+	"category": "woocommerce",
+	"description": "Wyświetla aktualną cenę produktu WooCommerce (cenę po obniżce)",
+	"attributes": {
+		"currencyFormat": {
+			"type": "string",
+			"enum": ["default", "no_symbol", "symbol_only", "code"],
+			"default": "default"
+		},
+		"prefix": {
+			"type": "string",
+			"default": ""
+		},
+		"suffix": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"usesContext": ["postId", "multistore/postId"],
+	"supports": {
+		"align": ["left", "center", "right"],
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"fontWeight": true,
+			"fontStyle": true,
+			"textDecoration": true,
+			"textAlign": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

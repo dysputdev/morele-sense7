@@ -1,0 +1,25 @@
+// Style dla bloku icon na frontendzie
+.wp-block-multistore-icon {
+	figure {
+		margin: 0;
+		display: flex;
+		align-items: center;
+
+		&.has-icon-left {
+			justify-content: flex-start;
+		}
+
+		&.has-icon-center {
+			justify-content: center;
+		}
+
+		&.has-icon-right {
+			justify-content: flex-end;
+		}
+
+		svg {
+			fill: currentColor;
+			display: block;
+		}
+	}
+}

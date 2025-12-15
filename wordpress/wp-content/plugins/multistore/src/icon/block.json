@@ -1,0 +1,56 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/icon",
+	"version": "0.2.0",
+	"title": "Ikona",
+	"category": "widgets",
+	"description": "Wyświetla blok z ikoną",
+	"attributes": {
+		"pack": {
+			"type": "string",
+			"default": "v1"
+		},
+		"file": {
+			"type": "string",
+			"default": ""
+		},
+		"size": {
+			"type": "string",
+			"default": "default"
+		},
+		"customSize": {
+			"type": "number",
+			"default": 0
+		},
+		"position": {
+			"type": "string",
+			"default": "center"
+		},
+		"data": {
+			"type": "object",
+			"default": {}
+		}
+	},
+	"supports": {
+		"align": [
+			"left",
+			"center",
+			"right"
+		],
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScript": "file:./view.js"
+}

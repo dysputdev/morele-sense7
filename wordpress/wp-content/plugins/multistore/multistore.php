@@ -88,9 +88,17 @@ class Plugin {
 		// Initialize plugin components.
 		add_action( 'init', array( $this, 'initialize_components' ) );
 
+		// Enqueue block editor assets.
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
+
 		// Activation and deactivation hooks.
 		register_activation_hook( MULTISTORE_PLUGIN_FILE, array( $this, 'activate' ) );
 		register_deactivation_hook( MULTISTORE_PLUGIN_FILE, array( $this, 'deactivate' ) );
+
+		// Register WP-CLI commands.
+		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
+			add_action( 'cli_init', array( $this, 'register_cli_commands' ) );
+		}
 	}
 
 	/**
@@ -114,7 +122,7 @@ class Plugin {
 	public function initialize_database(): void {
 		// Initialize database tables.
 
-		$database_dir = MULTISTORE_PLUGIN_DIR . '/Database';
+		$database_dir = MULTISTORE_PLUGIN_DIR . 'includes/Database';
 		$files        = glob( $database_dir . '/*.php' );
 		foreach ( $files as $file ) {
 			$filename = basename( $file, '.php' );
@@ -124,10 +132,12 @@ class Plugin {
 				continue;
 			}
 
-			$class_name = "Database\\{$filename}";
+			$class_name = "MultiStore\\Plugin\\Database\\{$filename}";
 			if ( class_exists( $class_name ) ) {
-				$reflection = new \ReflectionClass( $class_name );
-				$reflection->maybe_create_table();
+				$instance = new $class_name();
+				if ( method_exists( $instance, 'maybe_create_table' ) ) {
+					$instance->maybe_create_table();
+				}
 			}
 		}
 	}
@@ -143,6 +153,23 @@ class Plugin {
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
 			return;
 		}
+
+		// enable gutenberg for woocommerce.
+		add_filter(
+			'use_block_editor_for_post_type',
+			function( $can_edit, $post_type ) {
+				if ( 'product' === $post_type ) {
+					$can_edit = true;
+				}
+				return $can_edit;
+			},
+			10,
+			2
+		);
+
+		// enable taxonomy fields for woocommerce with gutenberg on.
+		add_filter( 'woocommerce_taxonomy_args_product_cat', fn ( $args ) => ( $args + array( 'show_in_rest' => true ) ) );
+		add_filter( 'woocommerce_taxonomy_args_product_tag', fn ( $args ) => ( $args + array( 'show_in_rest' => true ) ) );
 
 		// Initialize price history manager.
 		new WooCommerce\Price_History();
@@ -218,6 +245,10 @@ class Plugin {
 	 */
 	public function initialize_admin_components(): void {
 		new Admin\Price_History_Tools();
+		new Admin\Product_Downloads_Metabox();
+
+		// Debug helper - uncomment to enable.
+		// new Admin\Product_Relations\Debug();
 	}
 
 	/**
@@ -227,6 +258,25 @@ class Plugin {
 	 */
 	public function initialize_frontend_components(): void {
 		new Frontend\Price_History_Display();
+		new Frontend\Related_Products_Query();
+		new Frontend\Related_Products_Slider_Renderer();
+	}
+
+	/**
+	 * Enqueue block editor assets
+	 *
+	 * @since 1.0.0
+	 */
+	public function enqueue_block_editor_assets(): void {
+		$asset_file = include MULTISTORE_PLUGIN_DIR . 'build/editor.asset.php';
+
+		wp_enqueue_script(
+			'multistore-editor-script',
+			MULTISTORE_PLUGIN_URL . 'build/editor.js',
+			$asset_file['dependencies'],
+			$asset_file['version'],
+			true
+		);
 	}
 
 	/**
@@ -282,6 +332,18 @@ class Plugin {
 		}
 
 		flush_rewrite_rules();
+	}
+
+	/**
+	 * Register WP-CLI commands
+	 *
+	 * @since 1.0.0
+	 */
+	public function register_cli_commands(): void {
+		\WP_CLI::add_command( 'multistore product:import products', 'MultiStore\Plugin\CLI\Import_Products' );
+		\WP_CLI::add_command( 'multistore product:import reviews', 'MultiStore\Plugin\CLI\Import_Reviews' );
+		\WP_CLI::add_command( 'multistore product:import images', 'MultiStore\Plugin\CLI\Import_Images' );
+		\WP_CLI::add_command( 'multistore product:import attributes', 'MultiStore\Plugin\CLI\Import_Attributes' );
 	}
 }
 

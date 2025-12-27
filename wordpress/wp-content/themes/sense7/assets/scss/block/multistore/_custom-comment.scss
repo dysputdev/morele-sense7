@@ -1,0 +1,58 @@
+.multistore-block-custom-comment {
+	background: #f5f5f5;
+	border-radius: 12px;
+	padding: 24px;
+
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		margin-bottom: 12px;
+	}
+
+	&__author {
+		margin: 0;
+		font-size: 20px;
+		font-weight: 600;
+		color: #000;
+	}
+
+	&__rating {
+		display: flex;
+		gap: 2px;
+	}
+
+	&__star {
+		font-size: 20px;
+		color: #ddd;
+
+		&--filled {
+			color: #ff3b30;
+		}
+	}
+
+	&__meta {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		margin-bottom: 16px;
+		font-size: 14px;
+		color: #666;
+	}
+
+	&__product {
+		font-weight: 500;
+		color: #000;
+	}
+
+	&__time {
+		color: #999;
+	}
+
+	&__content {
+		margin: 0;
+		font-size: 14px;
+		line-height: 1.6;
+		color: #333;
+	}
+}

@@ -1,0 +1,55 @@
+.multistore-block-product-reviews {
+	display: grid;
+	grid-template-columns: 250px 1fr;
+	column-gap: var(--wp--preset--spacing--80);
+	&__summary {
+		background-color: transparent;
+		padding: 0;
+	}
+
+	&__rating-score {
+		color: var(--wp--preset--color--primary);
+	}
+	&__rating-number {
+		font-size: var(--wp--preset--font-size--x-large);
+	}
+
+	&__star {
+		font-size: var(--wp--preset--font-size--normal);
+	}
+	&__star--full {
+		color: var(--wp--preset--color--primary);
+	}
+	&__star--half {
+		color: var(--wp--preset--color--accent);
+		&::after {
+			color: var(--wp--preset--color--primary);
+		}
+	}
+
+	&__breakdown {
+		gap: 0.25rem;
+	}
+
+	&__breakdown-item {
+		color: var(--wp--preset--color--primary);
+		gap: var(--wp--preset--spacing--30);
+		font-size: var(--wp--preset--font-size--small);
+		svg {
+			width: 12px;
+			height: 12px;
+		}
+	}
+	&__breakdown-label {
+		min-width: 1ch;
+	}
+
+	&__breakdown-fill {
+		background-color: var(--wp--preset--color--primary);
+	}
+
+	&__item {
+		padding: 0;
+		border: 0px solid transparent
+	}
+}

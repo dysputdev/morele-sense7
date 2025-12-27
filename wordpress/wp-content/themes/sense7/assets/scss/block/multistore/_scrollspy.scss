@@ -1,0 +1,11 @@
+.multistore-block-scrollspy-nav {
+	background-color: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--base);
+	&__link {
+		color: var(--wp--preset--color--base);
+		padding: var(--wp--preset--spacing--40);
+		&:hover {
+			color: var(--wp--preset--color--base);
+		}
+	}
+}

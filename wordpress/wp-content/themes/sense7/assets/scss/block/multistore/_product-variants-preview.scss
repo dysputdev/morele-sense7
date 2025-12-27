@@ -1,0 +1,25 @@
+.multistore-block-product-variants-preview {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: var(--wp--preset--spacing--40);
+	&__variant {
+		gap: var(--wp--preset--spacing--20);
+		border: 0;
+		img {
+			border: 1px solid transparent;
+			border-radius: 0.25rem;
+		}
+		&:hover {
+			box-shadow: none;
+			img {
+				border-color: var(--wp--preset--color--gray-80);
+			}
+		}
+	}
+	&__variant--active {
+		img {
+			border-color: var(--wp--preset--color--primary);
+		}
+	}
+}

@@ -46,96 +46,29 @@
 		"spacing": {
 			"defaultSpacingSizes": false,
 			"spacingSizes": [
-				{
-					"slug": "20",
-					"size": "0.25rem",
-					"name": "Extra small"
-				},
-				{
-					"slug": "30",
-					"size": "0.5rem",
-					"name": "Small"
-				},
-				{
-					"slug": "40",
-					"size": "1rem",
-					"name": "Normal"
-				},
-				{
-					"slug": "50",
-					"size": "1.5rem",
-					"name": "Medium"
-				},
-				{
-					"slug": "60",
-					"size": "2rem",
-					"name": "Large"
-				},
-				{
-					"slug": "70",
-					"size": "3rem",
-					"name": "X-Large"
-				},
-				{
-					"slug": "80",
-					"size": "4rem",
-					"name": "XXL"
-				},
-				{
-					"slug": "90",
-					"size": "5rem",
-					"name": "3XL"
-				}
+				{ "name": "Extra small", "size": "0.25rem", "slug": "20" },
+				{ "name": "Small (8px)", "size": "0.5rem", "slug": "30" },
+				{ "name": "Normal (16px)", "size": "1rem", "slug": "40" },
+				{ "name": "Medium (24px)", "size": "1.5rem", "slug": "50" },
+				{ "name": "Large (32px)", "size": "2rem", "slug": "60" },
+				{ "name": "X-Large (48px)", "size": "3rem", "slug": "70" },
+				{ "name": "XXL (64px)", "size": "4rem", "slug": "80" },
+				{ "name": "3XL (80px)", "size": "5rem", "slug": "90" }
 			],
-			"units": [
-				"%",
-				"px",
-				"em",
-				"rem",
-				"vh",
-				"vw"
-			]
+			"units": [ "%", "px", "em", "rem", "vh", "vw" ]
 		},
 		"typography": {
 			"writingMode": true,
 			"defaultFontSizes": false,
 			"fluid": true,
 			"fontSizes": [
-				{
-					"slug": "small",
-					"size": "0.875rem",
-					"name": "Small (14px)"
-				},
-				{
-					"slug": "base",
-					"size": "1rem",
-					"name": "Base (16px)"
-				},
-				{
-					"slug": "medium",
-					"size": "1.25rem",
-					"name": "Medium (20px)"
-				},
-				{
-					"slug": "large",
-					"size": "1.5rem",
-					"name": "Large (24px)"
-				},
-				{
-					"slug": "x-large",
-					"size": "2rem",
-					"name": "Extra Large (32px)"
-				},
-				{
-					"slug": "xx-large",
-					"size": "2.5rem",
-					"name": "2X Large (40px)"
-				},
-				{
-					"slug": "xxx-large",
-					"size": "3.5rem",
-					"name": "3X Large (48px)"
-				}
+				{ "name": "Small (14px)", "size": "0.875rem", "slug": "small" },
+				{ "name": "Base (16px)", "size": "1rem", "slug": "base" },
+				{ "name": "Medium (20px)", "size": "1.25rem", "slug": "medium" },
+				{ "name": "Large (24px)", "size": "1.5rem", "slug": "large" },
+				{ "name": "Extra Large (32px)", "size": "2rem", "slug": "x-large" },
+				{ "name": "2X Large (40px)", "size": "2.5rem", "slug": "xx-large" },
+				{ "name": "3X Large (48px)", "size": "3.5rem", "slug": "xxx-large" }
 			],
 			"fontFamilies": [
 				{

@@ -1,0 +1,17 @@
+
+
+.multistore-block-megamenu {
+	.wp-block-navigation-link {
+		font-weight: bold;
+	}
+	a:hover {
+		color: var(--wp--preset--color--primary);
+		text-decoration: underline;
+	}
+	.megamenu-cateogries a:hover {
+		text-decoration-style: dotted;
+		text-decoration-color: var(--wp--preset--color--primary);
+		text-decoration-offset: 2px;
+	}
+}
+ 

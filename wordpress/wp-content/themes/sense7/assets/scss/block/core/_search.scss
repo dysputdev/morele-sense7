@@ -1,0 +1,18 @@
+
+header {
+	.wp-block-search.wp-block-search__button-only {
+		.wp-block-search__input {
+			background-color: transparent;
+			border: 0px;
+			border-bottom: 1px solid var(--wp--preset--color--base);
+			color: var(--wp--preset--color--base);
+			padding: var(--wp--preset--spacing--10);
+			outline: none;
+		}
+
+		.wp-block-search__button {
+			padding: var(--wp--preset--spacing--30);
+			background-color: transparent;
+		}
+	}
+}

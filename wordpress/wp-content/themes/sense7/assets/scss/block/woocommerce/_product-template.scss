@@ -1,0 +1,5 @@
+.wc-block-product-template__responsive {
+	&.columns-3 {
+		// grid-template-columns: repeat(auto-fill, minmax(max(400px, calc(33.33333% - 1rem)), 1fr));
+	}
+}

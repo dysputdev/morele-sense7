@@ -1,0 +1,19 @@
+.multistore-block-product-gallery {
+	&__thumbnails {
+		margin-top: 1rem;
+		.splide__track--nav {
+			> .splide__list {
+				gap: 1rem;
+				> .splide__slide {
+					background-size: contain !important;
+					&.is-active {
+						background-size: contain !important;
+						border-width: 2px;
+						border-radius: 1rem;
+						border-color: var(--wp--preset--color--primary);
+					}
+				}
+			}
+		}
+	}
+}

@@ -57,9 +57,15 @@ $filter_block_context = static function ( $context ) use ( $post ) {
 	return $context;
 };
 
-add_filter( 'render_block_context', $filter_block_context, 1 );
-$block_content = render_block( $block_instance );
-remove_filter( 'render_block_context', $filter_block_context, 1 );
+$context = array(
+	'postType' => $post->post_type,
+	'postId'   => $post->ID,
+);
+
+
+// add_filter( 'render_block_context', $filter_block_context, 1 );
+// $block_content = render_block( $block_instance );
+// remove_filter( 'render_block_context', $filter_block_context, 1 );
 
 // printf( '<%s %s>', esc_attr( $tag ), wp_kses_data( $wrapper_attributes ) );
 // echo $block_content;
@@ -68,7 +74,12 @@ remove_filter( 'render_block_context', $filter_block_context, 1 );
 ?>
 
 <<?php echo esc_attr( $tag_name ); ?> <?php echo wp_kses_data( $wrapper_attributes ); ?>>
-	<?php echo $block_content; ?>
+	<?php
+	foreach ( $block->parsed_block['innerBlocks'] as $inner_block ) {
+		$inner_block_content = ( new \WP_Block( $inner_block, $context ) )->render( array( 'dynamic' => true ) );
+		echo $inner_block_content;
+	}
+	?>
 </<?php echo esc_attr( $tag_name ); ?>>
 
 <?php

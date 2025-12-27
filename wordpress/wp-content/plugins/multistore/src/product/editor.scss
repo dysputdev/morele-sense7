@@ -1,0 +1,141 @@
+/**
+ * Product Search Component Styles
+ */
+
+.multistore-product-search {
+	margin-bottom: 16px;
+
+	&__input-wrapper {
+		position: relative;
+	}
+
+	&__input {
+		width: 100%;
+		padding: 8px 32px 8px 12px;
+		border: 1px solid #949494;
+		border-radius: 2px;
+		font-size: 13px;
+		line-height: 1.4;
+
+		&:focus {
+			border-color: var(--wp-admin-theme-color);
+			outline: 1px solid var(--wp-admin-theme-color);
+			outline-offset: -1px;
+		}
+
+		&::placeholder {
+			color: #757575;
+		}
+	}
+
+	&__spinner {
+		position: absolute;
+		right: 8px;
+		top: 50%;
+		transform: translateY(-50%);
+		pointer-events: none;
+	}
+
+	&__results {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		margin-top: 4px;
+		background: #fff;
+		border: 1px solid #949494;
+		border-radius: 2px;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+		max-height: 300px;
+		overflow-y: auto;
+		z-index: 100;
+	}
+
+	&__result-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 10px 12px;
+		border: none;
+		border-bottom: 1px solid #ddd;
+		background: #fff;
+		text-align: left;
+		cursor: pointer;
+		transition: background-color 0.1s ease;
+
+		&:last-child {
+			border-bottom: none;
+		}
+
+		&:hover {
+			background-color: #f0f0f0;
+		}
+
+		&:focus {
+			outline: 2px solid var(--wp-admin-theme-color);
+			outline-offset: -2px;
+		}
+	}
+
+	&__result-title {
+		flex: 1;
+		font-size: 13px;
+		color: #1e1e1e;
+	}
+
+	&__result-id {
+		margin-left: 12px;
+		font-size: 11px;
+		color: #757575;
+	}
+
+	&__no-results {
+		padding: 12px;
+		text-align: center;
+		color: #757575;
+		font-size: 13px;
+	}
+
+	&__selected {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 12px;
+		background: #f0f0f0;
+		border: 1px solid #ddd;
+		border-radius: 2px;
+	}
+
+	&__selected-info {
+		flex: 1;
+
+		strong {
+			display: block;
+			margin-bottom: 4px;
+			font-size: 12px;
+			color: #1e1e1e;
+		}
+	}
+
+	&__selected-title {
+		margin-bottom: 4px;
+		font-size: 13px;
+		font-weight: 500;
+		color: #1e1e1e;
+	}
+
+	&__selected-id {
+		font-size: 11px;
+		color: #757575;
+	}
+}
+
+// Description text below search
+.description {
+	margin-top: 8px;
+	margin-bottom: 0;
+	font-size: 12px;
+	font-style: normal;
+	color: #757575;
+}

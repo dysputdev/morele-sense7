@@ -1,0 +1,15 @@
+.multistore-block-product-specifications {
+	&__title {
+		border: 1px dashed #ccc;
+		padding: 0.5rem;
+
+		&:focus {
+			outline: none;
+			border-color: #2271b1;
+		}
+	}
+
+	&__table {
+		margin-top: 1rem;
+	}
+}

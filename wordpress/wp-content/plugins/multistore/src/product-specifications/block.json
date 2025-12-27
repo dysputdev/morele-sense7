@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/product-specifications",
+	"version": "1.0.0",
+	"title": "Specyfikacja Produktu",
+	"category": "woocommerce",
+	"description": "Wyświetla specyfikację produktu w formie tabeli na podstawie widocznych atrybutów",
+	"attributes": {
+		"showTitle": {
+			"type": "boolean",
+			"default": true
+		},
+		"title": {
+			"type": "string",
+			"default": "Specyfikacja"
+		}
+	},
+	"usesContext": ["postId", "multistore/postId"],
+	"supports": {
+		"align": ["wide", "full"],
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

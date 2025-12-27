@@ -1,0 +1,46 @@
+.multistore-block-product-specifications {
+	margin-bottom: 2rem;
+
+	&__title {
+		margin-bottom: 1.5rem;
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: #000;
+	}
+
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+		background-color: #fff;
+	}
+
+	&__tbody {
+		// Empty for now, can be styled if needed
+	}
+
+	&__row {
+		border-bottom: 1px solid #e5e5e5;
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+
+	&__label,
+	&__value {
+		padding: 1rem;
+		text-align: left;
+		vertical-align: top;
+	}
+
+	&__label {
+		width: 40%;
+		font-weight: 600;
+		color: #000;
+	}
+
+	&__value {
+		width: 60%;
+		color: #666;
+	}
+}

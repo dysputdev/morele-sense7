@@ -1,0 +1,47 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/custom-comment",
+	"version": "1.0.0",
+	"title": "Niestandardowy komentarz",
+	"category": "text",
+	"description": "Wyświetla niestandardowy komentarz z oceną produktu",
+	"attributes": {
+		"authorName": {
+			"type": "string",
+			"default": "Mateusz"
+		},
+		"rating": {
+			"type": "number",
+			"default": 5
+		},
+		"productName": {
+			"type": "string",
+			"default": "Fotel SENSE7 Nobu Czarny"
+		},
+		"productId": {
+			"type": "number",
+			"default": 0
+		},
+		"timeAgo": {
+			"type": "string",
+			"default": "2 miesiące temu"
+		},
+		"content": {
+			"type": "string",
+			"default": "Fotel jak za tą cenę to jest wybitny. Jest on świetnie wykonany, widać oraz czuć bardzo dobrą jakość. Z czystym sumieniem mogę każdemu polecić ten fotel, a w szczególności wersję tkanina + skóra ekologiczna."
+		}
+	},
+	"supports": {
+		"align": ["wide", "full"],
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,9 @@
+.multistore-block-custom-comment {
+	// Inherit styles from style.scss
+	// Add editor-specific styles if needed
+
+	&__content {
+		// Ensure RichText is editable in the editor
+		min-height: 60px;
+	}
+}

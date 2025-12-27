@@ -1,0 +1,60 @@
+.multistore-block-custom-comment {
+	background: var(--wp--preset--color--accent);
+	border-radius: 1.5rem;
+	padding: var(--wp--preset--spacing--50) var(--wp--preset--spacing--60);
+
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: var(--wp--preset--spacing--40);
+		gap: var(--wp--preset--spacing--40);
+	}
+
+	&__author {
+		margin: 0;
+		font-size: var(--wp--preset--font-size--medium);
+		font-weight: 600;
+		color: var(--wp--preset--color--contrast);
+	}
+
+	&__rating {
+		display: flex;
+		gap: 0.25rem;
+	}
+
+	&__star {
+		font-size: 20px;
+		color: #ddd;
+
+		&--filled {
+			color: #ff3b30;
+		}
+	}
+
+	&__meta {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: var(--wp--preset--spacing--40);
+		font-size: var(--wp--preset--font-size--small);
+		color: currentColor;
+	}
+
+	&__product {
+		font-weight: 500;
+		color: var(--wp--preset--color--contrast);
+	}
+
+	&__time {
+		color: #999;
+		font-weight: 300;
+	}
+
+	&__content {
+		margin: 0;
+		font-size: var(--wp--preset--font-size--base);
+		line-height: 1.6;
+		color: currentColor;
+	}
+}

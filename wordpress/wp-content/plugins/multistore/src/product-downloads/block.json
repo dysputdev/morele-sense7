@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/product-downloads",
+	"version": "1.0.0",
+	"title": "Pliki do pobrania",
+	"category": "woocommerce",
+	"description": "Wyświetla listę plików dostępnych do pobrania dla produktu",
+	"attributes": {
+		"showTitle": {
+			"type": "boolean",
+			"default": true
+		},
+		"title": {
+			"type": "string",
+			"default": "Do pobrania"
+		}
+	},
+	"usesContext": ["postId", "multistore/postId"],
+	"supports": {
+		"align": ["wide", "full"],
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

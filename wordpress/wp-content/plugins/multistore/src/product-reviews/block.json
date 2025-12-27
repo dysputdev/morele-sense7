@@ -1,0 +1,46 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/product-reviews",
+	"title": "Opinie i oceny produktu",
+	"category": "widgets",
+	"description": "Wyświetla opinie i oceny produktu",
+	"supports": {
+		"align": [ "full", "wide" ],
+		"anchor": true,
+		"className": true,
+		"html": false
+	},
+	"attributes": {
+		"displaySummary": {
+			"type": "boolean",
+			"default": true
+		},
+		"displayAllStores": {
+			"type": "boolean",
+			"default": true
+		},
+		"perPage": {
+			"type": "number",
+			"default": 10
+		},
+		"loadedReviews": {
+			"type": "number",
+			"default": 5
+		},
+		"sortOrder": {
+			"type": "string",
+			"enum": [
+				"best", "worst", "newest", "oldest"
+			],
+			"default": "newest"
+		}
+	},
+	"keywords": ["reviews", "opinia", "product"],
+	"usesContext": ["postId", "postType", "multistore/postId"],
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"viewScript": "file:./view.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

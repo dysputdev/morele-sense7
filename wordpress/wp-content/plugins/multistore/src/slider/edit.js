@@ -39,7 +39,12 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     }, {
         allowedBlocks: ['multistore/slider-slide'],
         template: [
-            ['multistore/slider-slide'],
+            ['multistore/slider-slide', {}, [
+                ['core/paragraph', { placeholder: __('Slide 1 Content', 'multistore') }],
+            ]],
+            ['multistore/slider-slide', {}, [
+                ['core/paragraph', { placeholder: __('Slide 2 Content', 'multistore') }],
+            ]],
         ],
         renderAppender: InnerBlocks.ButtonBlockAppender,
     });

@@ -2,7 +2,7 @@ import Splide from "@splidejs/splide";
 
 document.addEventListener( 'DOMContentLoaded', () => {
 
-	const sliders = document.querySelectorAll('.splide');
+	const sliders = document.querySelectorAll('.multistore-block-slider .splide');
 
 	if ( ! sliders.length ) {
 		return;

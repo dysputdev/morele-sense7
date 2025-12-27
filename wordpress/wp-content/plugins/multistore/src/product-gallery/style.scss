@@ -1,0 +1,144 @@
+.multistore-block-product-gallery {
+	position: relative;
+	width: 100%;
+
+	&__main {
+		margin-bottom: 1rem;
+	}
+
+	&__main-slider {
+		.splide__track {
+			overflow: hidden;
+		
+		}
+		.splide__slide {
+			width: 100%;
+			img {
+				width: 100%;
+				aspect-ratio: 1 / 1;
+			}
+		}
+	}
+
+	&__image {
+		width: 100%;
+		height: auto;
+		display: block;
+		object-fit: contain;
+	}
+
+	&__thumbnails {
+		position: relative;
+	}
+
+	&__thumbnail-slider {
+		position: relative;
+
+		.splide__track {
+			overflow: hidden;
+		}
+
+		.splide__slide {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			opacity: 0.6;
+			transition: opacity 0.3s ease;
+			border: 2px solid transparent;
+			background-color: #f5f5f5;
+
+			&:hover {
+				opacity: 0.8;
+			}
+
+			&.is-active {
+				opacity: 1;
+				border-color: currentColor;
+			}
+		}
+
+		// Arrows positioning for thumbnails.
+		&[data-arrows-position="center-inside"] {
+			.splide__arrows {
+				.splide__arrow {
+					position: absolute;
+					top: 50%;
+					transform: translateY(-50%);
+					z-index: 2;
+
+					&--prev {
+						left: 0.5rem;
+					}
+
+					&--next {
+						right: 0.5rem;
+					}
+				}
+			}
+		}
+
+		&[data-arrows-position="center-outside"] {
+			.splide__arrows {
+				.splide__arrow {
+					position: absolute;
+					top: 50%;
+					transform: translateY(-50%);
+					z-index: 2;
+
+					&--prev {
+						left: -3rem;
+					}
+
+					&--next {
+						right: -3rem;
+					}
+				}
+			}
+		}
+
+		.splide__arrow {
+			background: rgba(255, 255, 255, 0.9);
+			border: none;
+			border-radius: 50%;
+			width: 2.5rem;
+			height: 2.5rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: background 0.3s ease;
+
+			&:hover {
+				background: rgba(255, 255, 255, 1);
+			}
+
+			svg {
+				width: 1.5rem;
+				height: 1.5rem;
+				fill: currentColor;
+			}
+
+			&--prev svg {
+				transform: rotate(180deg);
+			}
+		}
+	}
+
+	&__thumbnail {
+		width: 100%;
+		height: auto;
+		display: block;
+		object-fit: cover;
+		aspect-ratio: 1;
+	}
+
+	&__empty {
+		padding: 2rem;
+		text-align: center;
+		color: #666;
+		background-color: #f5f5f5;
+		border: 2px dashed #ccc;
+		border-radius: 4px;
+	}
+}

@@ -1,0 +1,68 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "version": "0.1.0",
+    "name": "multistore/product-gallery",
+    "title": "Galeria produktu z miniaturkami",
+    "category": "formatting",
+    "icon": "images-alt",
+    "keywords": ["gallery", "product", "slider", "images"],
+    "attributes": {
+        "showFeaturedImage": {
+            "type": "boolean",
+            "default": true
+        },
+        "mainSlider": {
+            "type": "object",
+            "default": {
+                "type": "slide",
+                "rewind": true,
+                "speed": 400,
+                "arrows": false,
+                "pagination": false,
+                "drag": true,
+                "keyboard": true,
+                "perPage": 1,
+                "gap": "0"
+            }
+        },
+        "thumbnailSlider": {
+            "type": "object",
+            "default": {
+                "type": "slide",
+                "rewind": true,
+                "speed": 400,
+                "arrows": true,
+                "arrowsPosition": "center-inside",
+                "arrowsStyle": "default",
+                "arrowPath": "m15.5 0.932-4.3 4.38 14.5 14.6-14.5 14.5 4.3 4.4 14.6-14.6 4.4-4.3-4.4-4.4-14.6-14.6z",
+                "pagination": false,
+                "isNavigation": true,
+                "perPage": 4,
+                "gap": "10px",
+                "focus": "center",
+                "drag": true,
+                "keyboard": false
+            }
+        }
+    },
+    "usesContext": ["postId", "postType"],
+    "supports": {
+        "align": ["wide", "full"],
+        "anchor": true,
+        "customClassName": true,
+        "spacing": {
+            "padding": true,
+            "margin": true
+        }
+    },
+    "textdomain": "multistore",
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./index.css",
+    "style": [
+        "file:./index.css",
+        "file:./style-index.css"
+    ],
+    "viewScript": "file:./view.js",
+    "render": "file:./render.php"
+}

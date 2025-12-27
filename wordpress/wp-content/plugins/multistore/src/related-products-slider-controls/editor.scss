@@ -1,0 +1,37 @@
+/**
+ * Editor styles for Related Products Slider Controls
+ *
+ * @package MultiStore\Plugin
+ */
+
+.multistore-responsive-tab-panel {
+	.components-tab-panel__tabs {
+		display: flex;
+		gap: 0.5rem;
+		border-bottom: 1px solid #ddd;
+		margin-bottom: 1rem;
+
+		.components-button {
+			padding: 0.5rem 1rem;
+			border: none;
+			background: transparent;
+			color: #757575;
+			cursor: pointer;
+			border-bottom: 2px solid transparent;
+			transition: all 0.2s ease;
+
+			&.is-active {
+				color: #000;
+				border-bottom-color: #000;
+			}
+
+			&:hover {
+				color: #000;
+			}
+		}
+	}
+
+	.components-tab-panel__tab-content {
+		padding-top: 1rem;
+	}
+}

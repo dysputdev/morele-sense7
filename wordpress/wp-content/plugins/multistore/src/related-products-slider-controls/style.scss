@@ -1,0 +1,94 @@
+/**
+ * Styles for Related Products Slider
+ *
+ * @package MultiStore\Plugin
+ */
+
+@import '@splidejs/splide/css';
+
+.multistore-block-related-products-slider {
+	position: relative;
+	width: 100%;
+
+	.splide {
+		visibility: visible;
+	}
+
+	.splide__slide {
+		display: flex;
+		align-items: stretch;
+		height: auto;
+
+		// Ensure product items fill the slide.
+		> * {
+			width: 100%;
+		}
+	}
+
+	// Arrows styling.
+	.splide__arrows {
+		.splide__arrow {
+			background-color: rgba(255, 255, 255, 0.9);
+			border-radius: 50%;
+			width: 3rem;
+			height: 3rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.3s ease;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+
+			&:hover {
+				background-color: #fff;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+			}
+
+			&:disabled {
+				opacity: 0.3;
+				cursor: not-allowed;
+			}
+
+			svg {
+				width: 1.5rem;
+				height: 1.5rem;
+				fill: currentColor;
+			}
+		}
+
+		.splide__arrow--prev {
+			left: 1rem;
+
+			svg {
+				transform: rotate(180deg);
+			}
+		}
+
+		.splide__arrow--next {
+			right: 1rem;
+		}
+	}
+
+	// Pagination styling.
+	.splide__pagination {
+		bottom: -2rem;
+		padding: 0;
+
+		.splide__pagination__page {
+			background-color: rgba(0, 0, 0, 0.2);
+			border: 0;
+			width: 0.5rem;
+			height: 0.5rem;
+			margin: 0 0.25rem;
+			transition: all 0.3s ease;
+
+			&.is-active {
+				background-color: currentColor;
+				transform: scale(1.4);
+			}
+
+			&:hover {
+				background-color: rgba(0, 0, 0, 0.4);
+			}
+		}
+	}
+}

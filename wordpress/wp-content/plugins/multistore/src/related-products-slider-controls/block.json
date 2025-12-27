@@ -1,0 +1,13 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/related-products-slider",
+	"title": "Slider powiązanych produktów",
+	"category": "widgets",
+	"description": "Wyświetla slider powiązanych produktów",
+	"keywords": ["slider", "related", "products"],
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"viewScript": "file:./view.js",
+	"style": "file:./style-index.css"
+}

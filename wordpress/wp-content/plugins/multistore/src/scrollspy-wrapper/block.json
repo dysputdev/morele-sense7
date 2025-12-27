@@ -1,0 +1,56 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/scrollspy-wrapper",
+	"title": "ScrollSpy Wrapper",
+	"category": "design",
+	"icon": "list-view",
+	"description": "Container for ScrollSpy navigation and sections",
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"],
+		"layout": true,
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": true
+		},
+		"color": {
+			"background": true,
+			"text": true,
+			"enableContrastChecker": true
+		},
+		"anchor": true,
+		"customClassName": true,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"textAlign": true
+		}
+	},
+	"attributes": {
+		"wrapperId": {
+			"type": "string",
+			"default": ""
+		},
+		"scrollOffset": {
+			"type": "number",
+			"default": 100
+		},
+		"activeClass": {
+			"type": "string",
+			"default": "is-active"
+		}
+	},
+	"providesContext": {
+		"multistore/scrollspy-wrapper-id": "wrapperId",
+		"multistore/scrollspy-offset": "scrollOffset",
+		"multistore/scrollspy-active-class": "activeClass"
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

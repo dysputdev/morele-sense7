@@ -1,0 +1,42 @@
+.scrollspy-wrapper {
+	position: relative;
+	scroll-behavior: smooth;
+}
+
+.multistore-block-scrollspy-nav {
+	&.is-sticky {
+		position: sticky;
+		z-index: 100;
+	}
+	
+	&__list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: row;
+		gap: 0.5rem;
+		justify-content: center;
+	}
+	
+	&__item {
+		margin: 0;
+	}
+	
+	&__link {
+		display: block;
+		padding: 0.5rem 1rem;
+		text-decoration: none;
+		transition: all 0.2s ease;
+		
+		&:hover {
+			background: rgba(0, 0, 0, 0.05);
+		}
+		
+		&.is-active {
+			font-weight: bold;
+			color: var(--wp--preset--color--primary, #0073aa);
+			border-left: 3px solid currentColor;
+		}
+	}
+}

@@ -1,0 +1,50 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/scrollspy-section",
+	"title": "Sekcja ScrollSpy",
+	"category": "design",
+	"parent": ["multistore/scrollspy-wrapper"],
+	"icon": "admin-page",
+	"description": "Sekcja pozwalająca nawigować do niej za pomocą ScrollSpy",
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"],
+		"layout": true,
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": true
+		},
+		"color": {
+			"background": true,
+			"text": true,
+			"enableContrastChecker": true
+		},
+		"anchor": true,
+		"customClassName": true,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"textAlign": true
+		}
+	},
+	"attributes": {
+		"sectionId": {
+			"type": "string",
+			"default": ""
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"usesContext": [
+		"multistore/scrollspy-wrapper-id"
+	],
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

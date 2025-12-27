@@ -1,0 +1,53 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/simplified-product-name",
+	"version": "1.0.0",
+	"title": "Uproszczona nazwa produktu",
+	"category": "woocommerce",
+	"description": "Wyświetla tytuł produktu lub uproszczoną nazwę produktu jeśli została zdefiniowana",
+	"attributes": {
+		"tagName": {
+			"type": "string",
+			"enum": ["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", "div"],
+			"default": "h2"
+		},
+		"isLink": {
+			"type": "boolean",
+			"default": false
+		},
+		"customName": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"usesContext": ["postId", "multistore/postId"],
+	"supports": {
+		"align": ["left", "center", "right", "wide", "full"],
+		"color": {
+			"text": true,
+			"background": true,
+			"link": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"fontWeight": true,
+			"fontStyle": true,
+			"textDecoration": true,
+			"textTransform": true,
+			"letterSpacing": true,
+			"textAlign": true,
+			"fontFamily": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

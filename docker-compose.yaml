@@ -28,6 +28,22 @@ services:
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - ./wordpress:/var/www/html
+      - ./php-custom.ini:/usr/local/etc/php/conf.d/php-custom.ini
+
+  wp-cli:
+    container_name: sense7-wp-cli
+    image: wordpress:cli-php8.4
+    depends_on:
+      - wordpress
+      - db
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ./wordpress:/var/www/html
+    working_dir: /var/www/html
 
   phpmyadmin:
     container_name: sense7-phpmyadmin

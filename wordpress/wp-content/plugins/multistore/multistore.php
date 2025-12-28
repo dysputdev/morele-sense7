@@ -245,7 +245,7 @@ class Plugin {
 	 */
 	public function initialize_admin_components(): void {
 		new Admin\Price_History_Tools();
-		new Admin\Product_Downloads_Metabox();
+		new Admin\Product_Downloads_Metabox();		
 
 		// Debug helper - uncomment to enable.
 		// new Admin\Product_Relations\Debug();
@@ -344,6 +344,7 @@ class Plugin {
 		\WP_CLI::add_command( 'multistore product:import reviews', 'MultiStore\Plugin\CLI\Import_Reviews' );
 		\WP_CLI::add_command( 'multistore product:import images', 'MultiStore\Plugin\CLI\Import_Images' );
 		\WP_CLI::add_command( 'multistore product:import attributes', 'MultiStore\Plugin\CLI\Import_Attributes' );
+		\WP_CLI::add_command( 'multistore product:import galleries', 'MultiStore\Plugin\CLI\Import_Galleries' );
 	}
 }
 

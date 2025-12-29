@@ -245,7 +245,8 @@ class Plugin {
 	 */
 	public function initialize_admin_components(): void {
 		new Admin\Price_History_Tools();
-		new Admin\Product_Downloads_Metabox();		
+		new Admin\Product_Downloads_Metabox();
+		new Admin\Product_Relations_Metabox();
 
 		// Debug helper - uncomment to enable.
 		// new Admin\Product_Relations\Debug();

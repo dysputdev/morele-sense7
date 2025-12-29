@@ -1,0 +1,511 @@
+/**
+ * Product Relations Metabox Styles
+ *
+ * @package MultiStore\Plugin
+ */
+
+.multistore-product-relations-metabox {
+	padding: 12px;
+}
+
+/* Active groups section */
+.multistore-active-groups-section {
+	margin-bottom: 20px;
+}
+
+/* Group header */
+.multistore-group-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+.multistore-group-header h4 {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.multistore-group-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+/* Form rows */
+.multistore-form-row {
+	margin-bottom: 15px;
+}
+
+.multistore-form-row label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: 600;
+}
+
+/* Group badge */
+.multistore-group-badge {
+	display: inline-block;
+	padding: 3px 8px;
+	background: #2271b1;
+	color: #fff;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 400;
+}
+
+/* No groups message */
+.multistore-no-groups {
+	padding: 20px;
+	background: #f0f0f1;
+	border-radius: 4px;
+	text-align: center;
+	color: #646970;
+}
+
+/* Group relations */
+.multistore-group-relations {
+	margin-bottom: 30px;
+	padding: 15px;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+
+/* Related products list */
+.multistore-related-products-list {
+	margin-bottom: 15px;
+	min-height: 50px;
+}
+
+/* Relation item */
+.multistore-relation-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px;
+	margin-bottom: 8px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+
+.multistore-relation-item:hover {
+	border-color: #8c8f94;
+}
+
+.multistore-relation-item-handle {
+	flex-shrink: 0;
+	color: #8c8f94;
+	cursor: move;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+.multistore-relation-item:hover .multistore-relation-item-handle {
+	opacity: 1;
+}
+
+.multistore-relation-item-handle .dashicons {
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+}
+
+.multistore-relation-item-details {
+	flex: 1;
+	min-width: 0;
+}
+
+.multistore-relation-item-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	cursor: pointer;
+	user-select: none;
+	transition: background-color 0.2s ease;
+	padding: 2px 4px;
+	margin: -2px -4px;
+	border-radius: 3px;
+}
+
+.multistore-relation-item-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.multistore-relation-item-name {
+	font-weight: 600;
+	color: #1d2327;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.multistore-relation-item-meta {
+	font-size: 12px;
+	color: #646970;
+	margin-top: 2px;
+}
+
+.multistore-toggle-icon {
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+	color: #8c8f94;
+	transition: transform 0.2s ease;
+}
+
+.multistore-relation-item-actions {
+	flex-shrink: 0;
+}
+
+.button.multistore-remove-relation {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4px 8px;
+	min-height: 0;
+	line-height: 1;
+	border-color: #d63638;
+	color: #d63638;
+}
+
+.button.multistore-remove-relation:hover {
+	background: #d63638;
+	color: #fff;
+	border-color: #d63638;
+}
+
+.multistore-remove-relation .dashicons {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+}
+
+/* Add relation */
+.multistore-add-relation {
+	margin-top: 10px;
+}
+
+/* Sortable placeholder */
+.multistore-related-products-list .ui-sortable-placeholder {
+	height: 50px;
+	margin-bottom: 8px;
+	background: #f0f6fc;
+	border: 2px dashed #2271b1;
+	border-radius: 4px;
+	visibility: visible !important;
+}
+
+/* Add group section */
+.multistore-add-group-section {
+	text-align: center;
+	padding: 20px;
+	background: #f6f7f7;
+	border: 2px dashed #dcdcde;
+	border-radius: 4px;
+}
+
+.button.multistore-add-group-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.multistore-add-group-button .dashicons {
+	width: 18px;
+	height: 18px;
+	font-size: 18px;
+}
+
+/* Modal */
+.multistore-add-group-modal,
+.multistore-edit-group-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.7);
+	z-index: 160000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.multistore-modal-content {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+	max-width: 600px;
+	width: 90%;
+	max-height: 90vh;
+	overflow-y: auto;
+	padding: 20px;
+}
+
+.multistore-modal-content h3 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 18px;
+}
+
+/* Tabs */
+.multistore-tabs {
+	display: flex;
+	gap: 0;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #dcdcde;
+}
+
+.multistore-tab-button {
+	flex: 1;
+	padding: 10px 15px;
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid transparent;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	color: #646970;
+	transition: all 0.2s;
+}
+
+.multistore-tab-button:hover {
+	color: #1d2327;
+}
+
+.multistore-tab-button.active {
+	color: #2271b1;
+	border-bottom-color: #2271b1;
+}
+
+.multistore-tab-content {
+	padding-top: 10px;
+}
+
+/* Modal actions */
+.multistore-modal-actions {
+	display: flex;
+	gap: 10px;
+	margin-top: 20px;
+	padding-top: 20px;
+	border-top: 1px solid #dcdcde;
+}
+
+/* Remove group button */
+.multistore-remove-group {
+	color: #d63638;
+	text-decoration: none;
+	padding: 0;
+}
+
+.multistore-remove-group:hover {
+	color: #d63638;
+	text-decoration: underline;
+}
+
+/* Select2 customization */
+.select2-container--default .select2-selection--single {
+	min-height: 32px;
+	border-color: #8c8f94;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+	line-height: 30px;
+	padding-left: 10px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+	height: 30px;
+}
+
+/* Product search results */
+.multistore-product-result {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 5px;
+}
+
+.multistore-product-result-image {
+	flex-shrink: 0;
+	width: 50px;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #f0f0f1;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.multistore-product-result-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.multistore-product-result-image .dashicons {
+	width: 30px;
+	height: 30px;
+	font-size: 30px;
+	color: #8c8f94;
+}
+
+.multistore-product-result-details {
+	flex: 1;
+	min-width: 0;
+}
+
+.multistore-product-result-name {
+	font-weight: 600;
+	color: #1d2327;
+	margin-bottom: 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.multistore-product-result-meta {
+	font-size: 12px;
+	color: #646970;
+}
+
+/* Custom fields per relation */
+.multistore-relation-item-custom-fields {
+	margin-top: 10px;
+	padding: 15px;
+	background: #f9f9f9;
+	border: 1px solid #e5e5e5;
+	border-radius: 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.multistore-relation-custom-field {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.multistore-relation-custom-field label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #1d2327;
+	margin: 0;
+}
+
+.multistore-relation-custom-field .regular-text {
+	width: 100%;
+	max-width: 400px;
+}
+
+/* Label source options */
+.multistore-label-source-options {
+	display: flex;
+	gap: 15px;
+	margin-top: 5px;
+}
+
+.multistore-label-source-options label {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-weight: 400;
+	cursor: pointer;
+}
+
+.multistore-label-source-options input[type="radio"] {
+	margin: 0;
+}
+
+/* Attribute values display */
+.multistore-attribute-values {
+	padding: 8px 12px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	font-size: 13px;
+	color: #1d2327;
+	margin-top: 5px;
+}
+
+.multistore-relation-custom-field .description {
+	margin-top: 5px;
+	margin-bottom: 0;
+	font-size: 12px;
+	font-style: italic;
+	color: #646970;
+}
+
+/* Custom image field */
+.multistore-custom-image-field {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+}
+
+.multistore-custom-image-preview {
+	position: relative;
+	width: 80px;
+	height: 80px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #f0f0f1;
+}
+
+.multistore-custom-image-preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.multistore-custom-image-preview .multistore-remove-image {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	padding: 2px;
+	background: rgba(255, 255, 255, 0.9);
+	border: none;
+	border-radius: 2px;
+	cursor: pointer;
+	color: #d63638;
+	line-height: 1;
+}
+
+.multistore-custom-image-preview .multistore-remove-image:hover {
+	background: #fff;
+}
+
+.multistore-custom-image-preview .multistore-remove-image .dashicons {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+}
+
+/* Responsive adjustments for custom fields */
+@media (max-width: 782px) {
+	.multistore-relation-item {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.multistore-relation-item-details {
+		width: 100%;
+	}
+
+	.multistore-relation-custom-field .regular-text {
+		max-width: 100%;
+	}
+}

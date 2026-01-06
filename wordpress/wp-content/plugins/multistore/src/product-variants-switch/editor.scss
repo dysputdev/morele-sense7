@@ -1,0 +1,64 @@
+/**
+ * Product Variants Block Styles (Editor)
+ *
+ * @package MultiStore\Plugin\Block\ProductVariants
+ */
+
+.multistore-block-product-variants {
+	&__preview {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		padding: 1rem;
+		border: 1px dashed #ccc;
+		border-radius: 4px;
+		background-color: #f9f9f9;
+	}
+
+	.multistore-block-product-variants__label {
+		font-weight: 600;
+		font-size: 0.875rem;
+		color: #333;
+		margin: 0;
+	}
+
+	.multistore-block-product-variants__options {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+
+		&--dropdown {
+			max-width: 300px;
+		}
+	}
+
+	.multistore-block-product-variants__select {
+		width: 100%;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		font-size: 1rem;
+		background-color: #fff;
+	}
+
+	.multistore-block-product-variants__option {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.5rem;
+		padding: 0.5rem 0.75rem;
+		border: 2px solid #ddd;
+		border-radius: 4px;
+		background-color: #fff;
+		color: #333;
+		font-size: 0.875rem;
+		cursor: default;
+
+		&--active {
+			border-color: #2271b1;
+			background-color: #2271b1;
+			color: #fff;
+			font-weight: 600;
+		}
+	}
+}

@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/product-variants",
+	"version": "1.0.0",
+	"title": "Przełącznik wariantów produktu",
+	"category": "woocommerce",
+	"description": "Wyświetla warianty produktu prostego umożliwiając przełączanie między powiązanymi produktami",
+	"usesContext": ["postId", "multistore/postId"],
+	"supports": {
+		"align": ["wide", "full"],
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

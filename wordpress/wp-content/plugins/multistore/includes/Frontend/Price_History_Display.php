@@ -27,6 +27,13 @@ class Price_History_Display {
 	private $price_history;
 
 	/**
+	 * Auto append Price History infor to product summary
+	 *
+	 * @var boolean
+	 */
+	private $auto_append = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0.0
@@ -35,7 +42,9 @@ class Price_History_Display {
 		$this->price_history = new Price_History();
 
 		// Display lowest price info on single product page.
-		add_action( 'woocommerce_single_product_summary', array( $this, 'display_lowest_price_info' ), 11 );
+		if ( $this->auto_append ) {
+			add_action( 'woocommerce_single_product_summary', array( $this, 'display_lowest_price_info' ), 11 );
+		}
 
 		// Add shortcode for manual placement.
 		add_shortcode( 'multistore_lowest_price', array( $this, 'lowest_price_shortcode' ) );

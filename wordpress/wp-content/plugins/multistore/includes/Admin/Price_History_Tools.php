@@ -27,6 +27,13 @@ class Price_History_Tools {
 	private $price_history;
 
 	/**
+	 * Show lowest price in admin.
+	 *
+	 * @var boolean
+	 */
+	private $display_admin_column = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0.0
@@ -41,8 +48,10 @@ class Price_History_Tools {
 		add_action( 'admin_notices', array( $this, 'display_cleanup_notices' ) );
 
 		// Add admin column to products list.
-		add_filter( 'manage_product_posts_columns', array( $this, 'add_lowest_price_column' ), 20 );
-		add_action( 'manage_product_posts_custom_column', array( $this, 'render_lowest_price_column' ), 10, 2 );
+		if ( $this->display_admin_column ) {
+			add_filter( 'manage_product_posts_columns', array( $this, 'add_lowest_price_column' ), 20 );
+			add_action( 'manage_product_posts_custom_column', array( $this, 'render_lowest_price_column' ), 10, 2 );
+		}
 	}
 
 	/**
@@ -233,11 +242,11 @@ class Price_History_Tools {
 		$table_name = \MultiStore\Plugin\Database\Price_History_Table::get_table_name();
 
 		$stats = array(
-			'total_records'     => $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" ),
-			'products_tracked'  => $wpdb->get_var( "SELECT COUNT(DISTINCT product_id) FROM {$table_name}" ),
-			'oldest_record'     => $wpdb->get_var( "SELECT MIN(recorded_at) FROM {$table_name}" ),
-			'newest_record'     => $wpdb->get_var( "SELECT MAX(recorded_at) FROM {$table_name}" ),
-			'records_last_30d'  => $wpdb->get_var(
+			'total_records'    => $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" ),
+			'products_tracked' => $wpdb->get_var( "SELECT COUNT(DISTINCT product_id) FROM {$table_name}" ),
+			'oldest_record'    => $wpdb->get_var( "SELECT MIN(recorded_at) FROM {$table_name}" ),
+			'newest_record'    => $wpdb->get_var( "SELECT MAX(recorded_at) FROM {$table_name}" ),
+			'records_last_30d' => $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$table_name} WHERE recorded_at >= %s",
 					gmdate( 'Y-m-d H:i:s', strtotime( '-30 days' ) )

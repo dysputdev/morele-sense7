@@ -30,6 +30,18 @@ if ( ! $product_id ) {
 	return;
 }
 
+// Get product.
+$product = wc_get_product( $product_id );
+
+if ( ! $product ) {
+	return;
+}
+
+$is_promotion = $product->is_on_sale();
+if ( ! $is_promotion && ! $show_empty ) {
+	return;
+}
+
 // Get lowest price data using global helper function.
 $lowest_price_data = Price_History_Helpers::get_lowest_price( $product_id );
 
@@ -37,48 +49,38 @@ if ( ( ! $lowest_price_data || ! isset( $lowest_price_data['price'] ) ) && ! $sh
 	return;
 }
 
-$lowest_price    = '';
-$recorded_at     = '';
-$formatted_price = '';
-$is_empty        = true;
-
-if ( isset( $lowest_price_data['price'] ) ) {
-	$is_empty     = false;
-	$lowest_price = (float) $lowest_price_data['price'];
-	$recorded_at  = $lowest_price_data['recorded_at'] ?? '';
-
-	// Format price based on currency format.
-	$formatted_price = format_price( $lowest_price, $currency_format );
-
-	if ( empty( $formatted_price ) ) {
-		return;
-	}
-
-	// Calculate days ago if needed.
-	$days_ago = 0;
-	if ( $show_days_ago && ! empty( $recorded_at ) ) {
-		$days_ago = get_days_ago( $recorded_at );
-	}
-}
+$lowest_price = (float) $lowest_price_data['price'];
+$recorded_at  = $lowest_price_data['recorded_at'] ?? '';
+$days_ago     = 0;
+$days_ago     = ( $show_days_ago && ! empty( $recorded_at ) ) ? get_days_ago( $recorded_at ) : 0;
+$price        = ( ! empty( $lowest_price ) && $is_promotion ) ? format_price( $lowest_price, $currency_format ) : '';
 
 // Get wrapper attributes.
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
-		'class' => 'multistore-block-price-lowest',
+		'class'           => 'multistore-block-price-lowest',
+		'data-product-id' => $product_id,
 	)
 );
 ?>
 
 <div <?php echo wp_kses_data( $wrapper_attributes ); ?>>
 	<span class="multistore-block-price-lowest__wrapper">
-		<?php if ( ! empty( $prefix ) && ! $is_empty ) : ?>
-			<span class="multistore-block-price-lowest__prefix"><?php echo esc_html( $prefix ); ?> </span>
+		<?php if ( ! empty( $prefix ) ) : ?>
+			<span class="multistore-block-price-lowest__prefix">
+				<?php echo esc_html( $prefix ); ?>
+			</span>
 		<?php endif; ?>
-		<span class="multistore-block-price-lowest__value"><?php echo wp_kses_post( $formatted_price ); ?></span>
-		<?php if ( ! empty( $suffix ) && ! $is_empty ) : ?>
-			<span class="multistore-block-price-lowest__suffix"> <?php echo esc_html( $suffix ); ?></span>
+
+		<span class="multistore-block-price-lowest__value"><?php echo wp_kses_post( $price ); ?></span>
+
+		<?php if ( ! empty( $suffix ) ) : ?>
+			<span class="multistore-block-price-lowest__suffix">
+				<?php echo esc_html( $suffix ); ?>
+			</span>
 		<?php endif; ?>
-		<?php if ( $show_days_ago && $days_ago > 0 && ! $is_empty ) : ?>
+
+		<?php if ( $show_days_ago && $days_ago > 0 ) : ?>
 			<span class="multistore-block-price-lowest__days">
 				(<?php
 					printf(

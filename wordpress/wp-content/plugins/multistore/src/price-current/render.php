@@ -20,14 +20,14 @@ $prefix          = isset( $attributes['prefix'] ) ? $attributes['prefix'] : '';
 $suffix          = isset( $attributes['suffix'] ) ? $attributes['suffix'] : '';
 
 // Get postId from context.
-$post_id = $block->context['multistore/postId'] ?? $block->context['postId'] ?? get_the_ID();
+$product_id = $block->context['multistore/postId'] ?? $block->context['postId'] ?? get_the_ID();
 
-if ( ! $post_id ) {
+if ( ! $product_id ) {
 	return;
 }
 
 // Get product.
-$product = wc_get_product( $post_id );
+$product = wc_get_product( $product_id );
 
 if ( ! $product ) {
 	return;
@@ -61,7 +61,9 @@ $wrapper_attributes = get_block_wrapper_attributes(
 		<?php if ( ! empty( $prefix ) ) : ?>
 			<span class="multistore-block-price-current__prefix"><?php echo esc_html( $prefix ); ?> </span>
 		<?php endif; ?>
-		<span class="multistore-block-price-current__value"><?php echo wp_kses_post( $formatted_price ); ?></span>
+		<span class="multistore-block-price-current__value">
+			<?php echo esc_attr( $formatted_price ); ?>
+		</span>
 		<?php if ( ! empty( $suffix ) ) : ?>
 			<span class="multistore-block-price-current__suffix"> <?php echo esc_html( $suffix ); ?></span>
 		<?php endif; ?>

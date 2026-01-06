@@ -16,7 +16,7 @@ namespace MultiStore\Plugin\Block\PriceLowest;
  */
 function format_price( $price, $format = 'default' ): string {
 	if ( ! function_exists( 'wc_price' ) ) {
-		return '';
+		return $price;
 	}
 
 	switch ( $format ) {
@@ -29,9 +29,12 @@ function format_price( $price, $format = 'default' ): string {
 		case 'code':
 			return get_woocommerce_currency();
 
+		case 'formatted':
+			return wc_price( $price );
+
 		case 'default':
 		default:
-			return wc_price( $price );
+			return wp_strip_all_tags( wc_price( $price ) );
 	}
 }
 

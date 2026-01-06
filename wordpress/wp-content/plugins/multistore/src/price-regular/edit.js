@@ -10,7 +10,7 @@ export default function Edit({ attributes, setAttributes, context }) {
 	const { currencyFormat, prefix, suffix } = attributes;
 
 	// Get postId from context (either from parent block or editor)
-	const postId = context['multistore/postId'] || context.postId || (typeof wp !== 'undefined' && wp.data.select('core/editor')?.getCurrentPostId());
+	const productId = context['multistore/postId'] || context.postId || (typeof wp !== 'undefined' && wp.data.select('core/editor')?.getCurrentPostId());
 
 	const blockProps = useBlockProps({
 		className: 'multistore-block-price-regular',

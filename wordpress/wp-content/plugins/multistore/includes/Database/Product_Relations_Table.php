@@ -34,7 +34,7 @@ class Product_Relations_Table implements Table_Interface {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.0.0';
+	const DB_VERSION = '2.0.1';
 
 	/**
 	 * Database version key stored in options.
@@ -72,7 +72,7 @@ class Product_Relations_Table implements Table_Interface {
 	public function maybe_create_table(): void {
 		$installed_version = get_option( self::DB_VERSION_OPTION );
 
-		if ( $installed_version !== self::DB_VERSION ) {
+		if ( self::DB_VERSION !== $installed_version ) {
 			$this->create_table();
 			update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
 		}
@@ -91,19 +91,19 @@ class Product_Relations_Table implements Table_Interface {
 
 		$sql = "CREATE TABLE {$table_name} (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			product_id bigint(20) UNSIGNED NOT NULL,
-			related_product_id bigint(20) UNSIGNED NOT NULL,
+			product_sku varchar(100) NOT NULL,
+			related_product_sku varchar(100) NOT NULL,
 			group_id bigint(20) UNSIGNED NOT NULL,
 			settings_id bigint(20) UNSIGNED DEFAULT NULL,
 			sort_order int(11) NOT NULL DEFAULT 0,
 			PRIMARY KEY  (id),
-			KEY product_id (product_id),
-			KEY related_product_id (related_product_id),
+			KEY product_sku (product_sku),
+			KEY related_product_sku (related_product_sku),
 			KEY group_id (group_id),
 			KEY settings_id (settings_id),
-			KEY product_group (product_id, group_id),
+			KEY product_sku_group (product_sku, group_id),
 			KEY sort_order (sort_order),
-			UNIQUE KEY unique_relation (product_id, related_product_id, group_id)
+			UNIQUE KEY unique_relation_sku (product_sku, related_product_sku, group_id)
 		) {$charset_collate};";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';

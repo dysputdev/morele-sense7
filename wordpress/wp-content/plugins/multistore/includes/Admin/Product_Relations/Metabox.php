@@ -7,20 +7,26 @@
  * @package MultiStore\Plugin
  */
 
-namespace MultiStore\Plugin\Admin;
+namespace MultiStore\Plugin\Admin\Product_Relations;
 
-use MultiStore\Plugin\Database\Product_Relations_Table;
-use MultiStore\Plugin\Database\Product_Relation_Groups_Table;
-use MultiStore\Plugin\Database\Product_Relation_Settings_Table;
+use MultiStore\Plugin\Repository\Relations_Repository;
 
 /**
- * Class Product_Relations_Metabox
+ * Class Metabox
  *
  * Manages product relations metabox in WooCommerce admin
  *
  * @since 1.0.0
  */
-class Product_Relations_Metabox {
+class Metabox {
+
+	/**
+	 * Relations manager instance
+	 *
+	 * @since 1.0.0
+	 * @var Relations_Repository
+	 */
+	private $relations_repository;
 
 	/**
 	 * Constructor
@@ -28,6 +34,8 @@ class Product_Relations_Metabox {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
+		$this->relations_repository = new Relations_Repository();
+
 		// Add metabox to product edit screen.
 		add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
 
@@ -36,11 +44,6 @@ class Product_Relations_Metabox {
 
 		// Enqueue admin scripts and styles.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-		// AJAX handlers.
-		add_action( 'wp_ajax_multistore_create_relation_group', array( $this, 'ajax_create_relation_group' ) );
-		add_action( 'wp_ajax_multistore_update_relation_group', array( $this, 'ajax_update_relation_group' ) );
-		add_action( 'wp_ajax_multistore_search_products', array( $this, 'ajax_search_products' ) );
 	}
 
 	/**
@@ -128,13 +131,13 @@ class Product_Relations_Metabox {
 		wp_nonce_field( 'multistore_product_relations', 'multistore_product_relations_nonce' );
 
 		// Get all groups.
-		$all_groups = $this->get_all_groups();
+		$all_groups = $this->relations_repository->get_all_groups();
 
 		// Get product attributes.
-		$attributes = $this->get_product_attributes();
+		$attributes = $this->relations_repository->get_product_attributes();
 
 		// Get current product relations.
-		$relations = $this->get_product_relations( $post->ID );
+		$relations = $this->relations_repository->get_product_relations( $post->ID );
 
 		// Filter groups with relations for this product.
 		$active_groups = array();
@@ -461,7 +464,7 @@ class Product_Relations_Metabox {
 		}
 
 		// Get settings.
-		$settings         = $this->get_relation_settings( $relation->settings_id ?? 0 );
+		$settings         = $this->relations_repository->get_relation_settings( $relation->settings_id ?? 0 );
 		$custom_image_id  = $settings['custom_image_id'] ?? 0;
 		$custom_label     = $settings['custom_label'] ?? '';
 		$label_source     = $settings['label_source'] ?? 'custom';
@@ -472,10 +475,10 @@ class Product_Relations_Metabox {
 		}
 
 		// Get group info to know which attribute to use.
-		$group = $this->get_group( $relation->group_id );
+		$group = $this->relations_repository->get_group( $relation->group_id );
 		$attribute_values = array();
 		if ( $group && $group->attribute_id ) {
-			$attribute_values = $this->get_product_attribute_values( $relation->related_product_id, $group->attribute_id );
+			$attribute_values = $this->relations_repository->get_product_attribute_values( $relation->related_product_id, $group->attribute_id );
 		}
 
 		?>
@@ -609,151 +612,6 @@ class Product_Relations_Metabox {
 	}
 
 	/**
-	 * Get relation settings
-	 *
-	 * @since 1.0.0
-	 * @param int $settings_id Settings ID.
-	 * @return array
-	 */
-	private function get_relation_settings( int $settings_id ): array {
-		if ( $settings_id === 0 ) {
-			return array();
-		}
-
-		global $wpdb;
-		$table_name = Product_Relation_Settings_Table::get_table_name();
-
-		$settings = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT settings FROM {$table_name} WHERE id = %d",
-				$settings_id
-			)
-		);
-
-		if ( ! $settings ) {
-			return array();
-		}
-
-		$decoded = json_decode( $settings, true );
-		return is_array( $decoded ) ? $decoded : array();
-	}
-
-	/**
-	 * Get single group
-	 *
-	 * @since 1.0.0
-	 * @param int $group_id Group ID.
-	 * @return object|null
-	 */
-	private function get_group( int $group_id ) {
-		global $wpdb;
-		$table_name = Product_Relation_Groups_Table::get_table_name();
-
-		$group = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT * FROM {$table_name} WHERE id = %d",
-				$group_id
-			)
-		);
-
-		return $group;
-	}
-
-	/**
-	 * Get all relation groups
-	 *
-	 * @since 1.0.0
-	 * @return array
-	 */
-	private function get_all_groups(): array {
-		global $wpdb;
-		$table_name = Product_Relation_Groups_Table::get_table_name();
-
-		$groups = $wpdb->get_results(
-			"SELECT * FROM {$table_name} ORDER BY sort_order ASC, name ASC"
-		);
-
-		return $groups ? $groups : array();
-	}
-
-	/**
-	 * Get product attribute values
-	 *
-	 * @since 1.0.0
-	 * @param int $product_id   Product ID.
-	 * @param int $attribute_id Attribute ID.
-	 * @return array
-	 */
-	private function get_product_attribute_values( int $product_id, int $attribute_id ): array {
-		$product = wc_get_product( $product_id );
-		if ( ! $product ) {
-			return array();
-		}
-
-		global $wpdb;
-		$attribute = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_id = %d",
-				$attribute_id
-			)
-		);
-
-		if ( ! $attribute ) {
-			return array();
-		}
-
-		$taxonomy = 'pa_' . $attribute->attribute_name;
-		$terms    = wp_get_post_terms( $product_id, $taxonomy, array( 'fields' => 'names' ) );
-
-		return is_array( $terms ) ? $terms : array();
-	}
-
-	/**
-	 * Get product attributes
-	 *
-	 * @since 1.0.0
-	 * @return array
-	 */
-	private function get_product_attributes(): array {
-		global $wpdb;
-
-		$attributes = $wpdb->get_results(
-			"SELECT * FROM {$wpdb->prefix}woocommerce_attribute_taxonomies ORDER BY attribute_name ASC"
-		);
-
-		return $attributes ? $attributes : array();
-	}
-
-	/**
-	 * Get product relations
-	 *
-	 * @since 1.0.0
-	 * @param int $product_id Product ID.
-	 * @return array
-	 */
-	private function get_product_relations( int $product_id ): array {
-		global $wpdb;
-		$table_name = Product_Relations_Table::get_table_name();
-
-		$relations = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * FROM {$table_name} WHERE product_id = %d ORDER BY sort_order ASC",
-				$product_id
-			)
-		);
-
-		// Group by group_id.
-		$grouped = array();
-		if ( $relations ) {
-			foreach ( $relations as $relation ) {
-				$grouped[ $relation->group_id ][] = $relation;
-			}
-		}
-
-		return $grouped;
-	}
-
-	/**
 	 * Save metabox data
 	 *
 	 * @since 1.0.0
@@ -777,17 +635,16 @@ class Product_Relations_Metabox {
 			return;
 		}
 
-		global $wpdb;
-		$relations_table = Product_Relations_Table::get_table_name();
+		// Get current product SKU.
+		$product_sku = $this->relations_repository->get_product_sku( $post_id );
 
-		// Get current relations from database.
-		$current_relations = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT id, related_product_id, group_id FROM {$relations_table} WHERE product_id = %d",
-				$post_id
-			),
-			OBJECT_K
-		);
+		if ( empty( $product_sku ) ) {
+			// Product must have SKU for relations.
+			return;
+		}
+
+		// Get current relations from database by SKU.
+		$current_relations = $this->relations_repository->get_current_relations_by_sku( $product_sku );
 
 		// Track which relations to keep.
 		$keep_relation_ids = array();
@@ -798,15 +655,23 @@ class Product_Relations_Metabox {
 				$group_id = absint( $group_id );
 
 				foreach ( $relations as $relation_id => $relation_data ) {
-					$relation_id         = absint( $relation_id );
-					$related_product_id  = absint( $relation_data['product_id'] ?? 0 );
-					$settings_id         = absint( $relation_data['settings_id'] ?? 0 );
-					$sort_order          = absint( $relation_data['sort_order'] ?? 0 );
-					$custom_label        = sanitize_text_field( $relation_data['custom_label'] ?? '' );
-					$custom_image_id     = absint( $relation_data['custom_image_id'] ?? 0 );
-					$label_source        = sanitize_text_field( $relation_data['label_source'] ?? 'custom' );
+					$relation_id        = absint( $relation_id );
+					$related_product_id = absint( $relation_data['product_id'] ?? 0 );
+					$settings_id        = absint( $relation_data['settings_id'] ?? 0 );
+					$sort_order         = absint( $relation_data['sort_order'] ?? 0 );
+					$custom_label       = sanitize_text_field( $relation_data['custom_label'] ?? '' );
+					$custom_image_id    = absint( $relation_data['custom_image_id'] ?? 0 );
+					$label_source       = sanitize_text_field( $relation_data['label_source'] ?? 'custom' );
 
 					if ( $related_product_id > 0 ) {
+						// Get related product SKU.
+						$related_product_sku = $this->relations_repository->get_product_sku( $related_product_id );
+
+						// Skip if no SKU.
+						if ( empty( $related_product_sku ) ) {
+							continue;
+						}
+
 						// Prepare settings data.
 						$settings_data = array(
 							'custom_label'    => $custom_label,
@@ -817,29 +682,20 @@ class Product_Relations_Metabox {
 						// Create or update settings.
 						if ( $settings_id > 0 ) {
 							// Update existing settings.
-							$this->update_relation_settings( $settings_id, $settings_data );
+							$this->relations_repository->update_relation_settings( $settings_id, $settings_data );
 						} else {
 							// Create new settings.
-							$settings_id = $this->create_relation_settings( $settings_data );
+							$settings_id = $this->relations_repository->create_relation_settings( $settings_data );
 						}
 
 						// Update existing or insert new.
 						if ( $relation_id > 0 && isset( $current_relations[ $relation_id ] ) ) {
 							// Update existing relation.
-							$wpdb->update(
-								$relations_table,
-								array(
-									'sort_order'  => $sort_order,
-									'settings_id' => $settings_id > 0 ? $settings_id : null,
-								),
-								array( 'id' => $relation_id ),
-								array( '%d', '%d' ),
-								array( '%d' )
-							);
+							$this->relations_repository->update_relation( $relation_id, $sort_order, $settings_id );
 							$keep_relation_ids[] = $relation_id;
 						} else {
-							// Insert new relation (both directions).
-							$this->create_bidirectional_relation( $post_id, $related_product_id, $group_id, $settings_id, $sort_order );
+							// Insert new relation (both directions) using SKU.
+							$this->relations_repository->create_bidirectional_relation( $product_sku, $related_product_sku, $group_id, $settings_id, $sort_order );
 						}
 					}
 				}
@@ -853,345 +709,9 @@ class Product_Relations_Metabox {
 		if ( ! empty( $remove_relation_ids ) ) {
 			foreach ( $remove_relation_ids as $remove_id ) {
 				$relation = $current_relations[ $remove_id ];
-				// Remove both directions.
-				$this->remove_bidirectional_relation( $post_id, $relation->related_product_id, $relation->group_id );
+				// Remove both directions using SKU.
+				$this->relations_repository->remove_bidirectional_relation( $product_sku, $relation->related_product_sku, $relation->group_id );
 			}
 		}
-	}
-
-	/**
-	 * Create relation settings
-	 *
-	 * @since 1.0.0
-	 * @param array $settings_data Settings data.
-	 * @return int Settings ID.
-	 */
-	private function create_relation_settings( array $settings_data ): int {
-		global $wpdb;
-		$settings_table = Product_Relation_Settings_Table::get_table_name();
-
-		$wpdb->insert(
-			$settings_table,
-			array( 'settings' => wp_json_encode( $settings_data ) ),
-			array( '%s' )
-		);
-
-		return $wpdb->insert_id;
-	}
-
-	/**
-	 * Update relation settings
-	 *
-	 * @since 1.0.0
-	 * @param int   $settings_id   Settings ID.
-	 * @param array $settings_data Settings data.
-	 */
-	private function update_relation_settings( int $settings_id, array $settings_data ): void {
-		global $wpdb;
-		$settings_table = Product_Relation_Settings_Table::get_table_name();
-
-		$wpdb->update(
-			$settings_table,
-			array( 'settings' => wp_json_encode( $settings_data ) ),
-			array( 'id' => $settings_id ),
-			array( '%s' ),
-			array( '%d' )
-		);
-	}
-
-	/**
-	 * Create bidirectional relation
-	 *
-	 * @since 1.0.0
-	 * @param int $product_id_1 Product ID 1.
-	 * @param int $product_id_2 Product ID 2.
-	 * @param int $group_id     Group ID.
-	 * @param int $settings_id  Settings ID.
-	 * @param int $sort_order   Sort order.
-	 */
-	private function create_bidirectional_relation( int $product_id_1, int $product_id_2, int $group_id, int $settings_id = 0, int $sort_order = 0 ): void {
-		global $wpdb;
-		$relations_table = Product_Relations_Table::get_table_name();
-
-		// Insert relation: product_id_1 -> product_id_2.
-		$wpdb->insert(
-			$relations_table,
-			array(
-				'product_id'         => $product_id_1,
-				'related_product_id' => $product_id_2,
-				'group_id'           => $group_id,
-				'settings_id'        => $settings_id > 0 ? $settings_id : null,
-				'sort_order'         => $sort_order,
-			),
-			array( '%d', '%d', '%d', '%d', '%d' )
-		);
-
-		// Insert relation: product_id_2 -> product_id_1.
-		$wpdb->insert(
-			$relations_table,
-			array(
-				'product_id'         => $product_id_2,
-				'related_product_id' => $product_id_1,
-				'group_id'           => $group_id,
-				'settings_id'        => $settings_id > 0 ? $settings_id : null,
-				'sort_order'         => $sort_order,
-			),
-			array( '%d', '%d', '%d', '%d', '%d' )
-		);
-	}
-
-	/**
-	 * Remove bidirectional relation
-	 *
-	 * @since 1.0.0
-	 * @param int $product_id_1 Product ID 1.
-	 * @param int $product_id_2 Product ID 2.
-	 * @param int $group_id     Group ID.
-	 */
-	private function remove_bidirectional_relation( int $product_id_1, int $product_id_2, int $group_id ): void {
-		global $wpdb;
-		$relations_table = Product_Relations_Table::get_table_name();
-
-		// Remove both directions.
-		$wpdb->delete(
-			$relations_table,
-			array(
-				'product_id'         => $product_id_1,
-				'related_product_id' => $product_id_2,
-				'group_id'           => $group_id,
-			),
-			array( '%d', '%d', '%d' )
-		);
-
-		$wpdb->delete(
-			$relations_table,
-			array(
-				'product_id'         => $product_id_2,
-				'related_product_id' => $product_id_1,
-				'group_id'           => $group_id,
-			),
-			array( '%d', '%d', '%d' )
-		);
-	}
-
-	/**
-	 * AJAX: Create new relation group
-	 *
-	 * @since 1.0.0
-	 */
-	public function ajax_create_relation_group(): void {
-		check_ajax_referer( 'multistore_product_relations', 'nonce' );
-
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Brak uprawnień', 'multistore' ) ) );
-		}
-
-		$name                   = sanitize_text_field( $_POST['name'] ?? '' );
-		$attribute_id           = absint( $_POST['attribute_id'] ?? 0 );
-		$display_on_list        = absint( $_POST['display_on_list'] ?? 0 );
-		$display_style_single   = sanitize_text_field( $_POST['display_style_single'] ?? 'image_product' );
-		$display_style_archive  = sanitize_text_field( $_POST['display_style_archive'] ?? 'image_product' );
-		$sort_order             = absint( $_POST['sort_order'] ?? 0 );
-
-		if ( empty( $name ) ) {
-			wp_send_json_error( array( 'message' => __( 'Nazwa grupy jest wymagana', 'multistore' ) ) );
-		}
-
-		global $wpdb;
-		$table_name = Product_Relation_Groups_Table::get_table_name();
-
-		$data    = array(
-			'name'                   => $name,
-			'display_on_list'        => $display_on_list,
-			'display_style_single'   => $display_style_single,
-			'display_style_archive'  => $display_style_archive,
-			'sort_order'             => $sort_order,
-		);
-		$formats = array( '%s', '%d', '%s', '%s', '%d' );
-
-		// Add attribute_id if provided.
-		if ( $attribute_id > 0 ) {
-			$data['attribute_id']    = $attribute_id;
-			$formats[]               = '%d';
-		}
-
-		$result = $wpdb->insert( $table_name, $data, $formats );
-
-		if ( $result ) {
-			wp_send_json_success(
-				array(
-					'group_id' => $wpdb->insert_id,
-					'message'  => __( 'Grupa została utworzona', 'multistore' ),
-				)
-			);
-		} else {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Błąd podczas tworzenia grupy', 'multistore' ),
-					'error'   => $wpdb->last_error,
-				)
-			);
-		}
-	}
-
-	/**
-	 * AJAX: Update relation group
-	 *
-	 * @since 1.0.0
-	 */
-	public function ajax_update_relation_group(): void {
-		check_ajax_referer( 'multistore_product_relations', 'nonce' );
-
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Brak uprawnień', 'multistore' ) ) );
-		}
-
-		$group_id               = absint( $_POST['group_id'] ?? 0 );
-		$name                   = sanitize_text_field( $_POST['name'] ?? '' );
-		$attribute_id           = absint( $_POST['attribute_id'] ?? 0 );
-		$display_on_list        = absint( $_POST['display_on_list'] ?? 0 );
-		$display_style_single   = sanitize_text_field( $_POST['display_style_single'] ?? 'image_product' );
-		$display_style_archive  = sanitize_text_field( $_POST['display_style_archive'] ?? 'image_product' );
-		$sort_order             = absint( $_POST['sort_order'] ?? 0 );
-
-		if ( $group_id === 0 ) {
-			wp_send_json_error( array( 'message' => __( 'Nieprawidłowe ID grupy', 'multistore' ) ) );
-		}
-
-		if ( empty( $name ) ) {
-			wp_send_json_error( array( 'message' => __( 'Nazwa grupy jest wymagana', 'multistore' ) ) );
-		}
-
-		global $wpdb;
-		$table_name = Product_Relation_Groups_Table::get_table_name();
-
-		$data = array(
-			'name'                   => $name,
-			'display_on_list'        => $display_on_list,
-			'display_style_single'   => $display_style_single,
-			'display_style_archive'  => $display_style_archive,
-			'sort_order'             => $sort_order,
-		);
-
-		$formats = array( '%s', '%d', '%s', '%s', '%d' );
-
-		// Add attribute_id if provided.
-		if ( $attribute_id > 0 ) {
-			$data['attribute_id'] = $attribute_id;
-			$formats[]            = '%d';
-		} else {
-			$data['attribute_id'] = null;
-			$formats[]            = '%d';
-		}
-
-		$result = $wpdb->update(
-			$table_name,
-			$data,
-			array( 'id' => $group_id ),
-			$formats,
-			array( '%d' )
-		);
-
-		if ( false !== $result ) {
-			wp_send_json_success(
-				array(
-					'message' => __( 'Grupa została zaktualizowana', 'multistore' ),
-				)
-			);
-		} else {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Błąd podczas aktualizacji grupy', 'multistore' ),
-					'error'   => $wpdb->last_error,
-				)
-			);
-		}
-	}
-
-	/**
-	 * Verify AJAX nonce and capabilities
-	 *
-	 * @since 1.0.0
-	 * @return bool True if valid, false otherwise.
-	 */
-	private function verify_ajax_request(): bool {
-		// Check if nonce is set.
-		if ( ! isset( $_POST['nonce'] ) ) {
-			return false;
-		}
-
-		// Verify nonce - use wp_unslash, don't sanitize before verification.
-		$nonce = wp_unslash( $_POST['nonce'] );
-		if ( ! wp_verify_nonce( $nonce, 'multistore_product_relations' ) ) {
-			return false;
-		}
-
-		// Check user capabilities.
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * AJAX: Search products
-	 *
-	 * @since 1.0.0
-	 */
-	public function ajax_search_products(): void {
-		if ( ! $this->verify_ajax_request() ) {
-			wp_send_json_error( array( 'message' => __( 'Security check failed', 'multistore' ) ) );
-			return;
-		}
-
-		$search_term = isset( $_POST['search'] ) ? sanitize_text_field( $_POST['search'] ) : '';
-		$exclude_id  = isset( $_POST['exclude_id'] ) ? absint( $_POST['exclude_id'] ) : 0;
-
-		if ( empty( $search_term ) ) {
-			wp_send_json_error( array( 'message' => __( 'Search term is required', 'multistore' ) ) );
-			return;
-		}
-
-		$args = array(
-			'post_type'      => 'product',
-			'post_status'    => 'publish',
-			's'              => $search_term,
-			'posts_per_page' => 10,
-			'fields'         => 'ids',
-		);
-
-		if ( $exclude_id > 0 ) {
-			$args['post__not_in'] = array( $exclude_id );
-		}
-
-		$query = new \WP_Query( $args );
-
-		if ( ! $query->have_posts() ) {
-			wp_send_json_success( array( 'products' => array() ) );
-			return;
-		}
-
-		$products = array();
-
-		foreach ( $query->posts as $product_id ) {
-			$product = wc_get_product( $product_id );
-
-			if ( ! $product ) {
-				continue;
-			}
-
-			$products[] = array(
-				'id'        => $product_id,
-				'name'      => $product->get_name(),
-				'sku'       => $product->get_sku(),
-				'price'     => $product->get_price_html(),
-				'permalink' => get_permalink( $product_id ),
-				'image'     => $product->get_image( 'thumbnail' ),
-				'image_url' => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
-			);
-		}
-
-		wp_send_json_success( array( 'products' => $products ) );
 	}
 }

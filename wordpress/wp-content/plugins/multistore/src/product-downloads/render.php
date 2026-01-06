@@ -15,18 +15,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Get attributes.
-$show_title = isset( $attributes['showTitle'] ) ? $attributes['showTitle'] : true;
-$title      = isset( $attributes['title'] ) ? $attributes['title'] : 'Do pobrania';
+$show_title  = isset( $attributes['showTitle'] ) ? $attributes['showTitle'] : true;
+$block_title = isset( $attributes['title'] ) ? $attributes['title'] : 'Do pobrania';
 
 // Get postId from context.
-$post_id = $block->context['multistore/postId'] ?? $block->context['postId'] ?? get_the_ID();
+$product_id = $block->context['multistore/postId'] ?? $block->context['postId'] ?? get_the_ID();
 
-if ( ! $post_id ) {
+if ( ! $product_id ) {
 	return;
 }
 
 // Get downloads data.
-$downloads = get_product_downloads( $post_id );
+$downloads = get_product_downloads( $product_id );
 
 if ( empty( $downloads ) ) {
 	return;
@@ -41,9 +41,9 @@ $wrapper_attributes = get_block_wrapper_attributes(
 ?>
 
 <div <?php echo wp_kses_data( $wrapper_attributes ); ?>>
-	<?php if ( $show_title && ! empty( $title ) ) : ?>
+	<?php if ( $show_title && ! empty( $block_title ) ) : ?>
 		<h2 class="multistore-block-product-downloads__title">
-			<?php echo esc_html( $title ); ?>
+			<?php echo esc_html( $block_title ); ?>
 		</h2>
 	<?php endif; ?>
 
@@ -51,10 +51,10 @@ $wrapper_attributes = get_block_wrapper_attributes(
 		<?php foreach ( $downloads as $download ) : ?>
 			<li class="multistore-block-product-downloads__item">
 				<a href="<?php echo esc_url( $download['url'] ); ?>"
-				   class="multistore-block-product-downloads__link"
-				   target="_blank"
-				   rel="noopener noreferrer"
-				   download>
+					class="multistore-block-product-downloads__link"
+					target="_blank"
+					rel="noopener noreferrer"
+					download>
 					<span class="multistore-block-product-downloads__icon">
 						<?php if ( ! empty( $download['icon'] ) ) : ?>
 							<img src="<?php echo esc_url( $download['icon'] ); ?>" alt="">

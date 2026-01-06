@@ -19,14 +19,14 @@ $show_title = isset( $attributes['showTitle'] ) ? $attributes['showTitle'] : tru
 $title      = isset( $attributes['title'] ) ? $attributes['title'] : 'Specyfikacja';
 
 // Get postId from context.
-$post_id = $block->context['multistore/postId'] ?? $block->context['postId'] ?? get_the_ID();
+$product_id = $block->context['multistore/postId'] ?? $block->context['postId'] ?? get_the_ID();
 
-if ( ! $post_id ) {
+if ( ! $product_id ) {
 	return;
 }
 
 // Get specifications data.
-$specifications = get_product_specifications( $post_id );
+$specifications = get_product_specifications( $product_id );
 
 if ( empty( $specifications ) ) {
 	return;

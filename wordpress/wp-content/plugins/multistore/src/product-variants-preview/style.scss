@@ -1,0 +1,60 @@
+.multistore-block-product-variants-preview {
+	position: relative;
+	width: 100%;
+
+	display: flex;
+	flex-direction: column;
+
+	&__label {
+		margin: 0;
+	}
+
+	&__group {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&__options {
+		display: flex;
+		flex-direction: row;
+		align-items: stretch;
+		justify-content: center;
+
+		.multistore-block-product-variants-preview__option--image_custom.is-active img,
+		.multistore-block-product-variants-preview__option--image_product.is-active img,
+		.multistore-block-product-variants-preview__option--label_only.is-active  {
+			border-color: var(--wp--preset--color--primary);
+		}
+	}
+
+	&__option {
+		cursor: pointer;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-end;
+		
+		&--image_custom,
+		&--image_product {
+			padding: 1rem;
+			img {
+				border: 1px solid transparent;
+			}
+		}
+
+		&--label_only {
+			padding: 0.25rem 0.875rem;
+			border: 1px solid transparent;
+		}
+
+	}
+
+	&__option-image {
+		aspect-ratio: 1 / 1;
+		object-fit: cover;
+		width: 3rem;
+		border: 1px solid transparent;
+	}
+}

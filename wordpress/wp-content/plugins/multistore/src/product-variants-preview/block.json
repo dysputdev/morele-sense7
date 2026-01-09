@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/product-variants-preview",
+	"version": "1.0.0",
+	"title": "Podgląd wariantów produktu",
+	"category": "woocommerce",
+	"description": "Wyświetla podgląd wariantów produktu z możliwością podmiany zdjęcia i ceny po najechaniu",
+	"attributes": {},
+	"usesContext": [ "postId", "multistore/postId" ],
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

@@ -10,6 +10,7 @@
 namespace MultiStore\Plugin\Admin\Product_Relations;
 
 use MultiStore\Plugin\Repository\Relations_Repository;
+use MultiStore\Plugin\Utils\Debug;
 
 /**
  * Class Metabox
@@ -510,9 +511,10 @@ class Metabox {
 						<div class="multistore-relation-item-meta">
 							<?php
 							printf(
-								/* translators: %s: product ID */
-								esc_html__( 'ID: %s', 'multistore' ),
-								esc_html( $relation->related_product_id )
+								/* translators: 1 %s: product ID; 2 %s: product SKU */
+								esc_html__( 'ID: %1$s (SKU: %2$s)', 'multistore' ),
+								esc_html( $relation->related_product_id ),
+								esc_attr( $product->get_sku() )
 							);
 							?>
 						</div>
@@ -644,7 +646,7 @@ class Metabox {
 		}
 
 		// Get current relations from database by SKU.
-		$current_relations = $this->relations_repository->get_current_relations_by_sku( $product_sku );
+		$current_relations = $this->relations_repository->get_relations_by_sku( $product_sku );
 
 		// Track which relations to keep.
 		$keep_relation_ids = array();
@@ -655,63 +657,114 @@ class Metabox {
 				$group_id = absint( $group_id );
 
 				foreach ( $relations as $relation_id => $relation_data ) {
-					$relation_id        = absint( $relation_id );
-					$related_product_id = absint( $relation_data['product_id'] ?? 0 );
-					$settings_id        = absint( $relation_data['settings_id'] ?? 0 );
-					$sort_order         = absint( $relation_data['sort_order'] ?? 0 );
-					$custom_label       = sanitize_text_field( $relation_data['custom_label'] ?? '' );
-					$custom_image_id    = absint( $relation_data['custom_image_id'] ?? 0 );
-					$label_source       = sanitize_text_field( $relation_data['label_source'] ?? 'custom' );
+					// Sanitize data.
+					$relation_id         = absint( $relation_id );
+					$related_product_id  = absint( $relation_data['product_id'] ?? 0 );
+					$settings_id         = absint( $relation_data['settings_id'] ?? 0 );
+					$sort_order          = absint( $relation_data['sort_order'] ?? 0 );
+					$label_source        = sanitize_text_field( $relation_data['label_source'] ?? 'custom' );
+					$custom_label        = sanitize_text_field( $relation_data['custom_label'] ?? '' );
+					$custom_label_single = sanitize_text_field( $relation_data['custom_label_single'] ?? '' );
+					$custom_image_id     = absint( $relation_data['custom_image_id'] ?? 0 );
 
-					if ( $related_product_id > 0 ) {
-						// Get related product SKU.
-						$related_product_sku = $this->relations_repository->get_product_sku( $related_product_id );
+					if ( 0 === $related_product_id ) {
+						continue;
+					}
+					// Get related product SKU.
+					$related_product_sku = $this->relations_repository->get_product_sku( $related_product_id );
 
-						// Skip if no SKU.
-						if ( empty( $related_product_sku ) ) {
-							continue;
-						}
+					// Skip if no SKU.
+					if ( empty( $related_product_sku ) ) {
+						continue;
+					}
 
-						// Prepare settings data.
-						$settings_data = array(
-							'custom_label'    => $custom_label,
-							'custom_image_id' => $custom_image_id,
-							'label_source'    => $label_source,
-						);
+					$existing_related_relations = $this->relations_repository->get_relations_by_related_sku( $related_product_sku, $group_id );
 
-						// Create or update settings.
-						if ( $settings_id > 0 ) {
-							// Update existing settings.
-							$this->relations_repository->update_relation_settings( $settings_id, $settings_data );
-						} else {
-							// Create new settings.
+					// Prepare settings data.
+					$settings_data = array(
+						'custom_label'        => $custom_label,
+						'custom_label_single' => $custom_label_single,
+						'custom_image_id'     => $custom_image_id,
+						'label_source'        => $label_source,
+					);
+
+					error_log( '------' );
+					error_log( 'zapis relacji ' . $product_sku . '-' . $related_product_sku );
+					error_log( print_r( array( 'current' => $current_relations, 'related' => $existing_related_relations ) , true ) );
+
+					// Create or update settings.
+					if ( $settings_id ) {
+						// Update existing settings.
+						error_log( 'relacja posiada juz ustawienia - aktualizacja' );
+						$this->relations_repository->update_relation_settings( $settings_id, $settings_data );
+					} else {
+						// Create new settings but first check if it already exists in any related product.
+						if ( empty( $existing_related_relations ) ) {
+							error_log( 'tworzona relacja nie posiada ustawien - tworzenie nowe ustawienia' );
 							$settings_id = $this->relations_repository->create_relation_settings( $settings_data );
+						} else {
+							// wszystkie relacje z tym produktem powinny miec ten sam settings.
+							$related_relation = current( $existing_related_relations );
+							$settings_id      = $related_relation->settings_id;
+							$this->relations_repository->update_relation_settings( $settings_id, $settings_data );
+							error_log( 'tworzona relacja nie posiada ustawien - znaleziono ustawienia z innej relacji do tego produktu ' . $settings_id );
+						}
+					}
+
+					// Update existing or insert new.
+					if ( $relation_id && isset( $current_relations[ $relation_id ] ) ) {
+						// Update existing relation.
+						error_log( 'relacja istnieje - aktualizacja' );
+						$this->relations_repository->update_relation( $relation_id, $sort_order, $settings_id );
+						// $keep_relation_ids[] = $relation_id;
+					} else {
+						// Insert new relation (both directions) using SKU. first check if relation already exists
+						$existing_relation = $this->relations_repository->get_relation( $product_sku, $related_product_sku, $group_id );
+						error_log( 'sprawdzamy czy relacja juz istnieje ' . print_r( $existing_relation, true ) );
+
+						if ( empty( $existing_relation ) ) {
+							$this->relations_repository->create_relation( $product_sku, $related_product_sku, $group_id, $settings_id, $sort_order );
+							error_log( 'relacja nie istnieje - tworzenie nowej' );
+						}
+					}
+
+					// na tym etapie relacja istnieje - dodajemy relacje w druga strone.
+					$reversed_relation = $this->relations_repository->get_relation( $related_product_sku, $product_sku, $group_id );
+					error_log ( 'sprawdzamy czy relacja juz istnieje w druga strone ' . $related_product_sku . '-' . $product_sku );
+					if ( empty( $reversed_relation ) ) {
+						// sprawdzamy czy ktorys z relacji kieruje juz do produktu aktualnego, zeby pobrac settings.
+						$existing_reverse_relations = $this->relations_repository->get_relations_by_related_sku( $product_sku, $group_id );
+						error_log ( 'relacja odwrotna nie istnieje' );
+
+						if ( empty( $existing_reverse_relations ) ) {
+							error_log( 'tworzona relacja odwrotna nie posiada ustawien - tworzenie nowe ustawienia' );
+							$settings_id = $this->relations_repository->create_relation_settings( $settings_data );
+						} else {
+							$existing_relation = current( $existing_reverse_relations );
+							$settings_id       = $existing_relation->settings_id;
+							$sort_order        = $existing_relation->sort_order;
+							error_log( 'tworzona relacja odwrotna nie posiada ustawien - znaleziono ustawienia z innej relacji do tego produktu ' . print_r( $existing_related_relations ) );
 						}
 
-						// Update existing or insert new.
-						if ( $relation_id > 0 && isset( $current_relations[ $relation_id ] ) ) {
-							// Update existing relation.
-							$this->relations_repository->update_relation( $relation_id, $sort_order, $settings_id );
-							$keep_relation_ids[] = $relation_id;
-						} else {
-							// Insert new relation (both directions) using SKU.
-							$this->relations_repository->create_bidirectional_relation( $product_sku, $related_product_sku, $group_id, $settings_id, $sort_order );
-						}
+						$this->relations_repository->create_relation( $related_product_sku, $product_sku, $group_id, $settings_id, $sort_order );
+					} else {
+						error_log ( 'relacja odwrotna juz istnieje' );
+						$keep_relation_ids[] = $reversed_relation->id;
 					}
 				}
 			}
 		}
 
 		// Remove relations that are not in the submitted data.
-		$current_relation_ids = array_keys( $current_relations );
-		$remove_relation_ids  = array_diff( $current_relation_ids, $keep_relation_ids );
+		// $current_relation_ids = array_keys( $current_relations );
+		// $remove_relation_ids  = array_diff( $current_relation_ids, $keep_relation_ids );
 
-		if ( ! empty( $remove_relation_ids ) ) {
-			foreach ( $remove_relation_ids as $remove_id ) {
-				$relation = $current_relations[ $remove_id ];
-				// Remove both directions using SKU.
-				$this->relations_repository->remove_bidirectional_relation( $product_sku, $relation->related_product_sku, $relation->group_id );
-			}
-		}
+		// if ( ! empty( $remove_relation_ids ) ) {
+		// 	foreach ( $remove_relation_ids as $remove_id ) {
+		// 		$relation = $current_relations[ $remove_id ];
+		// 		// Remove both directions using SKU.
+		// 		$this->relations_repository->remove_bidirectional_relation( $product_sku, $relation->related_product_sku, $relation->group_id );
+		// 	}
+		// }
 	}
 }

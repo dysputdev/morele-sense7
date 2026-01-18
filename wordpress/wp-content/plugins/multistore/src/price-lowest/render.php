@@ -10,6 +10,7 @@
 
 namespace MultiStore\Plugin\Block\PriceLowest;
 
+use MultiStore\Plugin\Utils\Helpers;
 use MultiStore\Plugin\Utils\Price_History_Helpers;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -52,8 +53,8 @@ if ( ( ! $lowest_price_data || ! isset( $lowest_price_data['price'] ) ) && ! $sh
 $lowest_price = (float) $lowest_price_data['price'];
 $recorded_at  = $lowest_price_data['recorded_at'] ?? '';
 $days_ago     = 0;
-$days_ago     = ( $show_days_ago && ! empty( $recorded_at ) ) ? get_days_ago( $recorded_at ) : 0;
-$price        = ( ! empty( $lowest_price ) && $is_promotion ) ? format_price( $lowest_price, $currency_format ) : '';
+$days_ago     = ( $show_days_ago && ! empty( $recorded_at ) ) ? Helpers::get_days_ago( $recorded_at ) : 0;
+$price        = ( ! empty( $lowest_price ) && $is_promotion ) ? Helpers::format_price( $lowest_price, $currency_format ) : '';
 
 // Get wrapper attributes.
 $wrapper_attributes = get_block_wrapper_attributes(

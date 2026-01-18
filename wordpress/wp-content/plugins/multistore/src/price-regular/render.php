@@ -10,6 +10,8 @@
 
 namespace MultiStore\Plugin\Block\PriceRegular;
 
+use MultiStore\Plugin\Utils\Helpers;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -52,7 +54,7 @@ if ( $is_promotion ) {
 	$css_class[] = 'multistore-block-price-regular--has-promotion';
 }
 
-$price = ( ! empty( $regular_price ) && $is_promotion ) ? format_price( $regular_price, $currency_format ) : '';
+$price = ( ! empty( $regular_price ) && $is_promotion ) ? Helpers::format_price( $regular_price, $currency_format ) : '';
 
 // Get wrapper attributes.
 $wrapper_attributes = get_block_wrapper_attributes(

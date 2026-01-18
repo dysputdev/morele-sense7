@@ -1,4 +1,5 @@
 .multistore-block-price-lowest {
+	min-height: 1lh;
 	&:has(.multistore-block-price-lowest__value:empty) {
 		visibility: hidden;
 	}
@@ -18,5 +19,4 @@
 	&__value {
 		font-weight: inherit;
 	}
-	
 }

@@ -10,6 +10,8 @@
 
 namespace MultiStore\Plugin\Block\PriceCurrent;
 
+use MultiStore\Plugin\Utils\Helpers;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -42,7 +44,7 @@ if ( empty( $current_price ) ) {
 }
 
 // Format price based on currency format.
-$formatted_price = format_price( $current_price, $currency_format );
+$formatted_price = Helpers::format_price( $current_price, $currency_format );
 
 if ( empty( $formatted_price ) ) {
 	return;

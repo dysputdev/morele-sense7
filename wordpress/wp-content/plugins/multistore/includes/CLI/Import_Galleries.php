@@ -2,7 +2,6 @@
 
 namespace MultiStore\Plugin\CLI;
 
-use WP;
 use WP_CLI;
 
 class Import_Galleries {
@@ -17,6 +16,7 @@ class Import_Galleries {
 		$args = array(
 			'post_type'      => 'product',
 			'posts_per_page' => -1,
+			'lang'           => 'pl',
 			'fields'         => 'ids',
 			'numberposts'    => -1,
 		);

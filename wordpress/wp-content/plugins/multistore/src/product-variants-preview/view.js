@@ -56,13 +56,38 @@
 
 		handleHoverIn( event ) {
 			// remove all .is-active classes from this group
+			let _self = this;
+
 			const group = event.target.closest( className + '__group' );
 			const options = group.querySelectorAll( className + '__option' );
 			options.forEach( ( option ) => option.classList.remove( 'is-active' ) );
 
-			// add .is-active class to hovered option
-			event.target.classList.add( 'is-active' );
-			const productId = event.target.dataset.productId;
+			// get matrix data
+			const matrix = event.target.dataset.related;
+			const matrixData = JSON.parse( matrix );
+			
+			// get all groups.
+			const groups = _self.container.querySelectorAll( className + '__group' );
+			groups.forEach( ( group, index ) => {
+				// get group id from dataset
+				const groupId = group.dataset.groupId;
+				// hide all options other then that in matrixData[groupId]
+				const options = group.querySelectorAll( className + '__option' );
+				options.forEach( ( option ) => {
+					const optionId = option.dataset.productSku;
+					if ( matrixData[groupId].indexOf( optionId ) === -1 ) {
+						option.classList.add( 'is-hidden' );
+					} else {
+						option.classList.remove( 'is-hidden' );
+					}
+
+					if ( optionId === event.target.dataset.productSku ) {
+						option.classList.add( 'is-active' );
+						
+						_self.updateData( option );
+					}
+				})
+			})
 		}
 
 		// restore default variant when mouse leaves product item.
@@ -72,6 +97,65 @@
 
 		handleClick( event ) {
 			console.log( 'click option' );
+		}
+
+		updateData( option ) {
+			const productDetails = JSON.parse( option.dataset.productDetails );
+
+			// update product image
+			const productImageBlock = this.productItem.querySelector( '.wp-block-post-featured-image' );
+			if ( productImageBlock && productDetails.image ) {
+				const productImage = productImageBlock.querySelector( 'img' );
+				const productLink = productImageBlock.querySelector( 'a' )
+
+				if ( productImage ) {
+					// productDetails.image is escaped HTML string, need to extract src from it
+					const tempDiv = document.createElement( 'div' );
+					tempDiv.innerHTML = productDetails.image;
+					const newImage = tempDiv.querySelector( 'img' );
+					if ( newImage ) {
+						productImage.src = newImage.src;
+						productImage.srcset = newImage.srcset;
+						productImage.alt = newImage.alt;
+					}
+				}
+
+				if ( productLink ) {
+					productLink.href = productDetails.url;
+				}
+			}
+
+			// update product title
+			const titleBlock = this.productItem.querySelector( '.woocommerce-loop-product__title, .entry-title' );
+			if ( titleBlock && productDetails.title ) {
+				titleBlock.textContent = productDetails.title;
+			}
+
+			const simplyfiedTitleBlock = this.productItem.querySelector( '.multistore-block-simplified-product-name' );
+			if ( simplyfiedTitleBlock && productDetails.simple_title ) {
+				const simplyfiedTitleBlockLink = simplyfiedTitleBlock.querySelector( 'a' );
+				if ( simplyfiedTitleBlockLink ) {
+					simplyfiedTitleBlockLink.href = productDetails.url;
+					simplyfiedTitleBlockLink.textContent = productDetails.simple_title;
+				} else {
+					simplyfiedTitleBlock.textContent = productDetails.simple_title;
+				}
+			}
+
+			const currentPriceBlock = this.productItem.querySelector( '.multistore-block-price-current .multistore-block-price-current__value' );
+			if ( currentPriceBlock && productDetails.current_price ) {
+				currentPriceBlock.textContent = productDetails.current_price;
+			}
+
+			const regularPriceBlock = this.productItem.querySelector( '.multistore-block-price-regular .multistore-block-price-regular__value' );
+			if ( regularPriceBlock && productDetails.regular_price ) {
+				regularPriceBlock.textContent = productDetails.regular_price;
+			}
+
+			const lowestPriceBlock = this.productItem.querySelector( '.multistore-block-price-lowest .multistore-block-price-lowest__value' );
+			if ( lowestPriceBlock && productDetails.lowest_price ) {
+				lowestPriceBlock.textContent = productDetails.lowest_price;
+			}
 		}
 	}
 

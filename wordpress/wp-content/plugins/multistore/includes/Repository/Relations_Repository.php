@@ -23,6 +23,32 @@ use MultiStore\Plugin\Database\Product_Relation_Settings_Table;
 class Relations_Repository {
 
 	/**
+	 * In-memory cache for batch operations
+	 *
+	 * @var array
+	 */
+	private static $cache = array(
+		'sku_to_id'         => array(),
+		'id_to_sku'         => array(),
+		'product_relations' => array(),
+		'batch_relations'   => array(),
+	);
+
+	/**
+	 * Clear cache
+	 *
+	 * @since 2.0.0
+	 */
+	public static function clear_cache(): void {
+		self::$cache = array(
+			'sku_to_id'         => array(),
+			'id_to_sku'         => array(),
+			'product_relations' => array(),
+			'batch_relations'   => array(),
+		);
+	}
+
+	/**
 	 * Get product SKU by ID
 	 *
 	 * @since 2.0.0
@@ -30,8 +56,19 @@ class Relations_Repository {
 	 * @return string
 	 */
 	public function get_product_sku( int $product_id ): string {
+
+		// Check cache first.
+		if ( isset( self::$cache['id_to_sku'][ $product_id ] ) ) {
+			return self::$cache['id_to_sku'][ $product_id ];
+		}
+
 		$product = wc_get_product( $product_id );
-		return $product ? $product->get_sku() : '';
+		$sku = $product ? $product->get_sku() : '';
+
+		// Cache the result.
+		self::$cache['id_to_sku'][ $product_id ] = $sku;
+
+		return $sku;
 	}
 
 	/**
@@ -46,17 +83,28 @@ class Relations_Repository {
 			return 0;
 		}
 
-		global $wpdb;
-		$product_id = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT post_id FROM {$wpdb->postmeta}
-				WHERE meta_key = '_sku' AND meta_value = %s
-				LIMIT 1",
-				$sku
-			)
-		);
+		// Check cache first.
+		if ( isset( self::$cache['sku_to_id'][ $sku ] ) ) {
+			return self::$cache['sku_to_id'][ $sku ];
+		}
 
-		return $product_id ? (int) $product_id : 0;
+		// global $wpdb;
+		// $product_id = $wpdb->get_var(
+		// 	$wpdb->prepare(
+		// 		"SELECT post_id FROM {$wpdb->postmeta}
+		// 		WHERE meta_key = '_sku' AND meta_value = %s
+		// 		LIMIT 1",
+		// 		$sku
+		// 	)
+		// );
+
+		$product_id = wc_get_product_id_by_sku( $sku );
+		$product_id = $product_id ? (int) $product_id : 0;
+
+		// Cache the result.
+		self::$cache['sku_to_id'][ $sku ] = $product_id;
+
+		return $product_id;
 	}
 
 	/**
@@ -67,6 +115,11 @@ class Relations_Repository {
 	 * @return array
 	 */
 	public function get_product_relations( int $product_id ): array {
+
+		if ( isset( self::$cache['product_relations'][ $product_id ] ) ) {
+			return self::$cache['product_relations'][ $product_id ];
+		}
+
 		$product_sku = $this->get_product_sku( $product_id );
 
 		if ( empty( $product_sku ) ) {
@@ -98,6 +151,9 @@ class Relations_Repository {
 				$grouped[ $relation->group_id ][] = $relation;
 			}
 		}
+
+		// Cache the result.
+		self::$cache['product_relations'][ $product_id ] = $grouped;
 
 		return $grouped;
 	}
@@ -354,6 +410,33 @@ class Relations_Repository {
 		);
 	}
 
+	public function get_all_related_products_sku( $product_sku ) {
+		global $wpdb;
+
+		$relations_table = Product_Relations_Table::get_table_name();
+
+		$cache_key = md5( 'all_related_products_sku_' . $product_sku );
+		// wp_cache_get( $cache_key, 'multistore_relations' );
+
+		$relations = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT related_product_sku
+				FROM {$relations_table}
+				WHERE product_sku IN (
+					SELECT related_product_sku
+					FROM {$relations_table}
+					WHERE product_sku LIKE %s
+				)
+				GROUP BY related_product_sku",
+				$product_sku
+			),
+		);
+
+		// wp_cache_set( $cache_key, $relations, 'multistore_relations' );
+
+		return $relations ? $relations : array();
+	}
+
 	/**
 	 * Get current relations from database by SKU
 	 *
@@ -367,7 +450,7 @@ class Relations_Repository {
 
 		$relations = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT id, product_sku, related_product_sku, group_id, settings_id FROM {$relations_table} WHERE product_sku = %s",
+				"SELECT * FROM {$relations_table} WHERE product_sku = %s ORDER BY sort_order ASC",
 				$product_sku
 			),
 			OBJECT_K
@@ -429,6 +512,49 @@ class Relations_Repository {
 		return false !== $result;
 	}
 
+	public function get_product_relations_by_skus( array $product_skus ): array {
+		if ( empty( $product_skus ) ) {
+			return array();
+		}
+
+		global $wpdb;
+
+		$relations_table = Product_Relations_Table::get_table_name();
+		$groups_table    = Product_Relation_Groups_Table::get_table_name();
+		$settings_table  = Product_Relation_Settings_Table::get_table_name();
+
+		$placeholders = implode( ',', array_fill( 0, count( $product_skus ), '%s' ) );
+
+		$query = $wpdb->prepare(
+			"SELECT
+				r.id as relation_id,
+				r.product_sku,
+				r.related_product_sku,
+				r.group_id,
+				r.settings_id,
+				r.sort_order,
+				g.name as group_name,
+				g.attribute_id,
+				g.display_style_single,
+				g.display_style_archive,
+				s.settings
+			FROM {$relations_table} r
+			INNER JOIN {$groups_table} g ON r.group_id = g.id
+			LEFT JOIN {$settings_table} s ON r.settings_id = s.id
+			WHERE r.product_sku IN ({$placeholders})
+			ORDER BY g.sort_order ASC, r.sort_order ASC",
+			$product_skus
+		);
+
+		$results = $wpdb->get_results( $query );
+
+		if ( ! $results ) {
+			return array();
+		}
+
+		return $results;
+	}
+
 	/**
 	 * Get product relations filtered by context (single or archive)
 	 *
@@ -461,6 +587,7 @@ class Relations_Repository {
 		$query = $wpdb->prepare(
 			"SELECT
 				r.id as relation_id,
+				r.product_sku,
 				r.related_product_sku,
 				r.group_id,
 				r.settings_id,
@@ -479,6 +606,23 @@ class Relations_Repository {
 		);
 
 		$results = $wpdb->get_results( $query );
+
+		if ( ! $results ) {
+			return array();
+		}
+
+		return $results;
+	}
+	/**
+	 * Get product relations filtered by context (single or archive)
+	 *
+	 * @since 1.0.0
+	 * @param int    $product_id Product ID.
+	 * @param string $context    Context: 'single' or 'archive'.
+	 * @return array Grouped relations data.
+	 */
+	public function get_grouped_product_relations_by_context( int $product_id, string $context = 'single' ): array {
+		$results = $this->get_product_relations_by_context( $product_id, $context );
 
 		if ( ! $results ) {
 			return array();
@@ -522,5 +666,50 @@ class Relations_Repository {
 		}
 
 		return $grouped;
+	}
+
+	public function get_product_relation_map_by_context( $product_id, $context = 'single' ) {
+		$product_sku = $this->get_product_sku( $product_id );
+
+		if ( empty( $product_sku ) ) {
+			return array();
+		}
+
+		global $wpdb;
+
+		$relations_table = Product_Relations_Table::get_table_name();
+		$groups_table    = Product_Relation_Groups_Table::get_table_name();
+		$settings_table  = Product_Relation_Settings_Table::get_table_name();
+
+		$query = $wpdb->prepare(
+			"SELECT
+				r.id as relation_id,
+				r.product_sku,
+				r.related_product_sku,
+				r.group_id,
+				r.settings_id,
+				r.sort_order,
+				g.name as group_name,
+				g.attribute_id,
+				g.display_style_single,
+				g.display_style_archive,
+				s.settings
+			FROM {$relations_table} r
+			INNER JOIN {$groups_table} g ON r.group_id = g.id
+			LEFT JOIN {$settings_table} s ON r.settings_id = s.id
+			WHERE r.product_sku IN (
+				SELECT related_product_sku FROM {$relations_table} WHERE product_sku = %s OR related_product_sku = %s
+			)
+			ORDER BY g.sort_order ASC, r.sort_order ASC",
+			$product_sku,
+			$product_sku
+		);
+
+		$results = $wpdb->get_results( $query );
+		if ( ! $results ) {
+			return array();
+		}
+
+		return $results;
 	}
 }

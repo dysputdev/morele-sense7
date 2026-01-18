@@ -34,7 +34,7 @@ if ( ! $product ) {
 
 // Get variants data.
 $relation_repository = new Relations_Repository();
-$relations           = $relation_repository->get_product_relations_by_context( $product_id, 'single' );
+$relations           = $relation_repository->get_grouped_product_relations_by_context( $product_id, 'single' );
 
 if ( empty( $relations ) ) {
 	return;
@@ -68,7 +68,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 					>
 						<?php
 						$label_class = array( 'multistore-block-product-variants-switch__variant-label' );
-						if ( 'custom' === $relation['label_source'] && ! empty( $relation['custom_label'] ) ) {
+						if ( ! empty( $relation['custom_label'] ) && 'custom' === $relation['label_source'] ) {
 							$label         = $relation['custom_label'];
 							$label_class[] = 'multistore-block-product-variants-switch__variant-label--custom';
 						} else {

@@ -2,6 +2,10 @@
 	position: relative;
 	width: 100%;
 
+	.is-hidden {
+		display: none;
+	}
+
 	display: flex;
 	flex-direction: column;
 
@@ -35,18 +39,27 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-end;
-		
+		transition: opacity 0.2s ease, transform 0.2s ease;
+
 		&--image_custom,
 		&--image_product {
 			padding: 1rem;
 			img {
 				border: 1px solid transparent;
+				transition: border-color 0.2s ease;
 			}
 		}
 
 		&--label_only {
 			padding: 0.25rem 0.875rem;
 			border: 1px solid transparent;
+			transition: border-color 0.2s ease;
+		}
+
+		&.is-hidden {
+			opacity: 0.3;
+			pointer-events: none;
+			transform: scale(0.95);
 		}
 
 	}

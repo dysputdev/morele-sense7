@@ -1,0 +1,110 @@
+/**
+ * Main app styles.
+ *
+ * @package multistore
+ */
+
+// Tooltip
+.multistore-tooltip {
+
+	--tooltip-background: #1e1e1e;
+
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+
+	&__icon {
+		display: block;
+		cursor: pointer;
+		color: currentColor;
+		transition: opacity 0.2s ease;
+
+		&:hover,
+		&:focus {
+			opacity: 0.7;
+		}
+
+		&:focus {
+			outline: 2px solid currentColor;
+			outline-offset: 2px;
+		}
+	}
+
+	&__content {
+		position: absolute;
+		bottom: calc(100% + 0.5rem);
+		left: 50%;
+		transform: translateX(-50%);
+		padding: 0.5rem 0.75rem;
+		background: var(--tooltip-background);
+		color: #fff;
+		font-size: 0.875rem;
+		line-height: 1.4;
+		border-radius: 4px;
+		white-space: nowrap;
+		pointer-events: none;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.2s ease, visibility 0.2s ease;
+		z-index: 1000;
+
+		// Arrow
+		&::after {
+			content: '';
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+			border: 4px solid transparent;
+			border-top-color: var(--tooltip-background);
+		}
+
+		&--visible {
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+
+	// Position modifiers
+	&--left {
+		.multistore-tooltip__content {
+			left: auto;
+			right: 0;
+			transform: none;
+
+			&::after {
+				left: auto;
+				right: 0.5rem;
+				transform: none;
+			}
+		}
+	}
+
+	&--right {
+		.multistore-tooltip__content {
+			left: 0;
+			right: auto;
+			transform: none;
+
+			&::after {
+				left: 0.5rem;
+				right: auto;
+				transform: none;
+			}
+		}
+	}
+
+	&--top {
+		.multistore-tooltip__content {
+			bottom: auto;
+			top: calc(100% + 0.5rem);
+
+			&::after {
+				top: auto;
+				bottom: 100%;
+				border-top-color: transparent;
+				border-bottom-color: var(--tooltip-background);
+			}
+		}
+	}
+}

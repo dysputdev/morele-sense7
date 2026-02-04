@@ -14,7 +14,7 @@
 		},
 		"prefix": {
 			"type": "string",
-			"default": ""
+			"default": "Najniższa cena: "
 		},
 		"suffix": {
 			"type": "string",
@@ -27,6 +27,10 @@
 		"showEmpty": {
 			"type": "boolean",
 			"default": true
+		},
+		"tooltip": {
+			"type": "string",
+			"default": "Najniższa cena z 30 dni przed obniżką: {price}"
 		}
 	},
 	"usesContext": ["postId", "multistore/postId"],

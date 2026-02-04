@@ -25,3 +25,17 @@ if ( ! function_exists( 'log' ) ) {
 		MultiStore\Plugin\Utils\Debug::log( ...$vars );
 	}
 }
+
+function multistore_template_part( $slug, $name = null, $args = array() ) {
+	$template_file = $slug;
+	if ( $name ) {
+		$template_file = "{$slug}-{$name}";
+	}
+	$template = locate_template( "multistore/template-parts/{$template_file}.php" );
+	if ( ! $template ) {
+		$template = MULTISTORE_PLUGIN_DIR . "/template-parts/{$template_file}.php";
+	}
+	if ( file_exists( $template ) ) {
+		load_template( $template, false, $args );
+	}
+}

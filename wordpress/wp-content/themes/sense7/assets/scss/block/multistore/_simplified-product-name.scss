@@ -1,14 +1,17 @@
 .wc-block-product {
 	.multistore-block-simplified-product-name {
-		// trim one line
-		display: -webkit-box;
-		-webkit-line-clamp: 1;
-		line-clamp: 1;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-		text-overflow: ellipsis;
 		a:hover {
 			text-decoration: none;
+		}
+		&__title:has(:not(.multistore-block-simplified-product-name__link)),
+		&__link {
+			// trim one line
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			line-clamp: 1;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 	}
 }

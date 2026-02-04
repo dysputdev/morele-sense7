@@ -1,6 +1,18 @@
-
+nav.menu-main {
+	> ul {
+		> li {
+			border-bottom: 5px solid transparent;
+			&:hover,
+			&.is-active {
+				border-color: var(--wp--preset--color--primary);
+			}
+		}
+	}
+}
 
 .multistore-block-megamenu {
+	box-shadow: 0 .5rem .5rem rgba(0, 0, 0, 0.1);
+	box-sizing: border-box;
 	.wp-block-navigation-link {
 		font-weight: bold;
 	}

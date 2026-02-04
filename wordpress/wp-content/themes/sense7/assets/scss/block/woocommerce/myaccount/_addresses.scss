@@ -1,0 +1,62 @@
+
+.woocommerce-account {
+
+	.woocommerce-Addresses {
+		display: flex;
+		gap: var(--wp--preset--spacing--60);
+		flex-direction: column;
+	}
+	.woocommerce-Address {
+		&__items {
+			display: grid;
+			gap: var(--wp--preset--spacing--40);
+			grid-template-columns: repeat( auto-fill, minmax( min( 240px, 100% ), 1fr ) );
+		}
+
+		&__item {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+
+			gap: var(--wp--preset--spacing--40);
+			font-size: var(--wp--preset--font-size--small);
+
+			border: 1px solid var(--wp--preset--color--contrast-40);
+			border-radius: 1rem;
+
+			padding: var(--wp--preset--spacing--40);
+
+			a {
+				color: var(--wp--preset--color--primary);
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+
+
+	.wc-address-book-add-new-address {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--wp--preset--spacing--40) var(--wp--preset--spacing--60);
+		background-color: var(--wp--preset--color--accent);
+		color: var(--wp--preset--color--primary);
+		font-size: var(--wp--preset--font-size--small);
+		font-weight: 700;
+		text-decoration: none;
+		border-radius: 0.5rem;
+		transition: background-color 0.2s ease;
+	}
+
+	.wc-address-book-meta {
+		float: none;
+		order: 2;
+		display: flex;
+		flex-wrap: wrap;
+		row-gap: 0rem;
+		column-gap: var(--wp--preset--spacing--40);
+		font-size: var(--wp--preset--font-size--small);
+	}
+}

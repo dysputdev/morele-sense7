@@ -1,4 +1,5 @@
 .wc-block-catalog-sorting {
+	color: var(--wp--preset--color--gray-80);
 	.orderby {
 		-moz-appearance:none; /* Firefox */
 		-webkit-appearance:none; /* Safari and Chrome */
@@ -9,13 +10,13 @@
 		background-position-x: 100%;
 		background-position-y: 5px;
 
-		padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--60) var(--wp--preset--spacing--30) var(--wp--preset--spacing--30);
-		border: 1px solid var(--wp--preset--color--gray-60);
+		padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--60) var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+		border: 1px solid var(--wp--preset--color--gray-80);
 		border-radius: 0.5rem;
 
 		background-color: var(--wp--preset--color--white);
 		font-size: var(--wp--preset--font-size--small);
 
-		
+		height: 2.5rem;
 	}
 }

@@ -13,4 +13,24 @@
 	.splide[data-pagination-desktop-position$="bottom-inside"] .splide__pagination {
 		bottom: var(--wp--preset--spacing--50);
 	}
+
+	.splide__arrow {
+		background-color: var(--wp--preset--color--gray-80);
+		color: currentColor;
+		&:hover {
+			background-color: var(--wp--preset--color--primary);
+			color: white;
+		}
+	}
+
+	&.hero-slider {
+		.splide__arrow {
+			background-color: rgba(37, 37, 37, 0.6);
+			color: white;
+			&:hover {
+				background-color: rgba(37, 37, 37, 1);
+				color: white;
+			}
+		}
+	}
 }

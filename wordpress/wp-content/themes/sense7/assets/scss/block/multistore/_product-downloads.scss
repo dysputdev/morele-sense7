@@ -1,0 +1,54 @@
+/**
+ * Product Downloads Block - Frontend Styles
+ *
+ * @package MultiStore\Plugin\Block\ProductDownloads
+ */
+
+.multistore-block-product-downloads {
+	margin-bottom: 2rem;
+	&__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	&__item {
+		margin: 0;
+		padding: 0;
+	}
+
+	&__link {
+		display: flex;
+		align-items: center;
+		gap: var(--wp--preset--spacing--20);
+		padding: var(--wp--preset--spacing--20) var(--wp--preset--spacing--30);
+		background: transparent;
+		border: none;
+		text-decoration: none;
+		color: var(--wp--preset--color--primary);
+
+		&:hover {
+			background: transparent;
+			text-decoration: none;
+			color: var(--wp--preset--color--contrast);
+		}
+
+		&:focus {
+			outline: 2px solid var(--wp--preset--color--primary);
+			outline-offset: 2px;
+		}
+	}
+
+	&__icon {
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+
+	&__name {
+		color: inherit;
+		font-size: inherit;
+	}
+}

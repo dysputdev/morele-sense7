@@ -1,3 +1,4 @@
+@use './block/core/button';
 @use './block/core/group';
 @use './block/core/image';
 @use './block/core/navigation';
@@ -8,20 +9,33 @@
 @use './block/multistore/megamenu';
 @use './block/multistore/price';
 @use './block/multistore/product';
+@use './block/multistore/product-downloads';
 @use './block/multistore/product-gallery';
+@use './block/multistore/product-grouping-toggle';
 @use './block/multistore/product-reviews';
 @use './block/multistore/product-variants';
 @use './block/multistore/product-variants-preview';
+@use './block/multistore/product-variants-switch';
 @use './block/multistore/scrollspy';
 @use './block/multistore/simplified-product-name';
 @use './block/multistore/slider';
+@use './block/multistore/modal';
 
+@use './block/woocommerce/woocommerce';
+@use './block/woocommerce/cart';
+@use './block/woocommerce/checkout';
 @use './block/woocommerce/catalog-sorting';
+@use './block/woocommerce/myaccount';
 @use './block/woocommerce/product-categories';
 @use './block/woocommerce/product-filter-active';
 @use './block/woocommerce/product-filters';
 @use './block/woocommerce/product-template';
+@use './block/woocommerce/_quantity-selector';
 
+input, select, textarea, button,
+table, td, th {
+	font-family: inherit;
+}
 
 .multistore-block-product.is-style-card {
 	padding: var(--wp--preset--spacing--50) var(--wp--preset--spacing--50);

@@ -1,11 +1,15 @@
-.is-style-card {
+.wp-block-group.is-style-card {
 	position: relative;
+	overflow: clip;
+	padding-bottom: var(--wp--preset--spacing--30);
 	&:has(a) {
 		border: 1px solid transparent;
+		border-radius: 1rem;
 		box-sizing: border-box;
-		&:hover {
-			border: 1px solid var(--wp--preset--color--gray-80);
-			border-radius: 0.5rem;
+		&:hover,
+		&:focus-within {
+			// border-color: var(--wp--preset--color--gray-80);
+			box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 		}
 
 		a:after {

@@ -62,6 +62,7 @@
 			"defaultFontSizes": false,
 			"fluid": true,
 			"fontSizes": [
+				{ "name": "Extra Small (12px)", "size": "0.75rem", "slug": "x-small" },
 				{ "name": "Small (14px)", "size": "0.875rem", "slug": "small" },
 				{ "name": "Base (16px)", "size": "1rem", "slug": "base" },
 				{ "name": "Medium (20px)", "size": "1.25rem", "slug": "medium" },

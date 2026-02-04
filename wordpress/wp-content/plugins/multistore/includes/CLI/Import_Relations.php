@@ -124,13 +124,20 @@ class Import_Relations {
 					$related_product_sku                       = trim( $related_product_sku );
 				}
 
-				$current_relations = $relations_repository->get_relations_by_sku( $product_sku );
+				$product_id         = $relations_repository->get_product_id_by_sku( $product_sku );
+				$related_product_id = $relations_repository->get_product_id_by_sku( $related_product_sku );
+
+				if ( ! $product_id || ! $related_product_id ) {
+					continue;
+				}
+
+				$current_relations = $relations_repository->get_relations( $product_id );
 
 				// sprwadzamy czy istnieje juz relacja.
 				$existing_relations = array_filter(
 					$current_relations,
-					function ( $relation ) use ( $related_product_sku, $group_id ) {
-						return $relation->related_product_sku === $related_product_sku && $relation->group_id === $group_id;
+					function ( $relation ) use ( $related_product_id, $group_id ) {
+						return $relation->related_product_id === $related_product_id && $relation->group_id === $group_id;
 					}
 				);
 
@@ -138,7 +145,7 @@ class Import_Relations {
 				if ( ! $existing_relations ) {
 
 					// sprawdzamy czy jakiś inny produkt ma relacje z tym samym sku, żeby pobrać ustawienia (settings).
-					$existing_related_relations = $relations_repository->get_relations_by_related_sku( $related_product_sku, $group_id );
+					$existing_related_relations = $relations_repository->get_related_relations_by_sku( $related_product_sku, $group_id );
 					if ( empty( $existing_related_relations ) ) {
 
 						$default_settings = array(
@@ -154,7 +161,7 @@ class Import_Relations {
 						$settings_id      = $related_relation->settings_id;
 					}
 
-					$relations_repository->create_relation( $product_sku, $related_product_sku, $group_id, $settings_id, $index_order );
+					$relations_repository->create_relation_by_sku( $product_sku, $related_product_sku, $group_id, $settings_id, $index_order );
 				} else {
 					error_log( 'Relationship already exists: ' . $product_sku . ' -> ' . $related_product_sku );
 				}

@@ -138,7 +138,7 @@ class Metabox {
 		$attributes = $this->relations_repository->get_product_attributes();
 
 		// Get current product relations.
-		$relations = $this->relations_repository->get_product_relations( $post->ID );
+		$relations = $this->relations_repository->get_grouped_product_relations( $post->ID );
 
 		// Filter groups with relations for this product.
 		$active_groups = array();
@@ -637,16 +637,8 @@ class Metabox {
 			return;
 		}
 
-		// Get current product SKU.
-		$product_sku = $this->relations_repository->get_product_sku( $post_id );
-
-		if ( empty( $product_sku ) ) {
-			// Product must have SKU for relations.
-			return;
-		}
-
-		// Get current relations from database by SKU.
-		$current_relations = $this->relations_repository->get_relations_by_sku( $product_sku );
+		// Get current relations from database.
+		$current_relations = $this->relations_repository->get_relations( $post_id );
 
 		// Track which relations to keep.
 		$keep_relation_ids = array();
@@ -670,15 +662,8 @@ class Metabox {
 					if ( 0 === $related_product_id ) {
 						continue;
 					}
-					// Get related product SKU.
-					$related_product_sku = $this->relations_repository->get_product_sku( $related_product_id );
 
-					// Skip if no SKU.
-					if ( empty( $related_product_sku ) ) {
-						continue;
-					}
-
-					$existing_related_relations = $this->relations_repository->get_relations_by_related_sku( $related_product_sku, $group_id );
+					$existing_related_relations = $this->relations_repository->get_relations_by_related_id( $related_product_id, $group_id );
 
 					// Prepare settings data.
 					$settings_data = array(
@@ -689,8 +674,8 @@ class Metabox {
 					);
 
 					error_log( '------' );
-					error_log( 'zapis relacji ' . $product_sku . '-' . $related_product_sku );
-					error_log( print_r( array( 'current' => $current_relations, 'related' => $existing_related_relations ) , true ) );
+					error_log( 'zapis relacji ' . $post_id . '-' . $related_product_id );
+					error_log( print_r( array( 'current' => $current_relations, 'related' => $existing_related_relations ), true ) );
 
 					// Create or update settings.
 					if ( $settings_id ) {
@@ -718,23 +703,23 @@ class Metabox {
 						$this->relations_repository->update_relation( $relation_id, $sort_order, $settings_id );
 						// $keep_relation_ids[] = $relation_id;
 					} else {
-						// Insert new relation (both directions) using SKU. first check if relation already exists
-						$existing_relation = $this->relations_repository->get_relation( $product_sku, $related_product_sku, $group_id );
+						// Insert new relation (both directions) using IDs. first check if relation already exists
+						$existing_relation = $this->relations_repository->get_relation_by_ids( $post_id, $related_product_id, $group_id );
 						error_log( 'sprawdzamy czy relacja juz istnieje ' . print_r( $existing_relation, true ) );
 
 						if ( empty( $existing_relation ) ) {
-							$this->relations_repository->create_relation( $product_sku, $related_product_sku, $group_id, $settings_id, $sort_order );
+							$this->relations_repository->create_relation( $post_id, $related_product_id, $group_id, $settings_id, $sort_order );
 							error_log( 'relacja nie istnieje - tworzenie nowej' );
 						}
 					}
 
 					// na tym etapie relacja istnieje - dodajemy relacje w druga strone.
-					$reversed_relation = $this->relations_repository->get_relation( $related_product_sku, $product_sku, $group_id );
-					error_log ( 'sprawdzamy czy relacja juz istnieje w druga strone ' . $related_product_sku . '-' . $product_sku );
+					$reversed_relation = $this->relations_repository->get_relation_by_ids( $related_product_id, $post_id, $group_id );
+					error_log( 'sprawdzamy czy relacja juz istnieje w druga strone ' . $related_product_id . '-' . $post_id );
 					if ( empty( $reversed_relation ) ) {
 						// sprawdzamy czy ktorys z relacji kieruje juz do produktu aktualnego, zeby pobrac settings.
-						$existing_reverse_relations = $this->relations_repository->get_relations_by_related_sku( $product_sku, $group_id );
-						error_log ( 'relacja odwrotna nie istnieje' );
+						$existing_reverse_relations = $this->relations_repository->get_relations_by_related_id( $post_id, $group_id );
+						error_log( 'relacja odwrotna nie istnieje' );
 
 						if ( empty( $existing_reverse_relations ) ) {
 							error_log( 'tworzona relacja odwrotna nie posiada ustawien - tworzenie nowe ustawienia' );
@@ -743,12 +728,12 @@ class Metabox {
 							$existing_relation = current( $existing_reverse_relations );
 							$settings_id       = $existing_relation->settings_id;
 							$sort_order        = $existing_relation->sort_order;
-							error_log( 'tworzona relacja odwrotna nie posiada ustawien - znaleziono ustawienia z innej relacji do tego produktu ' . print_r( $existing_related_relations ) );
+							error_log( 'tworzona relacja odwrotna nie posiada ustawien - znaleziono ustawienia z innej relacji do tego produktu ' . print_r( $existing_related_relations, true ) );
 						}
 
-						$this->relations_repository->create_relation( $related_product_sku, $product_sku, $group_id, $settings_id, $sort_order );
+						$this->relations_repository->create_relation( $related_product_id, $post_id, $group_id, $settings_id, $sort_order );
 					} else {
-						error_log ( 'relacja odwrotna juz istnieje' );
+						error_log( 'relacja odwrotna juz istnieje' );
 						$keep_relation_ids[] = $reversed_relation->id;
 					}
 				}

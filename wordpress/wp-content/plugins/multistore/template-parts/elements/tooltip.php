@@ -13,6 +13,6 @@
 		<path d="M6.22195 3.95404V2.42004H7.63895V3.95404H6.22195ZM8.54895 11H5.42895V9.93404H6.29995V6.24204H5.37695V5.16304H7.67795V9.93404H8.54895V11Z" fill="currentColor"/>
 	</svg>
 	<div class="multistore-tooltip__content">
-		<?php echo esc_html( $args['tooltip'] ); ?>
+		<?php echo wp_kses( $args['tooltip'], array( 'b', 'i', 'em', 'strong', 'a' ) ); ?>
 	</div>
 </div>

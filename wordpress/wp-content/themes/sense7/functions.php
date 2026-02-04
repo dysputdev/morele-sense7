@@ -207,6 +207,15 @@ class Theme {
 				true
 			);
 		}
+
+		if ( file_exists( SENSE7_THEME_DIR . '/assets/css/main.css' ) ) {
+			wp_enqueue_style(
+				'sense7-main',
+				SENSE7_THEME_URL . '/assets/css/main.css',
+				array(),
+				SENSE7_THEME_VERSION
+			);
+		}
 	}
 
 	/**
@@ -219,6 +228,8 @@ class Theme {
 		// Example: if ( class_exists( 'Sense7\Theme\Blocks\Custom_Block' ) ) {
 		//     new Blocks\Custom_Block();
 		// }
+
+		new WooCommerce();
 
 		register_block_style(
 			'multistore/product',

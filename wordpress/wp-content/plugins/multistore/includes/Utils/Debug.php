@@ -5,10 +5,10 @@ namespace MultiStore\Plugin\Utils;
 class Debug {
 
 	public static function dump( ...$vars ) {
-		$is_cli = defined( 'WP_CLI' ) && WP_CLI;
+		$is_cli = defined( 'WP_CLI' ) && \WP_CLI;
 		if ( $is_cli ) {
 			foreach ( $vars as $var ) {
-				WP_CLI::log( ...$var );
+				\WP_CLI::log( $var );
 			}
 			return;
 		}

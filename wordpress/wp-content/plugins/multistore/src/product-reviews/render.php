@@ -38,17 +38,21 @@ $star_icon_empty = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" 
 
 
 global $wpdb;
+
+$reviews = array();
+$stats   = array();
 // if display all stores, then we need combined reviews.
 if ( $display_all_stores_reviews ) {
 	$global_query = get_global_query_by_sku( $sku );
-
-	$reviews = $wpdb->get_results( "SELECT * FROM ({$global_query}) as t ORDER BY t.comment_date_gmt DESC LIMIT {$attributes['perPage']}" );
-
-	$stats = $wpdb->get_results(
-		"SELECT t.rating, count(*) as total, sum(rating) as total_rating 
-		FROM ({$global_query}) as t
-		GROUP BY t.rating"
-	);
+	if ( ! empty( $global_query ) ) {
+		$reviews = $wpdb->get_results( "SELECT * FROM ({$global_query}) as t ORDER BY t.comment_date_gmt DESC LIMIT {$attributes['perPage']}" );
+	
+		$stats = $wpdb->get_results(
+			"SELECT t.rating, count(*) as total, sum(rating) as total_rating 
+			FROM ({$global_query}) as t
+			GROUP BY t.rating"
+		);
+	}
 } else {
 	// Get reviews only from current blog.
 	global $wpdb;

@@ -9,8 +9,6 @@ import Splide from '@splidejs/splide';
 document.addEventListener( 'DOMContentLoaded', () => {
 	const sliders = document.querySelectorAll( '.multistore-block-related-products-slider .splide' );
 
-	console.log( sliders );
-
 	if ( ! sliders.length ) {
 		return;
 	}

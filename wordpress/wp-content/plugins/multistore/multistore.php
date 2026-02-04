@@ -110,6 +110,9 @@ class Plugin {
 		// Initialize plugin components.
 		add_action( 'init', array( $this, 'initialize_components' ) );
 
+		// Enqueue frontend assets.
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+
 		// Enqueue block editor assets.
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
 
@@ -362,6 +365,32 @@ class Plugin {
 		// Debug helper - uncomment to enable.
 		if ( self::$debug_timer ) {
 			do_action( 'qm/stop', 'initialize_frontend_components' );
+		}
+	}
+
+	public function enqueue_assets(): void {
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'enqueue_assets' );
+		}
+		$asset_file = include MULTISTORE_PLUGIN_DIR . 'build/app.asset.php';
+
+		wp_enqueue_script(
+			'multistore-script',
+			MULTISTORE_PLUGIN_URL . 'build/app.js',
+			$asset_file['dependencies'],
+			$asset_file['version'],
+			true
+		);
+
+		wp_enqueue_style(
+			'multistore-style',
+			MULTISTORE_PLUGIN_URL . 'build/app.css',
+			array(),
+			$asset_file['version']
+		);
+
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'enqueue_assets' );
 		}
 	}
 

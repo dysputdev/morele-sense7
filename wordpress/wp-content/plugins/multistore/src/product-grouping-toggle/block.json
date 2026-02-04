@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "multistore/product-grouping-toggle",
+	"version": "1.0.0",
+	"title": "Przełącznik grupowania produktów",
+	"category": "woocommerce",
+	"description": "Przełącznik umożliwiający włączanie/wyłączanie grupowania produktów na listingu",
+	"supports": {
+		"align": ["wide", "full"],
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"attributes": {
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		},
+		"labelOn": {
+			"type": "string",
+			"default": "Grupuj produkty"
+		},
+		"labelOff": {
+			"type": "string",
+			"default": "Pokaż wszystkie warianty"
+		}
+	},
+	"textdomain": "multistore",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

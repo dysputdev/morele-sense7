@@ -27,6 +27,7 @@ define( 'MULTISTORE_PLUGIN_FILE', __FILE__ );
 define( 'MULTISTORE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MULTISTORE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MULTISTORE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'MULTISTORE_SPEED_DEBUG_TIMER', false );
 
 // Load Composer autoloader with scoped dependencies.
 // Priority: scoped vendor (production) > regular vendor (development).
@@ -54,6 +55,14 @@ class Plugin {
 	private static $instance = null;
 
 	/**
+	 * Turn on debug timers
+	 *
+	 * @since 1.0.0
+	 * @var bool
+	 */
+	private static $debug_timer = false;
+
+	/**
 	 * Get plugin instance
 	 *
 	 * @since 1.0.0
@@ -72,6 +81,13 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	private function __construct() {
+		if ( defined( 'MULTISTORE_SPEED_DEBUG_TIMER' ) && true === MULTISTORE_SPEED_DEBUG_TIMER ) {
+			// check if query monitor is active.
+			if ( is_plugin_active( 'query-monitor/query-monitor.php' ) ) {
+				self::$debug_timer = true;
+			}
+		}
+
 		$this->init();
 	}
 
@@ -123,13 +139,17 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function load_text_domain(): void {
-		// do_action( 'qm/start', 'load_text_domain' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'load_text_domain' );
+		}
 		load_plugin_textdomain(
 			'multistore',
 			false,
 			dirname( MULTISTORE_PLUGIN_BASENAME ) . '/languages'
 		);
-		// do_action( 'qm/stop', 'load_text_domain' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'load_text_domain' );
+		}
 	}
 
 	/**
@@ -140,7 +160,9 @@ class Plugin {
 	public function initialize_database(): void {
 		// Initialize database tables.
 
-		// do_action( 'qm/start', 'initialize_database' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'initialize_database' );
+		}
 		$database_dir = MULTISTORE_PLUGIN_DIR . 'includes/Database';
 		$files        = glob( $database_dir . '/*.php' );
 		foreach ( $files as $file ) {
@@ -159,12 +181,16 @@ class Plugin {
 				}
 			}
 		}
-		// do_action( 'qm/stop', 'initialize_database' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'initialize_database' );
+		}
 	}
 
 	public function initialize_wordpress() : void {
 		// add support for woocommerce.
-		// do_action( 'qm/start', 'initialize_wordpress' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'initialize_wordpress' );
+		}
 		add_theme_support( 'woocommerce' );
 
 		add_filter(
@@ -179,7 +205,9 @@ class Plugin {
 		// add image sizes.
 		add_image_size( 'swatch', 64, 64, true );
 
-		// do_action( 'qm/stop', 'initialize_wordpress' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'initialize_wordpress' );
+		}
 	}
 
 	/**
@@ -188,7 +216,9 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function initialize_components(): void {
-		// do_action( 'qm/start', 'initialize_components' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'initialize_components' );
+		}
 		// Check if WooCommerce is active.
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
@@ -215,7 +245,7 @@ class Plugin {
 		// Initialize price history manager.
 		new WooCommerce\Apilo();
 		new WooCommerce\Price_History();
-		new WooCommerce\Product_Grouping();
+		// new WooCommerce\Product_Grouping();
 
 		$this->initialize_blocks();
 
@@ -229,7 +259,9 @@ class Plugin {
 			$this->initialize_frontend_components();
 		}
 
-		// do_action( 'qm/stop', 'initialize_components' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'initialize_components' );
+		}
 	}
 
 	/**
@@ -241,7 +273,9 @@ class Plugin {
 	 * @see https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/
 	 */
 	public function initialize_blocks(): void {
-		// do_action( 'qm/start', 'initialize_blocks' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'initialize_blocks' );
+		}
 		/**
 		 * Registers the block(s) metadata from the `blocks-manifest.php` and registers the block type(s)
 		 * based on the registered block metadata.
@@ -256,7 +290,9 @@ class Plugin {
 			foreach ( glob( __DIR__ . '/build/*/functions.php' ) as $file ) {
 				require_once $file;
 			}
-			// do_action( 'qm/stop', 'initialize_blocks' );
+			if ( self::$debug_timer ) {
+				do_action( 'qm/stop', 'initialize_blocks' );
+			}
 			return;
 		}
 
@@ -284,7 +320,9 @@ class Plugin {
 			register_block_type( __DIR__ . "/build/{$block_type}" );
 		}
 
-		// do_action( 'qm/stop', 'initialize_blocks' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'initialize_blocks' );
+		}
 	}
 
 	/**
@@ -293,14 +331,18 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function initialize_admin_components(): void {
-		// do_action( 'qm/start', 'initialize_admin_components' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'initialize_admin_components' );
+		}
 		new Admin\Price_History_Tools();
 		new Admin\Product_Downloads_Metabox();
 		new Admin\Product_Relations\Metabox();
 		new Admin\Product_Relations\Ajax_Handler();
 
 		// Debug helper - uncomment to enable.
-		// do_action( 'qm/stop', 'initialize_admin_components' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'initialize_admin_components' );
+		}
 	}
 
 	/**
@@ -309,14 +351,18 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function initialize_frontend_components(): void {
-		// do_action( 'qm/start', 'initialize_frontend_components' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'initialize_frontend_components' );
+		}
 		new Frontend\Price_History_Display();
 		new Frontend\Related_Products_Query();
 		new Frontend\Related_Products_Slider_Renderer();
 		// new Frontend\Product_Relations_Display();
 
 		// Debug helper - uncomment to enable.
-		// do_action( 'qm/stop', 'initialize_frontend_components' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'initialize_frontend_components' );
+		}
 	}
 
 	/**
@@ -325,7 +371,9 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function enqueue_block_editor_assets(): void {
-		// do_action( 'qm/start', 'enqueue_block_editor_assets' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'enqueue_block_editor_assets' );
+		}
 		$asset_file = include MULTISTORE_PLUGIN_DIR . 'build/editor.asset.php';
 
 		wp_enqueue_script(
@@ -336,7 +384,9 @@ class Plugin {
 			true
 		);
 
-		// do_action( 'qm/stop', 'enqueue_block_editor_assets' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'enqueue_block_editor_assets' );
+		}
 	}
 
 	/**
@@ -345,7 +395,9 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function woocommerce_missing_notice(): void {
-		// do_action( 'qm/start', 'woocommerce_missing_notice' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'woocommerce_missing_notice' );
+		}
 		?>
 		<div class="notice notice-error">
 			<p>
@@ -359,7 +411,9 @@ class Plugin {
 		</div>
 		<?php
 
-		// do_action( 'qm/stop', 'woocommerce_missing_notice' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'woocommerce_missing_notice' );
+		}
 	}
 
 	/**
@@ -403,7 +457,9 @@ class Plugin {
 	 * @since 1.0.0
 	 */
 	public function register_cli_commands(): void {
-		// do_action( 'qm/start', 'register_cli_commands' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/start', 'register_cli_commands' );
+		}
 		\WP_CLI::add_command( 'multistore import products', 'MultiStore\Plugin\CLI\Import_Products' );
 		\WP_CLI::add_command( 'multistore import prices', 'MultiStore\Plugin\CLI\Import_Price' );
 		\WP_CLI::add_command( 'multistore import reviews', 'MultiStore\Plugin\CLI\Import_Reviews' );
@@ -418,7 +474,9 @@ class Plugin {
 		\WP_CLI::add_command( 'multistore migrate-product-groups', 'MultiStore\Plugin\CLI\Migrate_Product_Groups' );
 		\WP_CLI::add_command( 'multistore import ean', 'MultiStore\Plugin\CLI\Import_EAN' );
 
-		// do_action( 'qm/stop', 'register_cli_commands' );
+		if ( self::$debug_timer ) {
+			do_action( 'qm/stop', 'register_cli_commands' );
+		}
 	}
 }
 

@@ -30,7 +30,8 @@
 @use './block/woocommerce/product-filter-active';
 @use './block/woocommerce/product-filters';
 @use './block/woocommerce/product-template';
-@use './block/woocommerce/_quantity-selector';
+@use './block/woocommerce/quantity-selector';
+@use './block/woocommerce/store-notices';
 
 input, select, textarea, button,
 table, td, th {

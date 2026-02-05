@@ -13,4 +13,40 @@
 			}
 		}
 	}
+
+	&.is-dropdown {
+		.wc-block-product-categories__dropdown {
+			width: 100%;
+			select {
+				display: block;
+				width: 100%;
+				max-width: 250px;
+				@media screen and (max-width: 576px) {
+					margin-inline: auto;
+				}
+
+				-moz-appearance:none; /* Firefox */
+				-webkit-appearance:none; /* Safari and Chrome */
+				appearance: none;
+
+				background-image: url("data:image/svg+xml;utf8,<svg fill='currentColor' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+				background-repeat: no-repeat;
+				background-position-x: 100%;
+				background-position-y: 5px;
+
+				padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--60) var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+				border: 1px solid var(--wp--preset--color--gray-80);
+				border-radius: 0.5rem;
+
+				background-color: var(--wp--preset--color--white);
+				font-size: var(--wp--preset--font-size--small);
+
+				height: 2.5rem;
+			}
+		}
+		button.wc-block-product-categories__button {
+			display: none;
+			visibility: hidden;
+		}
+	}
 }

@@ -20,6 +20,8 @@ class WooCommerce {
 		new WooCommerce\Account();
 		new WooCommerce\Cart();
 		new WooCommerce\Checkout();
+
+		new WooCommerce\MiniCart();
 	}
 
 	/**

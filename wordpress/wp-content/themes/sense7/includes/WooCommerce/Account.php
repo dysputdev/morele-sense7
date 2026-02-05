@@ -21,6 +21,8 @@ class Account {
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'menu_items' ) );
 
 		add_filter( 'woocommerce_save_account_details_required_fields', array( $this, 'account_details_required_fields' ) );
+
+		add_action( 'template_redirect', array( $this, 'redirect_my_account_pages' ) );
 		// if ( class_exists( 'WC_Address_Book' ) ) {
 		// 	$class = new \WC_Address_Book();
 		// 	add_action( 'woocommerce_account_edit-account_endpoint', array( $class, 'wc_address_book_page' ), 20 );
@@ -32,6 +34,30 @@ class Account {
 
 		// AJAX handlers.
 		add_action( 'wp_ajax_save_account_field', array( $this, 'save_account_field_ajax' ) );
+	}
+
+	public function redirect_my_account_pages() {
+		global $wp;
+
+		// Only for logged-in users.
+		$redirect_to = false;
+
+		// redirect map based on WC()->query->get_query_vars().
+		if ( is_account_page() && is_user_logged_in() ) {
+			// redirect from main account page to edit account page.
+			if ( false === is_wc_endpoint_url() ) {
+				$redirect_to = wc_get_account_endpoint_url( 'edit-account' );
+			} else if ( is_wc_endpoint_url( 'downloads' ) ) {
+				$redirect_to = wc_get_account_endpoint_url( 'edit-account' );
+			} elseif ( is_wc_endpoint_url( 'edit-address' ) && empty( $wp->query_vars['edit-address'] ) ) {
+				$redirect_to = wc_get_account_endpoint_url( 'edit-account' );
+			}
+
+			if ( $redirect_to ) {
+				wp_safe_redirect( $redirect_to );
+				exit;
+			}
+		}
 	}
 
 	/**
@@ -66,8 +92,8 @@ class Account {
 		unset(
 			$items['dashboard'],
 			$items['downloads'],
+			$items['edit-address'],
 			$items['customer-logout'],
-			// $items['edit-address'],
 		);
 		$items['edit-account'] = __( 'Ustawienia', 'sense7' );
 

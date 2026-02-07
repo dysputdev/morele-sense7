@@ -129,7 +129,7 @@ class Theme {
 
 		// Add editor styles.
 		add_theme_support( 'editor-styles' );
-		add_editor_style( 'assets/css/editor-style.css' );
+		// add_editor_style( 'assets/css/editor-style.css' );
 
 		// Add support for responsive embeds.
 		add_theme_support( 'responsive-embeds' );
@@ -159,10 +159,10 @@ class Theme {
 		);
 
 		// Enqueue additional CSS if needed.
-		if ( file_exists( SENSE7_THEME_DIR . '/assets/css/main.css' ) ) {
+		if ( file_exists( SENSE7_THEME_DIR . '/assets/css/style.css' ) ) {
 			wp_enqueue_style(
 				'sense7-main',
-				SENSE7_THEME_URL . '/assets/css/main.css',
+				SENSE7_THEME_URL . '/assets/css/style.css',
 				array( 'sense7-style' ),
 				SENSE7_THEME_VERSION
 			);
@@ -208,10 +208,10 @@ class Theme {
 			);
 		}
 
-		if ( file_exists( SENSE7_THEME_DIR . '/assets/css/main.css' ) ) {
+		if ( file_exists( SENSE7_THEME_DIR . '/assets/css/style.css' ) ) {
 			wp_enqueue_style(
 				'sense7-main',
-				SENSE7_THEME_URL . '/assets/css/main.css',
+				SENSE7_THEME_URL . '/assets/css/style.css',
 				array(),
 				SENSE7_THEME_VERSION
 			);

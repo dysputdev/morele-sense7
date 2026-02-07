@@ -18,3 +18,5 @@ Thumbs.db
 
 # Build files
 /assets/dist/
+/assets/css/
+/assets/js/

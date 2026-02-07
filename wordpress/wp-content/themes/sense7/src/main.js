@@ -1,3 +1,5 @@
+import './main.scss'
+
 document.addEventListener('DOMContentLoaded', function () {
 
 	// category dropdown

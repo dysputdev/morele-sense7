@@ -134,18 +134,27 @@ $col    = 1;
 						</address>
 
 						<div class="address-actions">
-							<a href="<?php echo esc_url( $wc_address_book->get_address_book_endpoint_url( $name, $address_type ) ); ?>" 
+							<a href="#address-modal"
+								data-action="open-modal"
+								data-modal-id="address-modal"
 								data-address-id="<?php echo esc_attr( $item_name ); ?>"
+								data-address-type="<?php echo esc_attr( $address_type ); ?>"
 								class="address-action address-action--edit"
 							><?php echo esc_attr__( 'Edytuj', 'sense7' ); ?></a>
-							
+
 							<a href="#"
 								data-address-id="<?php echo esc_attr( $item_name ); ?>"
+								data-address-type="<?php echo esc_attr( $address_type ); ?>"
 								class="address-action address-action--delete"
 							><?php echo esc_attr__( 'Usuń', 'sense7' ); ?></a>
-							
+
 							<label class="woocommerce-Address__default-address">
-								<input type="checkbox" value="<?php echo esc_attr( $name ); ?>" class="address-action--set-default" />
+								<input type="checkbox"
+									value="<?php echo esc_attr( $item_name ); ?>"
+									data-address-type="<?php echo esc_attr( $address_type ); ?>"
+									data-is-default="<?php echo esc_attr( $item_name === $address_type ? 'true' : 'false' ); ?>"
+									class="address-action--set-default"
+									<?php checked( $item_name, $address_type ); ?> />
 								<span><?php echo esc_html_e( 'Ustaw jako domyślny', 'sense7' ); ?></span>
 							</label>
 						</div>
@@ -153,7 +162,11 @@ $col    = 1;
 
 				<?php endforeach; ?>
 				<div class="woocommerce-Address__item add-item">
-					<a href="#" class="add button">
+					<a href="#address-modal"
+						data-action="open-modal"
+						data-modal-id="address-modal"
+						data-address-type="<?php echo esc_attr( $address_type ); ?>"
+						class="add button">
 						<?php echo esc_attr__( 'Dodaj nowy adres', 'sense7' ); ?>
 					</a>
 				</div>

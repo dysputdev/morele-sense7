@@ -313,7 +313,7 @@
 		bindEvents: function(forms) {
 			forms.forEach(form => {
 				const input = form.querySelector('input[type="text"], input[type="email"]');
-				const button = form.querySelector('.account-field__button');
+				const button = form.querySelector('.inline-input__button');
 
 				if (!input || !button) {
 					return;
@@ -345,7 +345,7 @@
 
 		handleSubmit: function(form) {
 			const input = form.querySelector('input[type="text"], input[type="email"]');
-			const button = form.querySelector('.account-field__button');
+			const button = form.querySelector('.inline-input__button');
 			const fieldName = input.name;
 			const fieldValue = input.value.trim();
 
@@ -413,12 +413,12 @@
 		},
 
 		showSuccess: function(form) {
-			const accountField = form.querySelector('.account-field');
-			let successIcon = accountField.querySelector('.account-field__success');
+			const accountField = form.querySelector('.inline-input');
+			let successIcon = accountField.querySelector('.inline-input__success');
 
 			if (!successIcon) {
 				successIcon = document.createElement('div');
-				successIcon.className = 'account-field__success';
+				successIcon.className = 'inline-input__success';
 				successIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
 				accountField.appendChild(successIcon);
 			}
@@ -427,19 +427,19 @@
 		},
 
 		hideSuccess: function(form) {
-			const successIcon = form.querySelector('.account-field__success');
+			const successIcon = form.querySelector('.inline-input__success');
 			if (successIcon) {
 				successIcon.classList.remove('is-visible');
 			}
 		},
 
 		showError: function(form, message) {
-			const accountField = form.querySelector('.account-field');
-			let errorDiv = accountField.querySelector('.account-field__error');
+			const accountField = form.querySelector('.inline-input');
+			let errorDiv = accountField.querySelector('.inline-input__error');
 
 			if (!errorDiv) {
 				errorDiv = document.createElement('div');
-				errorDiv.className = 'account-field__error';
+				errorDiv.className = 'inline-input__error';
 				accountField.appendChild(errorDiv);
 			}
 
@@ -449,8 +449,8 @@
 		},
 
 		hideError: function(form) {
-			const accountField = form.querySelector('.account-field');
-			const errorDiv = accountField.querySelector('.account-field__error');
+			const accountField = form.querySelector('.inline-input');
+			const errorDiv = accountField.querySelector('.inline-input__error');
 
 			if (errorDiv) {
 				errorDiv.classList.remove('is-visible');

@@ -159,10 +159,10 @@ class Theme {
 		);
 
 		// Enqueue additional CSS if needed.
-		if ( file_exists( SENSE7_THEME_DIR . '/assets/css/style.css' ) ) {
+		if ( file_exists( SENSE7_THEME_DIR . '/assets/css/main.css' ) ) {
 			wp_enqueue_style(
 				'sense7-main',
-				SENSE7_THEME_URL . '/assets/css/style.css',
+				SENSE7_THEME_URL . '/assets/css/main.css',
 				array( 'sense7-style' ),
 				SENSE7_THEME_VERSION
 			);
@@ -208,10 +208,10 @@ class Theme {
 			);
 		}
 
-		if ( file_exists( SENSE7_THEME_DIR . '/assets/css/style.css' ) ) {
+		if ( file_exists( SENSE7_THEME_DIR . '/assets/css/main.css' ) ) {
 			wp_enqueue_style(
 				'sense7-main',
-				SENSE7_THEME_URL . '/assets/css/style.css',
+				SENSE7_THEME_URL . '/assets/css/main.css',
 				array(),
 				SENSE7_THEME_VERSION
 			);

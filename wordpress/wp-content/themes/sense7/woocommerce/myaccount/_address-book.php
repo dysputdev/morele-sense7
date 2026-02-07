@@ -65,15 +65,11 @@ $col    = 1;
 
 ?>
 
-<p>
-	<?php echo apply_filters( 'woocommerce_my_account_my_address_description', esc_html__( 'The following addresses will be used on the checkout page by default.', 'woocommerce' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-</p>
-
 
 <div class="woocommerce-Addresses">
-<?php foreach ( $get_addresses as $name => $address_title ) : ?>
+<?php foreach ( $get_addresses as $address_type => $address_title ) : ?>
 	<?php
-		$address = wc_get_account_formatted_address( $name );
+		$address = wc_get_account_formatted_address( $address_type );
 		$col     = $col * -1;
 		$oldcol  = $oldcol * -1;
 	?>
@@ -84,89 +80,83 @@ $col    = 1;
 		</header>
 
 		<div
-			class="address_book <?php echo esc_attr( $name ); ?>_address_book"
-			data-addresses='<?php echo esc_attr( $adresses[ $name ]['total'] ); ?>'
-			data-limit='<?php echo esc_attr( $adresses[ $name ]['limit'] ); ?>'
+			class="address_book <?php echo esc_attr( $address_type ); ?>_address_book"
+			data-addresses='<?php echo esc_attr( $adresses[ $address_type ]['total'] ); ?>'
+			data-limit='<?php echo esc_attr( $adresses[ $address_type ]['limit'] ); ?>'
 		>
-			<div class="woocommerce-Address__items addresses address-book">
-				<div class="woocommerce-Address__item wc-address-book-address u-column<?php echo $col < 0 ? 1 : 2; ?> woocommerce-Address">
-					<address>
-						
-						<?php
-							echo $address ? wp_kses_post( $address ) : esc_html_e( 'You have not set up this type of address yet.', 'woocommerce' );
-
-							/**
-							 * Used to output content after core address fields.
-							 *
-							 * @param string $name Address type.
-							 * @since 8.7.0
-							 */
-							do_action( 'woocommerce_my_account_after_my_address', $name );
-						?>
-
-					</address>
-					<div class="wc-address-book-meta">
-						<a href="<?php echo esc_url( wc_get_endpoint_url( 'edit-address', $name ) ); ?>" class="edit">
-							<?php
-								printf(
-									/* translators: %s: Address title */
-									$address ? esc_html__( 'Edit %s', 'woocommerce' ) : esc_html__( 'Add %s', 'woocommerce' ),
-									esc_html( $address_title )
-								);
-							?>
-						</a>
-					</div>
-				</div>
-
+			<div class="woocommerce-Address__items">
 				<?php
-				if ( isset( $adresses[ $name ] ) ) {
-
-					$woo_address_book_billing_address = get_user_meta( $customer_id, $name . '_address_1', true );
-
-					$hide_shipping_address_book = 1 === (int) $adresses[ $name ]['limit'] && $adresses[ $name ]['total'] <= 1;
-					foreach ( $adresses[ $name ]['items'] as $woo_address_book_name => $item ) {
-
-						if ( $woo_address_book_name === $name ) {
-							continue;
-						}
-
-						$woo_address_book_address = apply_filters(
-							'woocommerce_my_account_my_address_formatted_address',
-							array(
-								'first_name' => $item[ $woo_address_book_name . '_first_name' ] ?? '',
-								'last_name'  => $item[ $woo_address_book_name . '_last_name' ] ?? '',
-								'company'    => $item[ $woo_address_book_name . '_company' ] ?? '',
-								'address_1'  => $item[ $woo_address_book_name . '_address_1' ] ?? '',
-								'address_2'  => $item[ $woo_address_book_name . '_address_2' ] ?? '',
-								'city'       => $item[ $woo_address_book_name . '_city' ] ?? '',
-								'state'      => $item[ $woo_address_book_name . '_state' ] ?? '',
-								'postcode'   => $item[ $woo_address_book_name . '_postcode' ] ?? '',
-								'country'    => $item[ $woo_address_book_name . '_country' ] ?? '',
-							),
-							$customer_id,
-							$woo_address_book_name
-						);
-
-						$formatted_address = WC()->countries->get_formatted_address( $woo_address_book_address );
-
-						if ( $formatted_address ) {
-							?>
-							<div class="woocommerce-Address__item wc-address-book-address">
-								<address>
-									<?php echo wp_kses( $formatted_address, array( 'br' => array() ) ); ?>
-								</address>
-								<div class="wc-address-book-meta">
-									<a href="<?php echo esc_url( $wc_address_book->get_address_book_endpoint_url( $woo_address_book_name, $name ) ); ?>" class="wc-address-book-edit"><?php echo esc_attr__( 'Edit', 'woo-address-book' ); ?></a>
-									<a id="<?php echo esc_attr( $woo_address_book_name ); ?>" class="wc-address-book-delete"><?php echo esc_attr__( 'Delete', 'woo-address-book' ); ?></a>
-									<a id="<?php echo esc_attr( $woo_address_book_name ); ?>" class="wc-address-book-make-primary"><?php echo esc_attr__( 'Make Primary', 'woo-address-book' ); ?></a>
-								</div>
-							</div>
-							<?php
-						}
-					}
-					$wc_address_book->add_additional_address_button( $name );
-				}
+				if ( ! isset( $adresses[ $address_type ] ) ) :
+					continue;
+				endif;
 				?>
+
+				<?php foreach ( $adresses[ $address_type ]['items'] as $item_name => $item ) : ?>
+
+					<?php $is_company = ! empty( $item[ $item_name . '_companyname' ] ); ?>
+
+					<div class="woocommerce-Address__item">
+						<address class="address-item <?php echo $is_company ? 'is-company' : 'is-individual'; ?>">
+
+							<?php if ( $is_company ) : ?>
+								<span class="address-item__comapny">
+									<?php echo esc_html( $item[ $item_name . '_companyname' ] ); ?>
+								</span><br/>
+							<?php endif; ?>
+							
+							<span class="address-item__name">
+								<?php echo esc_html( $item[ $item_name . '_first_name' ] . ' ' . $item[ $item_name . '_last_name' ] ); ?>
+							</span><br/>
+
+							<span class="address-item__address">
+								<?php echo esc_html( $item[ $item_name . '_address_1' ] ); ?>
+								<?php if ( ! empty( $item[ $item_name . '_address_2' ] ) ) : ?>
+									<br><?php echo esc_html( $item[ $item_name . '_address_2' ] ); ?>
+								<?php endif; ?>
+							</span><br/>
+							
+							<span class="address-item__address">
+								<?php echo esc_html( $item[ $item_name . '_postcode' ] ); ?> <?php echo esc_html( $item[ $item_name . '_city' ] ); ?>
+							</span><br/>
+
+							<?php if ( $is_company ) : ?>
+								<span class="address-item__nip">
+									<?php esc_html_e( 'NIP:', 'woocommerce' ); ?> <?php echo esc_html( $item[ $item_name . '_nip' ] ); ?>
+								</span><br/>
+							<?php endif; ?>
+
+							<?php if ( ! empty( $item[ $item_name . '_phone' ] ) ) : ?>
+								<span class="address-item__phone">
+									<?php esc_html_e( 'Phone:', 'woocommerce' ); ?> <?php echo esc_html( $item[ $item_name . '_phone' ] ); ?>
+								</span>
+							<?php endif; ?>
+
+						</address>
+
+						<div class="address-actions">
+							<a href="<?php echo esc_url( $wc_address_book->get_address_book_endpoint_url( $name, $address_type ) ); ?>" 
+								data-address-id="<?php echo esc_attr( $item_name ); ?>"
+								class="address-action address-action--edit"
+							><?php echo esc_attr__( 'Edytuj', 'sense7' ); ?></a>
+							
+							<a href="#"
+								data-address-id="<?php echo esc_attr( $item_name ); ?>"
+								class="address-action address-action--delete"
+							><?php echo esc_attr__( 'Usuń', 'sense7' ); ?></a>
+							
+							<label class="woocommerce-Address__default-address">
+								<input type="checkbox" value="<?php echo esc_attr( $name ); ?>" class="address-action--set-default" />
+								<span><?php echo esc_html_e( 'Ustaw jako domyślny', 'sense7' ); ?></span>
+							</label>
+						</div>
+					</div>
+
+				<?php endforeach; ?>
+				<div class="woocommerce-Address__item add-item">
+					<a href="#" class="add button">
+						<?php echo esc_attr__( 'Dodaj nowy adres', 'sense7' ); ?>
+					</a>
+				</div>
 
 			</div>
 			

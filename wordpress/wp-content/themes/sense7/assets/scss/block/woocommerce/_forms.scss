@@ -1,0 +1,183 @@
+
+
+.select2-container {
+	.select2-results {
+		&__option {
+			&--highlighted[aria-selected],
+			&--highlighted[data-selected] {
+				background-color: var(--wp--preset--color--primary);
+			}
+		}
+	}
+}
+
+/* Podstawowa struktura dla floating labels */
+.woocommerce {
+	form {
+		.form-row {
+			padding: 0;
+			margin: 0;
+			position: relative;
+			margin-bottom: 1.5em;
+
+			.woocommerce-input-wrapper {
+				position: relative;
+
+				.description {
+					position: absolute;
+					padding: 0.5rem 0.75rem;
+					background: var(--wp--preset--color--contrast);
+					color: var(--wp--preset--color--white);
+					font-size: var(--wp--preset--font-size--small);
+					border-radius: 4px;
+					z-index: 10;
+
+					&::before {
+						left: 1rem;
+						top: 0%;
+						margin-top: -4px;
+						transform: translateX(-50%) rotate(180deg);
+						content: "";
+						position: absolute;
+						border-width: 4px 6px 0 6px;
+						border-style: solid;
+						border-color: var(--wp--preset--color--contrast) transparent transparent transparent;
+						z-index: 100;
+						display: block;
+					}
+				}
+			}
+
+			/* Floating label gdy input jest focused lub wypełniony */
+			&:has(input:focus) label,
+			&:has(input:not(:placeholder-shown)) label,
+			&:has(textarea:focus) label,
+			&:has(textarea:not(:placeholder-shown)) label,
+			&:has(select:focus) label,
+			&:has(select:not([value=""])) label,
+			&:has(select option:checked:not([value=""])) label {
+				top: -6px;
+				font-size: var(--wp--preset--font-size--small);
+				line-height: 1;
+				font-weight: 500;
+			}
+
+			label {
+				position: absolute;
+				left: 12px;
+				top: 12px;
+				transition: all 0.3s ease;
+				pointer-events: none;
+				background: white;
+				padding: 0 5px;
+				color: #666;
+				font-size: 14px;
+				z-index: 1;
+				/* Gwiazdka wymaganego pola */
+				.required {
+					color: var(--wp--preset--color--secondary);
+					margin-left: 2px;
+					font-weight: 700;
+					border: 0 !important;
+					text-decoration: none;
+				}
+
+				&.hidden {
+					visibility: hidden;
+				}
+
+				&.inline {
+					display: inline;
+				}
+			}
+
+			/* Wyłącz floating dla checkbox i radio */
+			&:has(input[type="checkbox"]) label,
+			&:has(input[type="radio"]) label {
+				position: static;
+				transform: none;
+				pointer-events: auto;
+				padding: 0;
+			}
+
+			input.input-text,
+			textarea,
+			select {
+				font-family: inherit;
+				font-weight: normal;
+				letter-spacing: normal;
+				padding: var(--wp--preset--spacing--40);
+				display: block;
+				background-color: var(--wp--preset--color--white);
+				border: 1px solid var(--wp--preset--color--gray-40);
+				border-radius: 0.5rem;
+				color: var(--wp--preset--color--contrast);
+				box-sizing: border-box;
+				width: 100%;
+				margin: 0;
+				line-height: normal;
+				height: auto;
+
+				&:focus {
+					border-color: var(--wp--preset--color--primary);
+				}
+
+				&::-webkit-input-placeholder,
+				&:-moz-placeholder,
+				&:-ms-input-placeholder {
+					color: #999;
+					line-height: normal;
+				}
+			}
+
+			select {
+				cursor: pointer;
+				/* We hide the default chevron because it cannot be directly modified. Instead, we add a custom chevron using a background image. */
+				appearance: none;
+				padding-right: 3em;
+				background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJmZWF0aGVyIGZlYXRoZXItY2hldnJvbi1kb3duIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=);
+				background-repeat: no-repeat;
+				background-size: 16px;
+				background-position: calc(100% - 0.5em) 50%;
+			}
+
+			textarea {
+				height: 4em;
+				line-height: 1.5;
+				box-shadow: none;
+			}
+
+			.description {
+				padding-top: var(--wp--preset--spacing--30);
+				font-size: var(--wp--preset--font-size--small);
+				line-height: 1.25;
+				padding-inline-start: 0.25rem;
+			}
+
+			&.woocommerce-invalid {
+				label {
+					color: var(--wp--preset--color--secondary);
+				}
+				input.input-text,
+				select {
+					border-color: var(--wp--preset--color--secondary);
+				}
+				.select2-container:not(.select2-container--open) .select2-selection {
+					border-color: var(--wp--preset--color--secondary);
+				}
+			}
+
+			&.woocommerce-validated {
+				input.input-text,
+				select {
+					border-color: var(--wp--preset--color--gray-40);
+				}
+				.select2-container:not(.select2-container--open) .select2-selection {
+					border-color: var(--wp--preset--color--gray-40);
+				}
+			}
+		}
+	}
+}
+
+

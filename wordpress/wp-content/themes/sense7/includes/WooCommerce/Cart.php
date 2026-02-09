@@ -23,7 +23,7 @@ class Cart {
 
 		add_action( 'wp_ajax_sense7_get_cart', array( $this, 'ajax_get_cart' ) );
 		add_action( 'wp_ajax_nopriv_sense7_get_cart', array( $this, 'ajax_get_cart' ) );
-
+		
 		// Enqueue assets.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
@@ -35,10 +35,10 @@ class Cart {
 	 */
 	public function enqueue_assets() {
 		// Enqueue cart script on cart page.
-		if ( is_cart() && file_exists( SENSE7_THEME_DIR . '/assets/js/cart-ajax.js' ) ) {
+		if ( is_cart() && file_exists( SENSE7_THEME_DIR . '/assets/js/cart.js' ) ) {
 			wp_enqueue_script(
-				'sense7-cart-ajax',
-				SENSE7_THEME_URL . '/assets/js/cart-ajax.js',
+				'sense7-cart',
+				SENSE7_THEME_URL . '/assets/js/cart.js',
 				array( 'jquery' ),
 				SENSE7_THEME_VERSION,
 				true
@@ -46,7 +46,7 @@ class Cart {
 
 			// Localize script with AJAX URL and nonce.
 			wp_localize_script(
-				'sense7-cart-ajax',
+				'sense7-cart',
 				'sense7Cart',
 				array(
 					'ajaxUrl' => admin_url( 'admin-ajax.php' ),
@@ -157,12 +157,14 @@ class Cart {
 
 		$items = array();
 
-		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+		foreach ( \WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 			$product = $cart_item['data'];
 
 			if ( ! $product ) {
 				continue;
 			}
+
+			$price = wc_get_price_to_display( $product, array( 'qty' => $cart_item['quantity'] ) );
 
 			$items[] = array(
 				'key'      => $cart_item_key,
@@ -170,7 +172,7 @@ class Cart {
 				'totals'   => array(
 					'line_subtotal'     => $cart_item['line_subtotal'],
 					'line_subtotal_tax' => $cart_item['line_subtotal_tax'],
-					'line_total'        => $cart_item['line_total'],
+					'line_total'        => $price,
 					'line_tax'          => $cart_item['line_tax'],
 				),
 			);

@@ -18,95 +18,157 @@
 defined( 'ABSPATH' ) || exit;
 
 ?>
-<div class="cart_totals <?php echo ( WC()->customer->has_calculated_shipping() ) ? 'calculated_shipping' : ''; ?>">
+<div class="cart-totals <?php echo ( WC()->customer->has_calculated_shipping() ) ? 'calculated_shipping' : ''; ?>">
 
 	<?php do_action( 'woocommerce_before_cart_totals' ); ?>
 
-	<h2><?php esc_html_e( 'Cart totals', 'woocommerce' ); ?></h2>
+	<h2 class="cart-totals__title"><?php esc_html_e( 'Podsumowanie', 'sense7' ); ?></h2>
 
-	<table cellspacing="0" class="shop_table shop_table_responsive">
+	<div class="cart-totals__items">
 
-		<tr class="cart-subtotal">
-			<th><?php esc_html_e( 'Subtotal', 'woocommerce' ); ?></th>
-			<td data-title="<?php esc_attr_e( 'Subtotal', 'woocommerce' ); ?>"><?php wc_cart_totals_subtotal_html(); ?></td>
-		</tr>
+		<div class="cart-totals__item cart-totals__item--subtotal">
+			<span class="cart-totals__label">
+				<?php
+				$cart_count = WC()->cart->get_cart_contents_count();
+				/* translators: %d: number of products */
+				echo esc_html( sprintf( __( 'Wartość produktów (%d)', 'sense7' ), $cart_count ) );
+				?>
+			</span>
+			<span class="cart-totals__value"><?php wc_cart_totals_subtotal_html(); ?></span>
+		</div>
 
 		<?php foreach ( WC()->cart->get_coupons() as $code => $coupon ) : ?>
-			<tr class="cart-discount coupon-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
-				<th><?php wc_cart_totals_coupon_label( $coupon ); ?></th>
-				<td data-title="<?php echo esc_attr( wc_cart_totals_coupon_label( $coupon, false ) ); ?>"><?php wc_cart_totals_coupon_html( $coupon ); ?></td>
-			</tr>
+			<div class="cart-totals__item cart-totals__item--discount coupon-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
+				<span class="cart-totals__label">
+					<?php
+					/* translators: %s: coupon code */
+					echo esc_html( sprintf( __( 'Rabat %s', 'sense7' ), strtoupper( $code ) ) );
+					?>
+				</span>
+				<span class="cart-totals__value cart-totals__value--discount"><?php wc_cart_totals_coupon_html( $coupon ); ?></span>
+			</div>
 		<?php endforeach; ?>
 
 		<?php if ( WC()->cart->needs_shipping() && WC()->cart->show_shipping() ) : ?>
 
 			<?php do_action( 'woocommerce_cart_totals_before_shipping' ); ?>
 
-			<?php wc_cart_totals_shipping_html(); ?>
+			<div class="cart-totals__item cart-totals__item--shipping">
+				<span class="cart-totals__label"><?php esc_html_e( 'Wysyłka', 'sense7' ); ?></span>
+				<span class="cart-totals__value">
+					<?php
+					$packages = WC()->shipping()->get_packages();
+					$first_package = reset( $packages );
+					$shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
+
+					if ( ! empty( $first_package['rates'] ) && ! empty( $shipping_methods[0] ) ) {
+						$chosen_method = $first_package['rates'][ $shipping_methods[0] ];
+						if ( 0 == $chosen_method->cost ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+							?>
+							<span class="cart-totals__shipping-free"><?php esc_html_e( 'za darmo', 'sense7' ); ?></span>
+							<?php
+						} else {
+							echo wp_kses_post( wc_price( $chosen_method->cost ) );
+						}
+					} else {
+						wc_cart_totals_shipping_html();
+					}
+					?>
+				</span>
+			</div>
 
 			<?php do_action( 'woocommerce_cart_totals_after_shipping' ); ?>
 
 		<?php elseif ( WC()->cart->needs_shipping() && 'yes' === get_option( 'woocommerce_enable_shipping_calc' ) ) : ?>
 
-			<tr class="shipping">
-				<th><?php esc_html_e( 'Shipping', 'woocommerce' ); ?></th>
-				<td data-title="<?php esc_attr_e( 'Shipping', 'woocommerce' ); ?>"><?php woocommerce_shipping_calculator(); ?></td>
-			</tr>
+			<div class="cart-totals__item cart-totals__item--shipping">
+				<span class="cart-totals__label"><?php esc_html_e( 'Wysyłka', 'sense7' ); ?></span>
+				<span class="cart-totals__value"><?php woocommerce_shipping_calculator(); ?></span>
+			</div>
 
 		<?php endif; ?>
 
 		<?php foreach ( WC()->cart->get_fees() as $fee ) : ?>
-			<tr class="fee">
-				<th><?php echo esc_html( $fee->name ); ?></th>
-				<td data-title="<?php echo esc_attr( $fee->name ); ?>"><?php wc_cart_totals_fee_html( $fee ); ?></td>
-			</tr>
+			<div class="cart-totals__item cart-totals__item--fee">
+				<span class="cart-totals__label"><?php echo esc_html( $fee->name ); ?></span>
+				<span class="cart-totals__value"><?php wc_cart_totals_fee_html( $fee ); ?></span>
+			</div>
 		<?php endforeach; ?>
 
+		<?php if ( wc_tax_enabled() && ! WC()->cart->display_prices_including_tax() ) { ?>
+			
+			<div class="cart-totals__item cart-totals__item--tax">
+				<span class="cart-totals__label"><?php echo esc_html( WC()->countries->tax_or_vat() ) . $estimated_text; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+				<span class="cart-totals__value"><?php wc_cart_totals_subtotal_html(); ?></span>
+			</div>
+		<?php } ?>
+
+	</div>
+
+	<?php if ( wc_coupons_enabled() ) : ?>
 		<?php
-		if ( wc_tax_enabled() && ! WC()->cart->display_prices_including_tax() ) {
-			$taxable_address = WC()->customer->get_taxable_address();
-			$estimated_text  = '';
-
-			if ( WC()->customer->is_customer_outside_base() && ! WC()->customer->has_calculated_shipping() ) {
-				/* translators: %s location. */
-				$estimated_text = sprintf( ' <small>' . esc_html__( '(estimated for %s)', 'woocommerce' ) . '</small>', WC()->countries->estimated_for_prefix( $taxable_address[0] ) . WC()->countries->countries[ $taxable_address[0] ] );
-			}
-
-			if ( 'itemized' === get_option( 'woocommerce_tax_total_display' ) ) {
-				foreach ( WC()->cart->get_tax_totals() as $code => $tax ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-					?>
-					<tr class="tax-rate tax-rate-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
-						<th><?php echo esc_html( $tax->label ) . $estimated_text; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></th>
-						<td data-title="<?php echo esc_attr( $tax->label ); ?>"><?php echo wp_kses_post( $tax->formatted_amount ); ?></td>
-					</tr>
-					<?php
-				}
-			} else {
-				?>
-				<tr class="tax-total">
-					<th><?php echo esc_html( WC()->countries->tax_or_vat() ) . $estimated_text; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></th>
-					<td data-title="<?php echo esc_attr( WC()->countries->tax_or_vat() ); ?>"><?php wc_cart_totals_taxes_total_html(); ?></td>
-				</tr>
-				<?php
-			}
-		}
+		$applied_coupons = WC()->cart->get_applied_coupons();
+		$has_coupons     = ! empty( $applied_coupons );
 		?>
 
-		<?php do_action( 'woocommerce_cart_totals_before_order_total' ); ?>
+		<?php if ( $has_coupons ) : ?>
+			<div class="cart-totals__applied-coupons">
+				<span class="cart-totals__coupons-label"><?php esc_html_e( 'Kody rabatowe:', 'sense7' ); ?></span>
+				<div class="cart-totals__coupons-list">
+					<?php foreach ( $applied_coupons as $coupon_code ) : ?>
+						<div class="cart-totals__coupon-tag">
+							<span class="cart-totals__coupon-code"><?php echo esc_html( strtoupper( $coupon_code ) ); ?></span>
+							<a href="<?php echo esc_url( add_query_arg( 'remove_coupon', rawurlencode( $coupon_code ), wc_get_cart_url() ) ); ?>" class="cart-totals__coupon-remove" aria-label="<?php echo esc_attr( sprintf( __( 'Usuń kupon %s', 'sense7' ), $coupon_code ) ); ?>">
+								<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M9 3L3 9M3 3L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</a>
+						</div>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		<?php else : ?>
+			<div class="cart-totals__coupon-section">
+				<button type="button" class="cart-totals__coupon-toggle" data-toggle="coupon-form">
+					<?php esc_html_e( 'Masz kod rabatowy?', 'sense7' ); ?>
+				</button>
 
-		<tr class="order-total">
-			<th><?php esc_html_e( 'Total', 'woocommerce' ); ?></th>
-			<td data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>"><?php wc_cart_totals_order_total_html(); ?></td>
-		</tr>
+				<div class="cart-totals__coupon-form" id="coupon-form" style="display: none;">
+					<form class="woocommerce-coupon-form" action="<?php echo esc_url( wc_get_cart_url() ); ?>" method="post">
+						<label for="coupon_code" class="cart-totals__coupon-label"><?php esc_html_e( 'kod rabatowy', 'sense7' ); ?></label>
+						<div class="cart-totals__coupon-input-wrapper">
+							<input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" placeholder="<?php esc_attr_e( 'wpisz kod rabatowy', 'sense7' ); ?>" />
+							<button type="submit" class="cart-totals__coupon-submit" name="apply_coupon" value="<?php esc_attr_e( 'Dodaj', 'sense7' ); ?>">
+								<?php esc_html_e( 'Dodaj', 'sense7' ); ?>
+							</button>
+							<?php do_action( 'woocommerce_cart_coupon' ); ?>
+						</div>
+						<?php wp_nonce_field( 'woocommerce-cart', 'woocommerce-cart-nonce' ); ?>
+					</form>
+				</div>
+			</div>
+		<?php endif; ?>
+	<?php endif; ?>
 
-		<?php do_action( 'woocommerce_cart_totals_after_order_total' ); ?>
+	<?php do_action( 'woocommerce_cart_totals_before_order_total' ); ?>
 
-	</table>
+	<div class="cart-totals__total">
+		<span class="cart-totals__total-label"><?php esc_html_e( 'Do zapłaty', 'sense7' ); ?></span>
+		<span class="cart-totals__total-value"><?php wc_cart_totals_subtotal_html(); ?></span>
+	</div>
 
+	<?php do_action( 'woocommerce_cart_totals_after_order_total' ); ?>
+
+	<?php do_action( 'woocommerce_after_cart_totals' ); ?>
+
+</div>
+
+<div class="cart-totals__actions">
 	<div class="wc-proceed-to-checkout">
 		<?php do_action( 'woocommerce_proceed_to_checkout' ); ?>
 	</div>
 
-	<?php do_action( 'woocommerce_after_cart_totals' ); ?>
-
+	<a href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>" class="cart-totals__continue-shopping">
+		<?php esc_html_e( 'Kontynuuj zakupy', 'sense7' ); ?>
+	</a>
 </div>

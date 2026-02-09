@@ -1,0 +1,203 @@
+// Login & Register page styles
+
+.login-register-wrapper {
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+	column-gap: var(--wp--preset--spacing--60);
+	max-width: var(--wp--style--global--content-size);
+	margin-inline: auto;
+
+	@media (max-width: 768px) {
+		flex-direction: column;
+		align-items: center;
+	}
+}
+
+// Tabs navigation (mobile only)
+.login-register-tabs {
+	display: none; // Hidden by default (desktop)
+	gap: 0;
+	margin-bottom: var(--wp--preset--spacing--60);
+	border-bottom: 1px solid var(--wp--preset--color--contrast-20);
+
+	@media (max-width: 768px) {
+		display: flex;
+		width: 100%;
+	}
+
+	&__tab {
+		flex: 1;
+		padding: var(--wp--preset--spacing--40) var(--wp--preset--spacing--30);
+		background: transparent;
+		border: none;
+		border-bottom: 2px solid transparent;
+		font-size: var(--wp--preset--font-size--medium);
+		font-weight: 400;
+		color: var(--wp--preset--color--contrast-60);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		text-align: center;
+
+		&:hover {
+			color: var(--wp--preset--color--primary);
+		}
+
+		&.is-active {
+			color: var(--wp--preset--color--primary);
+			font-weight: 700;
+			border-bottom-color: var(--wp--preset--color--primary);
+		}
+	}
+}
+
+.login-register {
+	max-width: 420px;
+	width: 100%;
+	flex-shrink: 1;
+	flex-grow: 1;
+
+	// Mobile: tabs layout
+	@media (max-width: 768px) {
+		max-width: 420px;
+		display: none;
+
+		&.is-active {
+			display: block;
+		}
+	}
+
+	&--separator {
+		width: 1px;
+		background-color: var(--wp--preset--color--gray-80);
+		flex-grow: 0;
+
+		@media (max-width: 768px) {
+			display: none;
+			visibility: hidden;
+		}
+	}
+
+	&__title {
+		text-align: center;
+		font-size: var(--wp--preset--font-size--xx-large);
+
+		@media (max-width: 768px) {
+			display: none; // Hide titles on mobile (tabs show them)
+		}
+	}
+
+	&__form {
+		.form-row {
+			margin-bottom: 0;
+		}
+
+		label {
+			display: block;
+			margin-bottom: var(--wp--preset--spacing--20);
+			font-size: var(--wp--preset--font-size--small);
+			font-weight: 600;
+			color: var(--wp--preset--color--contrast);
+
+			.required {
+				color: var(--wp--preset--color--secondary);
+			}
+		}
+
+		input[type="text"],
+		input[type="email"],
+		input[type="password"] {
+			width: 100%;
+			padding: var(--wp--preset--spacing--30);
+			border: 1px solid var(--wp--preset--color--contrast-40);
+			border-radius: 0.5rem;
+			font-size: var(--wp--preset--font-size--small);
+			transition: border-color 0.2s ease;
+
+			&:focus {
+				outline: none;
+				border-color: var(--wp--preset--color--primary);
+			}
+
+			&::placeholder {
+				color: var(--wp--preset--color--contrast-40);
+			}
+		}
+
+		button[type="submit"] {
+			width: 100%;
+			padding: var(--wp--preset--spacing--40);
+			margin-top: var(--wp--preset--spacing--20);
+		}
+	}
+
+	&__form-options {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--wp--preset--spacing--40);
+		padding-block: var(--wp--preset--spacing--30) var(--wp--preset--spacing--60);
+
+		@media (max-width: 768px) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
+	.woocommerce-form-login__rememberme {
+		margin-bottom: 0;
+	}
+
+	.lost_password a {
+		color: var(--wp--preset--color--primary);
+		text-decoration: none;
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}
+
+// Error messages
+.woocommerce-error,
+.woocommerce-message {
+	margin-bottom: var(--wp--preset--spacing--50);
+	padding: var(--wp--preset--spacing--40);
+	border-left: 4px solid var(--wp--preset--color--secondary);
+	border-radius: 0.5rem;
+	background-color: #fff;
+
+	li {
+		list-style: none;
+	}
+}
+
+.woocommerce-message {
+	border-left-color: var(--wp--preset--color--primary);
+}
+
+// Lost/Reset Password page
+.lost_reset_password {
+	max-width: 420px;
+	margin: 0 auto;
+
+	&__title {
+		text-align: center;
+		font-size: var(--wp--preset--font-size--xx-large);
+	}
+
+	&__form {
+		.woocommerce-form-login__rememberme {
+			margin-bottom: 0;
+		}
+	}
+}
+
+.button {
+	&--back-to-login {
+		text-align: center;
+		color: var(--wp--preset--color--primary);
+		text-decoration: none;
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}

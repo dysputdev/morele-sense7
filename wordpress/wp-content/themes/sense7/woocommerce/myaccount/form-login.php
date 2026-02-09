@@ -25,7 +25,29 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 
 <div class="login-register-wrapper" id="customer_login">
 
-	<div class="login-register login-register--login">
+	<!-- Mobile Tabs Navigation -->
+	<nav class="login-register-tabs" role="tablist">
+		<button
+			type="button"
+			class="login-register-tabs__tab is-active"
+			data-tab="login"
+			role="tab"
+			aria-selected="true"
+			aria-controls="login-panel">
+			<?php esc_html_e( 'Login', 'woocommerce' ); ?>
+		</button>
+		<button
+			type="button"
+			class="login-register-tabs__tab"
+			data-tab="register"
+			role="tab"
+			aria-selected="false"
+			aria-controls="register-panel">
+			<?php esc_html_e( 'Register', 'woocommerce' ); ?>
+		</button>
+	</nav>
+
+	<div class="login-register login-register--login is-active" id="login-panel" role="tabpanel" aria-labelledby="login-tab">
 
 <?php endif; ?>
 
@@ -72,7 +94,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 
 	<div class="login-register login-register--separator"></div>
 
-	<div class="login-register login-register--register">
+	<div class="login-register login-register--register" id="register-panel" role="tabpanel" aria-labelledby="register-tab">
 
 		<h2 class="login-register__title"><?php esc_html_e( 'Register', 'woocommerce' ); ?></h2>
 

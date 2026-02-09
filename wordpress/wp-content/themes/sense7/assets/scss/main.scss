@@ -48,3 +48,38 @@ table, td, th {
 	border: 1px solid var(--wp--preset--color--gray-80);
 	border-radius: 0.5rem;
 }
+
+
+.button {
+	padding: 0.875rem 1.5rem;
+	border-radius: 0.5rem;
+	font-size: 0.9375rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border: 1px solid transparent;
+	text-align: center;
+
+	&--primary {
+		background-color: var(--wp--preset--color--primary);
+		color: var(--wp--preset--color--white);
+		border-color: var(--wp--preset--color--primary);
+
+		&:hover {
+			background-color: var(--wp--preset--color--primary-50);
+			border-color: var(--wp--preset--color--primary-50);
+		}
+	}
+
+	&--secondary {
+		background-color: var(--wp--preset--color--wite);
+		color:  var(--wp--preset--color--secondary);
+		border-color:  var(--wp--preset--color--secondary);
+
+		&:hover {
+			background-color: var(--wp--preset--color--secondary);
+			color: var(--wp--preset--color--white);
+			border-color: var(--wp--preset--color--secondary);
+		}
+	}
+}

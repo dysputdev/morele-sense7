@@ -75,9 +75,12 @@ do_action( 'woocommerce_before_edit_account_form' );
 	</form>
 
 	<form class="edit-account edit-account--display-name" action="" method="post" <?php do_action( 'woocommerce_edit_account_form_tag' ); ?> >
-		<div class="account-fields">
-			<label for="account_display_name"><?php esc_html_e( 'Display name', 'woocommerce' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span></label>
-			<div class="account-field">
+		
+		<div class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide account-fields">
+			<label for="account_display_name" class="required_field">
+				<?php esc_html_e( 'Display name', 'woocommerce' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span>
+			</label>
+			<div class="woocommerce-input-wrapper inline-input">
 				<input
 					type="text"
 					class="woocommerce-Input woocommerce-Input--text input-text"
@@ -88,27 +91,27 @@ do_action( 'woocommerce_before_edit_account_form' );
 					aria-required="true" />
 				<button
 					type="submit"
-					class="account-field__button"
+					class="inline-input__button"
 					name="save_account_details"
 					value="<?php esc_attr_e( 'Save changes', 'woocommerce' ); ?>"
 					>
 					<?php esc_html_e( 'Save', 'woocommerce' ); ?>
 				</button>
+				<span class="description">
+					<?php esc_html_e( 'This will be how your name will be displayed in the account section and in reviews', 'woocommerce' ); ?>
+				</span>
 			</div>
-			<span id="account_display_name_description">
-				<em><?php esc_html_e( 'This will be how your name will be displayed in the account section and in reviews', 'woocommerce' ); ?></em>
-			</span>
 		</div>
 		<?php wp_nonce_field( 'save_account_details', 'save-account-details-nonce' ); ?>
 		<input type="hidden" name="action" value="save_account_details" />
 	</form>
 		
 	<form class="edit-account edit-account--email" action="" method="post" <?php do_action( 'woocommerce_edit_account_form_tag' ); ?> >
-		<div class="account-fields">
-			<label for="account_email">
+		<div class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide account-fields">
+			<label for="account_email" class="required_field">
 				<?php esc_html_e( 'Email address', 'woocommerce' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span>
 			</label>
-			<div class="account-field">
+			<div class="woocommerce-input-wrapper inline-input">
 				<input
 					type="email"
 					class="woocommerce-Input woocommerce-Input--email input-text"
@@ -119,7 +122,7 @@ do_action( 'woocommerce_before_edit_account_form' );
 					aria-required="true" />
 				<button
 					type="submit"
-					class="account-field__button"
+					class="inline-input__button"
 					name="save_account_details"
 					value="<?php esc_attr_e( 'Save changes', 'woocommerce' ); ?>"
 				>

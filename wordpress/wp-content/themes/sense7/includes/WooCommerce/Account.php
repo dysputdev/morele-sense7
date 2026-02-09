@@ -2,6 +2,8 @@
 
 namespace Sense7\Theme\WooCommerce;
 
+use WC_AJAX;
+
 class Account {
 
 	/**
@@ -30,10 +32,12 @@ class Account {
 		// $class = new \WC_Address_Book();
 		// remove_action( 'woocommerce_account_edit-address_endpoint', array( $class, 'wc_address_book_page' ), 20 );
 
-		add_action( 'woocommerce_customer_save_address', array( $this, 'customer_save_address' ) );
+		// add_action( 'woocommerce_customer_save_address', array( $this, 'customer_save_address' ) );
 
 		// AJAX handlers.
 		add_action( 'wp_ajax_save_account_field', array( $this, 'save_account_field_ajax' ) );
+		add_action( 'wp_ajax_save_address', array( $this, 'save_address_ajax' ) );
+		add_action( 'wp_ajax_get_address_form_fields', array( $this, 'get_address_form_fields_ajax' ) );
 	}
 
 	public function redirect_my_account_pages() {
@@ -78,10 +82,15 @@ class Account {
 
 			wp_localize_script(
 				'sense7-myaccount',
-				'sense7MyAccount',
+				'sense7Account',
 				array(
-					'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-					'nonce'   => wp_create_nonce( 'save_account_field' ),
+					'ajax_url'            => admin_url( 'admin-ajax.php' ),
+					'wc_ajax_url'         => class_exists( 'WC_AJAX' ) ? WC_AJAX::get_endpoint( '%%endpoint%%' ) : '?wc-ajax=%%endpoint%%',
+					'save_account_nonce'  => wp_create_nonce( 'save_account_field' ),
+					'save_address_nonce'  => wp_create_nonce( 'save_address' ),
+					'primary_nonce'       => wp_create_nonce( 'woo-address-book-primary' ),
+					'delete_nonce'        => wp_create_nonce( 'woo-address-book-delete' ),
+					'delete_confirmation' => __( 'Czy na pewno chcesz usunąć ten adres?', 'sense7' ),
 				)
 			);
 		}
@@ -229,5 +238,128 @@ class Account {
 				);
 				break;
 		}
+	}
+
+	/**
+	 * AJAX handler for getting address form fields
+	 */
+	public function get_address_form_fields_ajax() {
+		check_ajax_referer( 'save_address', 'nonce' );
+
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( array( 'message' => __( 'You must be logged in.', 'sense7' ) ) );
+		}
+
+		$user_id      = get_current_user_id();
+		$address_type = isset( $_POST['address_type'] ) ? sanitize_text_field( wp_unslash( $_POST['address_type'] ) ) : 'billing';
+		$address_name = isset( $_POST['address_name'] ) ? sanitize_text_field( wp_unslash( $_POST['address_name'] ) ) : '';
+
+		// Get address data if editing.
+		$address_data = array();
+		// if ( ! empty( $address_name ) && $address_name !== $address_type ) {
+		if ( class_exists( 'WC_Address_Book' ) ) {
+			$wc_address_book = \WC_Address_Book::get_instance();
+			$address_book    = $wc_address_book->get_address_book( $user_id, $address_type );
+
+			if ( isset( $address_book[ $address_name ] ) ) {
+				$address_data = $address_book[ $address_name ];
+			}
+		}
+		// }
+
+		// Render form fields.
+		ob_start();
+		wc_get_template(
+			'myaccount/_address-form-modal.php',
+			array(
+				'address_type' => $address_type,
+				'address_name' => $address_name ? $address_name : $address_type,
+				'address_data' => $address_data,
+			)
+		);
+		$html = ob_get_clean();
+
+		wp_send_json_success( array( 'html' => $html ) );
+	}
+
+	/**
+	 * AJAX handler for saving address
+	 */
+	public function save_address_ajax() {
+		check_ajax_referer( 'save_address', 'nonce' );
+
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( array( 'message' => __( 'You must be logged in.', 'sense7' ) ) );
+		}
+
+		$user_id      = get_current_user_id();
+		$address_type = isset( $_POST['address_type'] ) ? sanitize_text_field( wp_unslash( $_POST['address_type'] ) ) : '';
+		$address_name = isset( $_POST['address_name'] ) ? sanitize_text_field( wp_unslash( $_POST['address_name'] ) ) : '';
+
+		// Validate address type.
+		if ( ! in_array( $address_type, array( 'billing', 'shipping' ), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid address type.', 'sense7' ) ) );
+		}
+
+		if ( ! class_exists( 'WC_Address_Book' ) ) {
+			wp_send_json_error( array( 'message' => __( 'WooCommerce Address Book plugin is required.', 'sense7' ) ) );
+		}
+
+		$wc_address_book = \WC_Address_Book::get_instance();
+		$address_names   = $wc_address_book->get_address_names( $user_id, $address_type );
+
+		// Check if this address already exists (including default address which equals address_type).
+		$address_exists = in_array( $address_name, $address_names, true ) || $address_name === $address_type;
+
+		// If adding new address (empty or doesn't exist), get next available name.
+		if ( empty( $address_name ) || ! $address_exists ) {
+			$address_name = $wc_address_book->set_new_address_name( $address_names, $address_type );
+		}
+
+		// Get address fields for the country.
+		$country        = isset( $_POST[ $address_name . '_country' ] ) ? sanitize_text_field( wp_unslash( $_POST[ $address_name . '_country' ] ) ) : WC()->countries->get_base_country();
+		$address_fields = WC()->countries->get_address_fields( $country, $address_type . '_' );
+
+		// Save address data.
+		foreach ( $address_fields as $key => $field ) {
+			$field_key   = str_replace( $address_type . '_', $address_name . '_', $key );
+			$field_value = isset( $_POST[ $field_key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $field_key ] ) ) : '';
+
+			// Validate required fields.
+			if ( ! empty( $field['required'] ) && empty( $field_value ) ) {
+				wp_send_json_error(
+					array(
+						'message' => sprintf(
+							/* translators: %s: field label */
+							__( '%s is required.', 'sense7' ),
+							$field['label']
+						),
+					)
+				);
+			}
+
+			update_user_meta( $user_id, $field_key, $field_value );
+		}
+
+		// Update address names list.
+		if ( class_exists( 'WC_Address_Book' ) ) {
+			$wc_address_book = \WC_Address_Book::get_instance();
+			$address_names   = $wc_address_book->get_address_names( $user_id, $address_type );
+
+			if ( ! in_array( $address_name, $address_names, true ) ) {
+				$address_names[] = $address_name;
+				update_user_meta( $user_id, 'wc_address_book_' . $address_type, $address_names );
+			}
+		}
+
+		// Trigger WooCommerce hook for compatibility.
+		do_action( 'woocommerce_customer_save_address', $user_id, $address_type );
+
+		wp_send_json_success(
+			array(
+				'message'      => __( 'Address saved successfully.', 'sense7' ),
+				'address_name' => $address_name,
+			)
+		);
 	}
 }

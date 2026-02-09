@@ -17,14 +17,19 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
+			min-height: 150px;
 
 			gap: var(--wp--preset--spacing--40);
 			font-size: var(--wp--preset--font-size--small);
 
-			border: 1px solid var(--wp--preset--color--contrast-40);
+			border: 2px solid var(--wp--preset--color--contrast-40);
 			border-radius: 1rem;
 
 			padding: var(--wp--preset--spacing--40);
+
+			&:first-child:not(:last-child) {
+				border-color: var(--wp--preset--color--primary);
+			}
 
 			a {
 				color: var(--wp--preset--color--primary);
@@ -32,30 +37,40 @@
 					text-decoration: underline;
 				}
 			}
+
+			.address-item {
+				font-style: normal;
+
+				&.is-individual .address-item__name,
+				.address-item__companyname {
+					font-weight: bold;
+					padding-bottom: var(--wp--preset--spacing--30);
+					display: inline-flex;
+				}
+			}
 		}
 	}
 
 
-	.wc-address-book-add-new-address {
+	.add-item {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: var(--wp--preset--spacing--40) var(--wp--preset--spacing--60);
-		background-color: var(--wp--preset--color--accent);
 		color: var(--wp--preset--color--primary);
+		background-color: var(--wp--preset--color--accent);
+		border-color: var(--wp--preset--color--accent);
+		
 		font-size: var(--wp--preset--font-size--small);
 		font-weight: 700;
 		text-decoration: none;
-		border-radius: 0.5rem;
 		transition: background-color 0.2s ease;
 	}
 
-	.wc-address-book-meta {
-		float: none;
-		order: 2;
+	.address-actions {
 		display: flex;
 		flex-wrap: wrap;
-		row-gap: 0rem;
+		row-gap: var(--wp--preset--spacing--30);
 		column-gap: var(--wp--preset--spacing--40);
 		font-size: var(--wp--preset--font-size--small);
 	}

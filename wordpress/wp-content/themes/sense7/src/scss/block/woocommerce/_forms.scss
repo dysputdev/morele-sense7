@@ -14,11 +14,35 @@
 /* Podstawowa struktura dla floating labels */
 .woocommerce {
 	form {
+		&.login,
+		&.register {
+			max-width: 420px;
+			border: 0;
+			padding: 0;
+			margin: 0;
+			.woocommerce-form-login {
+				&__submit {
+					float: none;
+					margin: 0;
+					width: 100%;
+				}
+			}
+			.woocommerce-form-register {
+				&__submit { @extend .woocommerce-form-login__submit }
+			}
+		}
 		.form-row {
 			padding: 0;
 			margin: 0;
 			position: relative;
 			margin-bottom: 1.5em;
+
+			&--buttons {
+				display: flex;
+				gap: var(--wp--preset--spacing--40);
+				flex-direction: column;
+				justify-content: center;
+			}
 
 			.woocommerce-input-wrapper {
 				position: relative;

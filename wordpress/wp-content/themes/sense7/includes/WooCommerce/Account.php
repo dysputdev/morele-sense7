@@ -2,6 +2,8 @@
 
 namespace Sense7\Theme\WooCommerce;
 
+use WC_AJAX;
+
 class Account {
 
 	/**
@@ -22,7 +24,7 @@ class Account {
 
 		add_filter( 'woocommerce_save_account_details_required_fields', array( $this, 'account_details_required_fields' ) );
 
-		add_action( 'template_redirect', array( $this, 'redirect_my_account_pages' ) );
+		// add_action( 'template_redirect', array( $this, 'redirect_my_account_pages' ) );
 		// if ( class_exists( 'WC_Address_Book' ) ) {
 		// 	$class = new \WC_Address_Book();
 		// 	add_action( 'woocommerce_account_edit-account_endpoint', array( $class, 'wc_address_book_page' ), 20 );
@@ -78,10 +80,14 @@ class Account {
 
 			wp_localize_script(
 				'sense7-myaccount',
-				'sense7MyAccount',
+				'sense7Account',
 				array(
-					'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-					'nonce'   => wp_create_nonce( 'save_account_field' ),
+					'ajax_url'            => admin_url( 'admin-ajax.php' ),
+					'wc_ajax_url'         => class_exists( 'WC_AJAX' ) ? WC_AJAX::get_endpoint( '%%endpoint%%' ) : '?wc-ajax=%%endpoint%%',
+					'save_account_nonce'  => wp_create_nonce( 'save_account_field' ),
+					'primary_nonce'       => wp_create_nonce( 'woo-address-book-primary' ),
+					'delete_nonce'        => wp_create_nonce( 'woo-address-book-delete' ),
+					'delete_confirmation' => __( 'Czy na pewno chcesz usunąć ten adres?', 'sense7' ),
 				)
 			);
 		}

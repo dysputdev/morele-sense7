@@ -27,8 +27,13 @@
 
 			padding: var(--wp--preset--spacing--40);
 
-			&:first-child:not(:last-child) {
+			&:has(.address-action--set-default:checked) {
 				border-color: var(--wp--preset--color--primary);
+
+				.address-action--delete {
+					visibility: hidden;
+					pointer-events: none;
+				}
 			}
 
 			a {

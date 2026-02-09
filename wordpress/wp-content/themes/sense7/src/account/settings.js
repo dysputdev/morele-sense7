@@ -1,15 +1,15 @@
 export const AccountSettings = {
 	init: function() {
-		const forms = document.querySelectorAll('.edit-account--display-name, .edit-account--email');
-		if (!forms.length) {
+		const inlineForms = document.querySelectorAll('.edit-account--display-name, .edit-account--email');
+		if (!inlineForms.length) {
 			return;
 		}
 
-		this.bindEvents(forms);
+		this.bindEvents(inlineForms);
 	},
 
-	bindEvents: function(forms) {
-		forms.forEach(form => {
+	bindEvents: function(inlineForms) {
+		inlineForms.forEach(form => {
 			const input = form.querySelector('input[type="text"], input[type="email"]');
 			const button = form.querySelector('.inline-input__button');
 
@@ -29,19 +29,19 @@ export const AccountSettings = {
 					button.classList.remove('is-visible');
 				}
 				// Hide success icon when typing
-				this.hideSuccess(form);
-				this.hideError(form);
+				this.hideInlineSuccess(form);
+				this.hideInlineError(form);
 			});
 
 			// Handle form submit
 			form.addEventListener('submit', (e) => {
 				e.preventDefault();
-				this.handleSubmit(form);
+				this.handleInlineSubmit(form);
 			});
 		});
 	},
 
-	handleSubmit: function(form) {
+	handleInlineSubmit: function(form) {
 		const input = form.querySelector('input[type="text"], input[type="email"]');
 		const button = form.querySelector('.inline-input__button');
 		const fieldName = input.name;
@@ -49,32 +49,32 @@ export const AccountSettings = {
 
 		// Basic validation
 		if (!fieldValue) {
-			this.showError(form, 'To pole jest wymagane');
+			this.showInlineError(form, 'To pole jest wymagane');
 			return;
 		}
 
 		// Email validation
 		if (input.type === 'email' && !this.isValidEmail(fieldValue)) {
-			this.showError(form, 'Podaj poprawny adres e-mail');
+			this.showInlineError(form, 'Podaj poprawny adres e-mail');
 			return;
 		}
 
 		// Show loading state
 		button.classList.add('is-loading');
-		this.hideError(form);
+		this.hideInlineError(form);
 
 		// Get nonce
 		const nonce = form.querySelector('[name="save-account-details-nonce"]').value;
 
 		// AJAX request
-		fetch(sense7MyAccount.ajaxUrl, {
+		fetch(sense7Account.ajax_url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			body: new URLSearchParams({
 				action: 'save_account_field',
-				nonce: nonce,
+				nonce: sense7Account.save_account_nonce,
 				field_name: fieldName,
 				field_value: fieldValue,
 			})
@@ -88,19 +88,19 @@ export const AccountSettings = {
 				input.dataset.originalValue = fieldValue;
 				// Hide button and show success icon
 				button.classList.remove('is-visible');
-				this.showSuccess(form);
+				this.showInlineSuccess(form);
 				// Hide success icon after 3 seconds
 				setTimeout(() => {
-					this.hideSuccess(form);
+					this.hideInlineSuccess(form);
 				}, 3000);
 			} else {
 				// Show error message
-				this.showError(form, data.data.message || 'Wystąpił błąd podczas zapisywania');
+				this.showInlineError(form, data.data.message || 'Wystąpił błąd podczas zapisywania');
 			}
 		})
 		.catch(error => {
 			button.classList.remove('is-loading');
-			this.showError(form, 'Wystąpił błąd podczas zapisywania');
+			this.showInlineError(form, 'Wystąpił błąd podczas zapisywania');
 			console.error('Error:', error);
 		});
 	},
@@ -110,7 +110,7 @@ export const AccountSettings = {
 		return emailRegex.test(email);
 	},
 
-	showSuccess: function(form) {
+	showInlineSuccess: function(form) {
 		const accountField = form.querySelector('.inline-input');
 		let successIcon = accountField.querySelector('.inline-input__success');
 
@@ -124,14 +124,14 @@ export const AccountSettings = {
 		successIcon.classList.add('is-visible');
 	},
 
-	hideSuccess: function(form) {
+	hideInlineSuccess: function(form) {
 		const successIcon = form.querySelector('.inline-input__success');
 		if (successIcon) {
 			successIcon.classList.remove('is-visible');
 		}
 	},
 
-	showError: function(form, message) {
+	showInlineError: function(form, message) {
 		const accountField = form.querySelector('.inline-input');
 		let errorDiv = accountField.querySelector('.inline-input__error');
 
@@ -146,7 +146,7 @@ export const AccountSettings = {
 		accountField.classList.add('has-error');
 	},
 
-	hideError: function(form) {
+	hideInlineError: function(form) {
 		const accountField = form.querySelector('.inline-input');
 		const errorDiv = accountField.querySelector('.inline-input__error');
 
@@ -156,5 +156,112 @@ export const AccountSettings = {
 		accountField.classList.remove('has-error');
 	}
 };
+
+export const AddressSettings = {
+
+	editElementsClassName: 'address-action--edit',
+	deleteClassName: 'address-action--delete',
+	setDefaultClassName: 'address-action--set-default',
+
+	init: function() {
+		this.bindEvents();
+	},
+
+	bindEvents: function() {
+		const checkboxes = document.querySelectorAll('.' + this.setDefaultClassName);
+
+		if (!checkboxes.length) {
+			return;
+		}
+
+		checkboxes.forEach(checkbox => {
+			checkbox.addEventListener('change', (e) => {
+				this.handleSetDefault(e.target);
+			});
+		});
+	},
+
+	handleSetDefault: function(checkbox) {
+		const addressName = checkbox.value;
+		const addressType = checkbox.dataset.addressType;
+		const isDefault   = checkbox.dataset.isDefault === 'true';
+
+		// If already default, prevent unchecking
+		if (isDefault) {
+			checkbox.checked = true;
+			return;
+		}
+
+		// Disable checkbox during request
+		checkbox.disabled = true;
+
+		// Show loading state on the address item
+		const addressItem = checkbox.closest('.woocommerce-Address__item');
+		if (addressItem) {
+			addressItem.classList.add('is-loading');
+		}
+
+		// Make AJAX call to wc_address_book_make_primary
+		fetch(sense7Account.wc_ajax_url.replace('%%endpoint%%', 'wc_address_book_make_primary'), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: new URLSearchParams({
+				name: addressName,
+				nonce: sense7Account.primary_nonce,
+			})
+		})
+		.then(response => {
+			// WooCommerce AJAX endpoints don't return JSON by default
+			// The endpoint just dies after updating, so any response means success
+			this.handleSuccess(addressName, addressType);
+		})
+		.catch(error => {
+			console.error('Error setting default address:', error);
+			this.handleError(checkbox, addressItem);
+		});
+	},
+
+	handleSuccess: function(addressName, addressType) {
+		// Find all checkboxes for this address type
+		const checkboxes = document.querySelectorAll('.' + this.setDefaultClassName + '[data-address-type="' + addressType + '"]');
+
+		checkboxes.forEach(cb => {
+			const wasDefault = cb.dataset.isDefault === 'true';
+			const isNowDefault = cb.value === addressName;
+
+			// Update data attribute
+			cb.dataset.isDefault = isNowDefault ? 'true' : 'false';
+
+			// Update checked state
+			cb.checked = isNowDefault;
+
+			// Re-enable checkbox
+			cb.disabled = false;
+
+			// Remove loading state
+			const addressItem = cb.closest('.woocommerce-Address__item');
+			if (addressItem) {
+				addressItem.classList.remove('is-loading');
+			}
+		});
+	},
+
+	handleError: function(checkbox, addressItem) {
+		// Revert checkbox state
+		checkbox.checked = false;
+		checkbox.disabled = false;
+
+		// Remove loading state
+		if (addressItem) {
+			addressItem.classList.remove('is-loading');
+		}
+
+		// Could show error message to user here
+		alert('Wystąpił błąd podczas zmiany domyślnego adresu. Spróbuj ponownie.');
+	}
+}
+
 
 export default AccountSettings;

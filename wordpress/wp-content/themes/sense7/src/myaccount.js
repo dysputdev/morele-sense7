@@ -3,7 +3,7 @@
  * Handles order table sorting and password modal
  */
 
-import { AccountSettings } from './account/settings';
+import { AccountSettings, AddressSettings } from './account/settings';
 import { Modal } from './account/modal';
 import { Orders } from './account/orders';
 
@@ -18,6 +18,7 @@ import { Orders } from './account/orders';
 			}
 			Modal.init();
 			AccountSettings.init();
+			AddressSettings.init();
 		});
 	} else {
 		if (document.querySelector('.myaccount-orders__table')) {
@@ -25,5 +26,6 @@ import { Orders } from './account/orders';
 		}
 		Modal.init();
 		AccountSettings.init();
+		AddressSettings.init();
 	}
 })();

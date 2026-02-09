@@ -2,7 +2,6 @@
 
 .woocommerce-cart-wrapper {
 	margin: 0 auto;
-	padding: var(--wp--preset--spacing--60) var(--wp--preset--spacing--50);
 
 	&__title {
 		text-align: center;
@@ -15,26 +14,14 @@
 .woocommerce-cart-layout {
 	display: grid;
 	grid-template-columns: 1fr;
-	gap: var(--wp--preset--spacing--60);
+	gap: var(--wp--preset--spacing--80);
 
 	@media (min-width: 1024px) {
 		grid-template-columns: 2fr 1fr;
 	}
 
 	&__main {
-		order: 2;
-
-		@media (min-width: 1024px) {
-			order: 1;
-		}
-	}
-
-	&__sidebar {
-		order: 1;
-
-		@media (min-width: 1024px) {
-			order: 2;
-		}
+		padding: var(--wp--preset--spacing--40) var(--wp--preset--spacing--60);
 	}
 }
 
@@ -156,8 +143,8 @@
 	}
 
 	&__name {
-		font-size: var(--wp--preset--font-size--base);
-		font-weight: 400;
+		font-size: var(--wp--preset--font-size--large);
+		font-weight: 300;
 
 		a {
 			color: var(--wp--preset--color--contrast);
@@ -258,6 +245,13 @@
 	}
 }
 
+.cart-collaterals {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--wp--preset--spacing--50);
+}
+
 // Cart totals
 .cart-totals {
 	background: var(--wp--preset--color--accent);
@@ -265,7 +259,7 @@
 	border-radius: 1rem;
 
 	&__title {
-		font-size: var(--wp--preset--font-size--large);
+		font-size: var(--wp--preset--font-size--large) !important;
 		font-weight: 700;
 		margin-bottom: var(--wp--preset--spacing--50);
 	}
@@ -302,11 +296,11 @@
 	&__shipping-free {
 		display: inline-block;
 		padding: 0.25rem 0.75rem;
-		background-color: hsl(120, 45%, 92%);
-		color: hsl(120, 45%, 35%);
+		background-color: #496B48;
+		color: white;
 		font-size: var(--wp--preset--font-size--small);
 		font-weight: 700;
-		border-radius: 0.25rem;
+		border-radius: 1rem;
 	}
 
 	&__applied-coupons {
@@ -378,9 +372,10 @@
 		cursor: pointer;
 		padding: 0;
 		text-align: left;
+		text-decoration: underline;
 
 		&:hover {
-			text-decoration: underline;
+			text-decoration: none;
 		}
 	}
 
@@ -458,6 +453,7 @@
 		gap: var(--wp--preset--spacing--40);
 
 		.wc-proceed-to-checkout {
+			padding: 0;
 			.checkout-button {
 				box-sizing: border-box;
 				display: block;
@@ -473,6 +469,7 @@
 				text-decoration: none;
 				cursor: pointer;
 				transition: background-color 0.2s ease;
+				margin: 0 !important;
 
 				&:hover {
 					background-color: color-mix(in srgb, var(--wp--preset--color--primary) 85%, transparent);
@@ -486,10 +483,9 @@
 		text-align: center;
 		color: var(--wp--preset--color--primary);
 		font-size: var(--wp--preset--font-size--base);
-		text-decoration: underline;
-
+		text-decoration: none;
 		&:hover {
-			text-decoration: none;
+			text-decoration: underline;
 		}
 	}
 }

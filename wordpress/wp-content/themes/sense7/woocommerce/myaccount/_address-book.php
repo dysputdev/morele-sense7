@@ -59,10 +59,6 @@ if ( class_exists( 'WC_Address_Book' ) ) {
 		);
 	}
 }
-
-$oldcol = 1;
-$col    = 1;
-
 ?>
 
 
@@ -70,8 +66,6 @@ $col    = 1;
 <?php foreach ( $get_addresses as $address_type => $address_title ) : ?>
 	<?php
 		$address = wc_get_account_formatted_address( $address_type );
-		$col     = $col * -1;
-		$oldcol  = $oldcol * -1;
 	?>
 
 	<div class="">
@@ -121,13 +115,13 @@ $col    = 1;
 
 							<?php if ( $is_company ) : ?>
 								<span class="address-item__nip">
-									<?php esc_html_e( 'NIP:', 'woocommerce' ); ?> <?php echo esc_html( $item[ $item_name . '_nip' ] ); ?>
+									<?php esc_html_e( 'NIP:', 'sense7' ); ?> <?php echo esc_html( $item[ $item_name . '_nip' ] ); ?>
 								</span><br/>
 							<?php endif; ?>
 
 							<?php if ( ! empty( $item[ $item_name . '_phone' ] ) ) : ?>
 								<span class="address-item__phone">
-									<?php esc_html_e( 'Phone:', 'woocommerce' ); ?> <?php echo esc_html( $item[ $item_name . '_phone' ] ); ?>
+									<?php esc_html_e( 'Telefon:', 'sense7' ); ?> <?php echo esc_html( $item[ $item_name . '_phone' ] ); ?>
 								</span>
 							<?php endif; ?>
 
@@ -162,8 +156,10 @@ $col    = 1;
 
 				<?php endforeach; ?>
 				<div class="woocommerce-Address__item add-item">
+					<?php $existing = count( $adresses[ $address_type ]['items'] ); ?>
 					<a href="#address-modal"
 						data-action="open-modal"
+						data-address-id="<?php echo esc_attr( $address_type . ( ( 0 === $existing ) ? '' : $existing + 1 ) ); ?>"
 						data-modal-id="address-modal"
 						data-address-type="<?php echo esc_attr( $address_type ); ?>"
 						class="add button">
@@ -178,3 +174,46 @@ $col    = 1;
 
 <?php endforeach; ?>
 </div>
+
+<?php
+// Render address modal.
+ob_start();
+?>
+<div class="multistore-modal__body">
+	<div class="address-modal__loading" style="display: none;">
+		<p><?php esc_html_e( 'Ładowanie...', 'sense7' ); ?></p>
+	</div>
+	<form class="multistore-modal__form address-modal__form" id="address-modal-form" method="post">
+		<div class="address-modal__fields"></div>
+
+		<div class="multistore-modal__error" id="address-modal-error" style="display: none;"></div>
+
+		<input type="hidden" name="address_type" id="address_type" value="" />
+		<input type="hidden" name="address_name" id="address_name" value="" />
+		<?php wp_nonce_field( 'save_address', 'save-address-nonce' ); ?>
+	</form>
+</div>
+
+<div class="multistore-modal__footer">
+	<button type="button" class="button button--secondary" data-action="close-modal" data-modal-id="address-modal">
+		<?php esc_html_e( 'Anuluj', 'sense7' ); ?>
+	</button>
+	<button type="submit" class="button button--primary" form="address-modal-form">
+		<?php esc_html_e( 'Zapisz adres', 'sense7' ); ?>
+	</button>
+</div>
+
+<?php
+$content = ob_get_clean();
+
+get_template_part(
+	'template-parts/modal',
+	null,
+	array(
+		'id'      => 'address-modal',
+		'title'   => '', // Will be set by JS.
+		'content' => $content,
+		'classes' => array( 'multistore-modal--address' ),
+	)
+);
+?>

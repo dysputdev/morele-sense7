@@ -1,3 +1,5 @@
+import { Modal } from './modal';
+
 export const AccountSettings = {
 	init: function() {
 		const inlineForms = document.querySelectorAll('.edit-account--display-name, .edit-account--email');
@@ -165,6 +167,7 @@ export const AddressSettings = {
 
 	init: function() {
 		this.bindEvents();
+		this.initAddressModal();
 	},
 
 	bindEvents: function() {
@@ -227,15 +230,32 @@ export const AddressSettings = {
 		// Find all checkboxes for this address type
 		const checkboxes = document.querySelectorAll('.' + this.setDefaultClassName + '[data-address-type="' + addressType + '"]');
 
+		// Store old default address name for swapping
+		let oldDefaultName = addressType;
+
 		checkboxes.forEach(cb => {
 			const wasDefault = cb.dataset.isDefault === 'true';
 			const isNowDefault = cb.value === addressName;
+
+			// Store old default name
+			if (wasDefault) {
+				oldDefaultName = cb.value;
+			}
 
 			// Update data attribute
 			cb.dataset.isDefault = isNowDefault ? 'true' : 'false';
 
 			// Update checked state
 			cb.checked = isNowDefault;
+
+			// Update checkbox value - woo-address-book swaps the names
+			if (wasDefault && !isNowDefault) {
+				// Old default gets the name of the new default
+				cb.value = addressName;
+			} else if (isNowDefault && !wasDefault) {
+				// New default becomes the address type (e.g., "billing")
+				cb.value = addressType;
+			}
 
 			// Re-enable checkbox
 			cb.disabled = false;
@@ -244,6 +264,20 @@ export const AddressSettings = {
 			const addressItem = cb.closest('.woocommerce-Address__item');
 			if (addressItem) {
 				addressItem.classList.remove('is-loading');
+
+				// Update data-address-id in edit and delete links
+				const editLink = addressItem.querySelector('.address-action--edit');
+				const deleteLink = addressItem.querySelector('.address-action--delete');
+
+				if (wasDefault && !isNowDefault) {
+					// Old default address now has the new default's name
+					if (editLink) editLink.dataset.addressId = addressName;
+					if (deleteLink) deleteLink.dataset.addressId = addressName;
+				} else if (isNowDefault && !wasDefault) {
+					// New default address now has the address type name
+					if (editLink) editLink.dataset.addressId = addressType;
+					if (deleteLink) deleteLink.dataset.addressId = addressType;
+				}
 			}
 		});
 	},
@@ -260,6 +294,165 @@ export const AddressSettings = {
 
 		// Could show error message to user here
 		alert('Wystąpił błąd podczas zmiany domyślnego adresu. Spróbuj ponownie.');
+	},
+
+	initAddressModal: function() {
+		const form = document.getElementById('address-modal-form');
+		if (!form) {
+			return;
+		}
+
+		// Listen for modal open events
+		const addressLinks = document.querySelectorAll('[data-modal-id="address-modal"]');
+		addressLinks.forEach(link => {
+			link.addEventListener('click', (e) => {
+				this.handleAddressModalOpen(e.currentTarget);
+			});
+		});
+
+		// Handle form submit
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			this.handleAddressSubmit(form);
+		});
+	},
+
+	handleAddressModalOpen: function(trigger) {
+		const addressType = trigger.dataset.addressType;
+		const addressId = trigger.dataset.addressId || '';
+
+		// Update modal title
+		const modal = document.getElementById('address-modal');
+		const modalTitle = modal.querySelector('.multistore-modal__title');
+
+		if (addressId && addressId !== addressType) {
+			modalTitle.textContent = addressType === 'billing'
+				? 'Edytuj adres rozliczeniowy'
+				: 'Edytuj adres dostawy';
+		} else {
+			modalTitle.textContent = addressType === 'billing'
+				? 'Dodaj adres rozliczeniowy'
+				: 'Dodaj adres dostawy';
+		}
+
+		// Set hidden field values
+		document.getElementById('address_type').value = addressType;
+		document.getElementById('address_name').value = addressId || addressType;
+
+		// Load form fields
+		this.loadAddressFormFields(addressType, addressId);
+	},
+
+	loadAddressFormFields: function(addressType, addressId) {
+		const modal = document.getElementById('address-modal');
+		const fieldsContainer = modal.querySelector('.address-modal__fields');
+		const loadingDiv = modal.querySelector('.address-modal__loading');
+
+		// Show loading
+		fieldsContainer.style.display = 'none';
+		loadingDiv.style.display = 'block';
+
+		// AJAX request
+		fetch(sense7Account.ajax_url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: new URLSearchParams({
+				action: 'get_address_form_fields',
+				nonce: sense7Account.save_address_nonce,
+				address_type: addressType,
+				address_name: addressId || '',
+			})
+		})
+		.then(response => response.json())
+		.then(data => {
+			loadingDiv.style.display = 'none';
+			fieldsContainer.style.display = 'block';
+
+			if (data.success) {
+				fieldsContainer.innerHTML = data.data.html;
+
+				// Initialize select2 if available
+				if (typeof jQuery !== 'undefined' && jQuery.fn.selectWoo) {
+					jQuery(fieldsContainer).find('select').selectWoo();
+				}
+			} else {
+				this.showModalError(data.data.message || 'Error loading form');
+			}
+		})
+		.catch(error => {
+			loadingDiv.style.display = 'none';
+			fieldsContainer.style.display = 'block';
+			this.showModalError('Error loading form');
+			console.error('Error:', error);
+		});
+	},
+
+	handleAddressSubmit: function(form) {
+		const submitButton = form.closest('.multistore-modal').querySelector('button[type="submit"]');
+
+		// Show loading
+		if (submitButton) {
+			submitButton.classList.add('is-loading');
+			submitButton.disabled = true;
+		}
+
+		this.hideModalError();
+
+		// Prepare form data
+		const formData = new FormData(form);
+		formData.append('action', 'save_address');
+		formData.append('nonce', sense7Account.save_address_nonce);
+
+		// AJAX request
+		fetch(sense7Account.ajax_url, {
+			method: 'POST',
+			body: new URLSearchParams(formData)
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (submitButton) {
+				submitButton.classList.remove('is-loading');
+				submitButton.disabled = false;
+			}
+
+			if (data.success) {
+				// Close modal
+				const modal = document.getElementById('address-modal');
+				if (modal) {
+					Modal.hideModal(modal);
+				}
+
+				// Reload page
+				window.location.reload();
+			} else {
+				this.showModalError(data.data.message || 'Error saving address');
+			}
+		})
+		.catch(error => {
+			if (submitButton) {
+				submitButton.classList.remove('is-loading');
+				submitButton.disabled = false;
+			}
+			this.showModalError('Error saving address');
+			console.error('Error:', error);
+		});
+	},
+
+	showModalError: function(message) {
+		const errorDiv = document.getElementById('address-modal-error');
+		if (errorDiv) {
+			errorDiv.textContent = message;
+			errorDiv.style.display = 'block';
+		}
+	},
+
+	hideModalError: function() {
+		const errorDiv = document.getElementById('address-modal-error');
+		if (errorDiv) {
+			errorDiv.style.display = 'none';
+		}
 	}
 }
 

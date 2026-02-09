@@ -106,7 +106,7 @@ export const Modal = {
 		if (!input) return;
 
 		if (input.type === 'password') {
-			input.type = 'text';const confirmPassword = document.getElementById('password_2_modal').value; 
+			input.type = 'text';
 			iconShow.style.display = 'none';
 			iconHide.style.display = 'block';
 		} else {

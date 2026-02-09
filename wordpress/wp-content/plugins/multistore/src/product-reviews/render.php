@@ -148,8 +148,8 @@ $recommendation = $total_reviews > 0 ? round( ( ( $rating_counts[5] + $rating_co
 		</div>
 	<?php endif; ?>
 
-	<div class="multistore-block-product-reviews__list">
-		<?php if ( ! empty( $reviews ) ) : ?>
+	<?php if ( ! empty( $reviews ) ) : ?>
+		<div class="multistore-block-product-reviews__list">
 			<?php foreach ( $reviews as $review ) : ?>
 				<?php
 				$comment_rating  = isset( $review->rating ) ? intval( $review->rating ) : 0;
@@ -225,11 +225,11 @@ $recommendation = $total_reviews > 0 ? round( ( ( $rating_counts[5] + $rating_co
 					<?php endif; ?>
 				</div>
 			<?php endforeach; ?>
-		<?php else : ?>
-			<p class="multistore-block-product-reviews__empty">
-				<?php esc_html_e( 'Brak opinii dla tego produktu.', 'multistore' ); ?>
-			</p>
-		<?php endif; ?>
-	</div>
+		</div>
+	<?php else : ?>
+		<div class="multistore-block-product-reviews__empty">
+			<?php esc_html_e( 'Brak opinii dla tego produktu.', 'multistore' ); ?>
+		</div>
+	<?php endif; ?>
 
 </div>

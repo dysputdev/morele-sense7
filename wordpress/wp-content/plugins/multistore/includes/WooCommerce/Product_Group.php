@@ -66,13 +66,27 @@ class Product_Group {
 	public function get_queried_products() {
 		global $wpdb;
 
-		$relation_table = Product_Relations_Table::get_table_name();
-		$main_query     = \WC()->query->get_main_query();
-		$product_query  = $main_query->request;
+		$relation_table     = Product_Relations_Table::get_table_name();
+		$main_query         = \WC()->query->get_main_query();
+		$product_query      = $main_query->request;
+		$_org_product_query = $product_query;
 
 		// Remove LEFT JOIN and GROUP BY.
-		$product_query = str_replace( "LEFT JOIN {$relation_table} as pr ON (wp_posts.ID = pr.product_id AND wp_posts.ID = pr.related_product_id)", '', $product_query );
-		$product_query = str_replace( 'GROUP BY pr.product_group_id', 'GROUP BY wp_posts.ID', $product_query );
+		// modifyed query is commented by /*GROUP_PRODUCTS_JOIN*/ and /*/GROUP_PRODUCTS_JOIN*/.
+		$product_query = preg_replace(
+			'#/\*\s*@wp:posts_clauses product_grouping_join BEGIN\s*\*/.*?/\*\s*@wp:posts_clauses product_grouping_join END\s*\*/#s',
+			'',
+			$product_query
+		);
+
+		$org_group_by = $main_query->get( '_orig_groupby' );
+		if ( $org_group_by ) {
+			$product_query = preg_replace(
+				'#/\*\s*@wp:posts_clauses product_grouping_groupby BEGIN\s*\*/.*?/\*\s*@wp:posts_clauses product_grouping_groupby END\s*\*/#s',
+				$org_group_by,
+				$product_query
+			);
+		}
 
 		$product_ids = $wpdb->get_col( $product_query, 0 ); // phpcs:ignore
 		$product_ids = array_map( 'intval', $product_ids );

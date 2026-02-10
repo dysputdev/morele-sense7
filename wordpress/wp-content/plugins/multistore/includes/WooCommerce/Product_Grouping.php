@@ -52,9 +52,18 @@ class Product_Grouping {
 		$relation_table = Product_Relations_Table::get_table_name();
 
 		if ( self::is_grouping_enabled() ) {
+			$query->set( '_orig_join', $clauses['join'] );
+			$query->set( '_orig_groupby', $clauses['groupby'] );
+
 			// $clauses['where']  .= ' AND pr.product_id = 172';
-			$clauses['join']   .= " LEFT JOIN {$relation_table} as pr ON (wp_posts.ID = pr.product_id AND wp_posts.ID = pr.related_product_id)";
-			$clauses['groupby'] = 'pr.product_group_id';
+			$clauses['join']   .= "
+				/* @wp:posts_clauses product_grouping_join BEGIN */
+				LEFT JOIN {$relation_table} as pr ON (wp_posts.ID = pr.product_id AND wp_posts.ID = pr.related_product_id)
+				/* @wp:posts_clauses product_grouping_join END */
+			";
+			$clauses['groupby'] = '/* @wp:posts_clauses product_grouping_groupby BEGIN */
+			pr.product_group_id
+			/* @wp:posts_clauses product_grouping_groupby END */';
 		}
 
 		remove_filter( 'posts_clauses', array( $this, 'group_products_query' ), 10, 2 );

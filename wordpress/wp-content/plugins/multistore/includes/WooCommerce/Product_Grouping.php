@@ -55,15 +55,23 @@ class Product_Grouping {
 			$query->set( '_orig_join', $clauses['join'] );
 			$query->set( '_orig_groupby', $clauses['groupby'] );
 
-			// $clauses['where']  .= ' AND pr.product_id = 172';
-			$clauses['join']   .= "
+			$clauses['join'] .= "
 				/* @wp:posts_clauses product_grouping_join BEGIN */
-				LEFT JOIN {$relation_table} as pr ON (wp_posts.ID = pr.product_id AND wp_posts.ID = pr.related_product_id)
+				LEFT JOIN {$relation_table} as pg_pr ON (wp_posts.ID = pg_pr.product_id AND wp_posts.ID = pg_pr.related_product_id)
+				LEFT JOIN wp_term_relationships AS pg_main ON (wp_posts.ID = pg_main.object_id AND pg_main.term_taxonomy_id = ' . $term->term_id . ')
 				/* @wp:posts_clauses product_grouping_join END */
+
 			";
+
 			$clauses['groupby'] = '/* @wp:posts_clauses product_grouping_groupby BEGIN */
-			pr.product_group_id
+			pg_pr.product_group_id
 			/* @wp:posts_clauses product_grouping_groupby END */';
+
+			$clauses['orderby'] = '
+			/* @wp:posts_clauses product_grouping_orderby BEGIN */
+			pg_main.object_id DESC, 
+			/* @wp:posts_clauses product_grouping_orderby END */
+			' . $clauses['orderby'];
 		}
 
 		remove_filter( 'posts_clauses', array( $this, 'group_products_query' ), 10, 2 );

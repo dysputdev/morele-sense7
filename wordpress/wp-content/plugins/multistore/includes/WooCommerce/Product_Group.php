@@ -71,10 +71,24 @@ class Product_Group {
 		$product_query      = $main_query->request;
 		$_org_product_query = $product_query;
 
+		// remove this clause when query if filtring is applied.
+		$is_filtered = false;
+		foreach ( $main_query->query as $key => $value ) {
+			if ( str_contains( $key, 'filter' ) ) {
+				$is_filtered = true;
+			}
+		}
+
 		// Remove LEFT JOIN and GROUP BY.
 		// modifyed query is commented by /*GROUP_PRODUCTS_JOIN*/ and /*/GROUP_PRODUCTS_JOIN*/.
 		$product_query = preg_replace(
 			'#/\*\s*@wp:posts_clauses product_grouping_join BEGIN\s*\*/.*?/\*\s*@wp:posts_clauses product_grouping_join END\s*\*/#s',
+			'',
+			$product_query
+		);
+
+		$product_query = preg_replace(
+			'#/\*\s*@wp:posts_clauses product_grouping_where BEGIN\s*\*/.*?/\*\s*@wp:posts_clauses product_grouping_where END\s*\*/#s',	
 			'',
 			$product_query
 		);
@@ -87,6 +101,14 @@ class Product_Group {
 				$product_query
 			);
 		}
+
+		// if ( $is_filtered ) {
+		// $product_query = preg_replace(
+		// 	'#/\*\s*@wp:posts_clauses product_grouping_orderby BEGIN\s*\*/.*?/\*\s*@wp:posts_clauses product_grouping_orderby END\s*\*/#s',
+		// 	'',
+		// 	$product_query
+		// );
+		// }
 
 		$product_ids = $wpdb->get_col( $product_query, 0 ); // phpcs:ignore
 		$product_ids = array_map( 'intval', $product_ids );

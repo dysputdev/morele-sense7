@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $currency_format = isset( $attributes['currencyFormat'] ) ? $attributes['currencyFormat'] : 'default';
 $prefix          = isset( $attributes['prefix'] ) ? $attributes['prefix'] : __( 'Najniższa cena: ', 'multistore' );
 $suffix          = isset( $attributes['suffix'] ) ? $attributes['suffix'] : '';
+$tooltip         = isset( $attributes['tooltip'] ) ? $attributes['tooltip'] : '';
 $show_days_ago   = isset( $attributes['showDaysAgo'] ) ? $attributes['showDaysAgo'] : false;
 $show_empty      = isset( $attributes['showEmpty'] ) ? $attributes['showEmpty'] : true;
 
@@ -55,6 +56,7 @@ $recorded_at  = $lowest_price_data['recorded_at'] ?? '';
 $days_ago     = 0;
 $days_ago     = ( $show_days_ago && ! empty( $recorded_at ) ) ? Helpers::get_days_ago( $recorded_at ) : 0;
 $price        = ( ! empty( $lowest_price ) && $is_promotion ) ? Helpers::format_price( $lowest_price, $currency_format ) : '';
+$tooltip      = str_replace( '{price}', $price, $tooltip );
 
 // Get wrapper attributes.
 $wrapper_attributes = get_block_wrapper_attributes(
@@ -80,6 +82,10 @@ $wrapper_attributes = get_block_wrapper_attributes(
 				<?php echo esc_html( $suffix ); ?>
 			</span>
 		<?php endif; ?>
+
+		<?php if ( ! empty( $tooltip ) ) :
+			multistore_template_part( 'elements/tooltip', null, array( 'tooltip' => $tooltip ) );
+		endif; ?>
 
 		<?php if ( $show_days_ago && $days_ago > 0 ) : ?>
 			<span class="multistore-block-price-lowest__days">

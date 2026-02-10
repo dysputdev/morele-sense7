@@ -1,0 +1,29 @@
+// Checkout page styles
+
+.woocommerce-checkout-wrapper {
+	margin: 0 auto;
+	padding: var(--wp--preset--spacing--60) var(--wp--preset--spacing--50);
+}
+
+
+.woocommerce-cart-wrapper {
+	margin: 0 auto;
+	padding: var(--wp--preset--spacing--60) var(--wp--preset--spacing--50);
+
+	&__title {
+		text-align: center;
+		font-size: var(--wp--preset--font-size--xx-large);
+		font-weight: 900;
+		margin-bottom: var(--wp--preset--spacing--60);
+	}
+}
+
+.woocommerce-cart-layout {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--wp--preset--spacing--60);
+
+	@media (min-width: 1024px) {
+		grid-template-columns: 2fr 1fr;
+	}
+}

@@ -1,0 +1,27 @@
+.multistore-block-scrollspy-wrapper {
+	position: relative;
+}
+.multistore-block-scrollspy-nav {
+	z-index: 100;
+	position: sticky;
+	top: 0;
+	background-color: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--base);
+	&__link {
+		color: var(--wp--preset--color--base);
+		padding: var(--wp--preset--spacing--40);
+		&:hover {
+			color: var(--wp--preset--color--base);
+		}
+	}
+}
+
+.admin-bar .multistore-block-scrollspy-nav {
+	top: 32px;
+}
+
+.scrollspy-section {
+	&__header {
+		display: none;
+	}
+}

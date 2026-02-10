@@ -1,0 +1,82 @@
+// .woocommerce-message {
+// 	position: fixed;
+// 	bottom: 1rem;
+// 	left: 50%;
+// 	transform: translateX(-50%);
+// 	z-index: 9999;
+// 	max-width: var(--wp--style--global--content-size);
+// 	width: calc(100% - 2rem);
+// 	border: 0;
+// 	&::before {
+// 		content: '';
+// 	}
+// 	&--success {
+// 		color: var(--wp--preset--color--white);
+// 		background-color: var(--notice-success);
+		
+// 	}
+// }
+
+.wc-block-store-notices {
+	position: fixed;
+	bottom: 1rem;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 9999;
+	max-width: var(--wp--style--global--content-size);
+	width: calc(100% - 2rem);
+	border: 0;
+
+}
+.wc-block-components-notice-banner {
+	--notice-error: #CF2B1F;
+	--notice-warning: #CF2B1F;
+	--notice-success: #496B48;
+	--notice-info: var(--wp--preset--color--primary);
+
+	font-size: var(--wp-preset--font-size--large);
+	border: 0;
+	border-radius: 0.5rem;
+	> svg {
+		width: 1rem;
+		height: 1rem;
+		background-color: var(--wp--preset--color--white);
+		fill: var(--notice-info);
+	}
+	&.is-error {
+		color: var(--wp--preset--color--white);
+		background-color: var(--notice-error);
+		> svg {
+			fill: var(--notice-error);
+		}
+	}
+	&.is-warning {
+		color: var(--wp--preset--color--white);
+		background-color: var(--notice-warning);	
+		> svg {
+			fill: var(--notice-wrarning);
+		}
+	}
+	&.is-success {
+		color: var(--wp--preset--color--white);
+		background-color: var(--notice-success);
+		> svg {
+			fill: var(--notice-success);
+		}
+	}
+	&.is-info {
+		color: var(--wp--preset--color--white);
+		background-color: var(--notice-info);
+		> svg {
+			background-color: var(--wp--preset--color--white);
+			fill: var(--notice-info);
+		}
+	}
+	&.is-default {
+		color: var(--wp--preset--color--white);
+		background-color: var(--notice-info);
+		> svg {
+			fill: var(--notice-info);
+		}
+	}
+}

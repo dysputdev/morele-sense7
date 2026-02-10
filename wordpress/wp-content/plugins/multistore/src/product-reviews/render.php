@@ -38,17 +38,21 @@ $star_icon_empty = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" 
 
 
 global $wpdb;
+
+$reviews = array();
+$stats   = array();
 // if display all stores, then we need combined reviews.
 if ( $display_all_stores_reviews ) {
 	$global_query = get_global_query_by_sku( $sku );
-
-	$reviews = $wpdb->get_results( "SELECT * FROM ({$global_query}) as t ORDER BY t.comment_date_gmt DESC LIMIT {$attributes['perPage']}" );
-
-	$stats = $wpdb->get_results(
-		"SELECT t.rating, count(*) as total, sum(rating) as total_rating 
-		FROM ({$global_query}) as t
-		GROUP BY t.rating"
-	);
+	if ( ! empty( $global_query ) ) {
+		$reviews = $wpdb->get_results( "SELECT * FROM ({$global_query}) as t ORDER BY t.comment_date_gmt DESC LIMIT {$attributes['perPage']}" );
+	
+		$stats = $wpdb->get_results(
+			"SELECT t.rating, count(*) as total, sum(rating) as total_rating 
+			FROM ({$global_query}) as t
+			GROUP BY t.rating"
+		);
+	}
 } else {
 	// Get reviews only from current blog.
 	global $wpdb;
@@ -144,8 +148,8 @@ $recommendation = $total_reviews > 0 ? round( ( ( $rating_counts[5] + $rating_co
 		</div>
 	<?php endif; ?>
 
-	<div class="multistore-block-product-reviews__list">
-		<?php if ( ! empty( $reviews ) ) : ?>
+	<?php if ( ! empty( $reviews ) ) : ?>
+		<div class="multistore-block-product-reviews__list">
 			<?php foreach ( $reviews as $review ) : ?>
 				<?php
 				$comment_rating  = isset( $review->rating ) ? intval( $review->rating ) : 0;
@@ -221,11 +225,11 @@ $recommendation = $total_reviews > 0 ? round( ( ( $rating_counts[5] + $rating_co
 					<?php endif; ?>
 				</div>
 			<?php endforeach; ?>
-		<?php else : ?>
-			<p class="multistore-block-product-reviews__empty">
-				<?php esc_html_e( 'Brak opinii dla tego produktu.', 'multistore' ); ?>
-			</p>
-		<?php endif; ?>
-	</div>
+		</div>
+	<?php else : ?>
+		<div class="multistore-block-product-reviews__empty">
+			<?php esc_html_e( 'Brak opinii dla tego produktu.', 'multistore' ); ?>
+		</div>
+	<?php endif; ?>
 
 </div>

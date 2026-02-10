@@ -1,0 +1,623 @@
+// Cart page styles
+
+.woocommerce-cart-wrapper {
+	margin: 0 auto;
+
+	&__title {
+		text-align: center;
+		font-size: var(--wp--preset--font-size--xx-large);
+		font-weight: 900;
+		margin-bottom: var(--wp--preset--spacing--60);
+	}
+}
+
+.woocommerce-cart-layout {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--wp--preset--spacing--80);
+
+	@media (min-width: 1024px) {
+		grid-template-columns: 2fr 1fr;
+	}
+
+	&__main {
+		padding: var(--wp--preset--spacing--40) var(--wp--preset--spacing--60);
+	}
+}
+
+// Cart form
+.woocommerce-cart-form {
+	&__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: var(--wp--preset--spacing--50);
+		padding-bottom: var(--wp--preset--spacing--40);
+	}
+
+	&__count {
+		font-size: var(--wp--preset--font-size--large);
+		font-weight: 700;
+	}
+
+	&__header-right {
+		display: flex;
+		gap: var(--wp--preset--spacing--40);
+	}
+
+	&__action-button {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--wp--preset--spacing--30);
+		padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+		background: transparent;
+		border: 1px solid var(--wp--preset--color--secondary);
+		border-radius: 0.5rem;
+		color: var(--wp--preset--color--secondary);
+		font-size: var(--wp--preset--font-size--small);
+		font-weight: 400;
+		cursor: pointer;
+		transition: all 0.2s ease;
+
+		svg {
+			flex-shrink: 0;
+		}
+
+		&:hover {
+			background-color: var(--wp--preset--color--secondary);
+			color: var(--wp--preset--color--base);
+		}
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+	}
+
+	&__items {
+		display: flex;
+		flex-direction: column;
+		gap: var(--wp--preset--spacing--40);
+	}
+
+	&__actions {
+		display: none;
+	}
+}
+
+// Cart item
+.cart-item {
+	display: grid;
+	grid-template-columns: auto 9rem 1fr auto auto auto;
+	gap: var(--wp--preset--spacing--40);
+	align-items: center;
+	position: relative;
+	transition: opacity 0.3s ease, transform 0.3s ease;
+
+	@media (max-width: 768px) {
+		grid-template-columns: auto 5rem 1fr;
+		gap: var(--wp--preset--spacing--30);
+	}
+
+	&__select {
+		input[type="checkbox"] {
+			width: 20px;
+			height: 20px;
+			cursor: pointer;
+		}
+	}
+
+	&__thumbnail {
+		width: 120px;
+		height: 120px;
+		overflow: hidden;
+		border-radius: 0.5rem;
+
+		@media (max-width: 768px) {
+			width: 80px;
+			height: 80px;
+		}
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		a {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	&__details {
+		display: flex;
+		flex-direction: column;
+		gap: var(--wp--preset--spacing--30);
+
+		@media (max-width: 768px) {
+			grid-column: 1 / -1;
+			order: 4;
+		}
+	}
+
+	&__name {
+		font-size: var(--wp--preset--font-size--large);
+		font-weight: 300;
+
+		a {
+			color: var(--wp--preset--color--contrast);
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	&__lowest-price {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		font-size: var(--wp--preset--font-size--x-small);
+		color: var(--wp--preset--color--contrast-60);
+
+		svg {
+			flex-shrink: 0;
+		}
+	}
+
+	&__quantity {
+		@media (max-width: 768px) {
+			grid-column: 1 / -1;
+			order: 5;
+		}
+	}
+
+	&__price {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: var(--wp--preset--spacing--30);
+
+		@media (max-width: 768px) {
+			grid-column: 3;
+			grid-row: 1;
+			align-items: flex-end;
+		}
+	}
+
+	&__discount-badge {
+		display: inline-block;
+		padding: 0.2rem 0.5rem;
+		line-height: 1;
+		background-color: var(--wp--preset--color--secondary);
+		color: var(--wp--preset--color--base);
+		font-size: var(--wp--preset--font-size--x-small);
+		font-weight: 700;
+		border-radius: 1rem;
+	}
+
+	&__price-wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.25rem;
+	}
+
+	&__regular-price {
+		font-size: var(--wp--preset--font-size--small);
+		color: var(--wp--preset--color--contrast-60);
+	}
+
+	&__current-price {
+		font-size: var(--wp--preset--font-size--medium);
+		font-weight: 700;
+		color: var(--wp--preset--color--contrast);
+	}
+
+	&__remove {
+		@media (max-width: 768px) {
+			position: absolute;
+			top: var(--wp--preset--spacing--40);
+			right: var(--wp--preset--spacing--40);
+		}
+
+		a {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 40px;
+			height: 40px;
+			color: var(--wp--preset--color--contrast-60);
+			transition: color 0.2s ease;
+
+			&:hover {
+				color: var(--wp--preset--color--secondary);
+			}
+
+			svg {
+				width: 20px;
+				height: 20px;
+			}
+		}
+	}
+}
+
+.cart-collaterals {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--wp--preset--spacing--50);
+}
+
+// Cart totals
+.cart-totals {
+	background: var(--wp--preset--color--accent);
+	padding: var(--wp--preset--spacing--60);
+	border-radius: 1rem;
+
+	&__title {
+		font-size: var(--wp--preset--font-size--large) !important;
+		font-weight: 700;
+		margin-bottom: var(--wp--preset--spacing--50);
+	}
+
+	&__items {
+		display: flex;
+		flex-direction: column;
+		gap: var(--wp--preset--spacing--40);
+		padding-bottom: var(--wp--preset--spacing--50);
+		margin-bottom: var(--wp--preset--spacing--50);
+	}
+
+	&__item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: var(--wp--preset--font-size--base);
+	}
+
+	&__label {
+		color: var(--wp--preset--color--contrast);
+		font-weight: 400;
+	}
+
+	&__value {
+		font-weight: 700;
+		color: var(--wp--preset--color--contrast);
+
+		&--discount {
+			color: var(--wp--preset--color--secondary);
+		}
+	}
+
+	&__shipping-free {
+		display: inline-block;
+		padding: 0.25rem 0.75rem;
+		background-color: #496B48;
+		color: white;
+		font-size: var(--wp--preset--font-size--small);
+		font-weight: 700;
+		border-radius: 1rem;
+	}
+
+	&__applied-coupons {
+		margin-bottom: var(--wp--preset--spacing--50);
+	}
+
+	&__coupons-label {
+		display: block;
+		font-size: var(--wp--preset--font-size--small);
+		color: var(--wp--preset--color--contrast-60);
+		margin-bottom: var(--wp--preset--spacing--30);
+	}
+
+	&__coupons-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--wp--preset--spacing--30);
+	}
+
+	&__coupon-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--wp--preset--spacing--30);
+		padding: 0.5rem 0.75rem;
+		background-color: var(--wp--preset--color--base);
+		border: 1px solid var(--wp--preset--color--gray-80);
+		border-radius: 0.25rem;
+		font-size: var(--wp--preset--font-size--small);
+		font-weight: 400;
+	}
+
+	&__coupon-code {
+		color: var(--wp--preset--color--contrast);
+	}
+
+	&__coupon-remove {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 16px;
+		height: 16px;
+		padding: 0;
+		background: transparent;
+		border: none;
+		color: var(--wp--preset--color--contrast-60);
+		cursor: pointer;
+		transition: color 0.2s ease;
+
+		&:hover {
+			color: var(--wp--preset--color--secondary);
+		}
+
+		svg {
+			width: 12px;
+			height: 12px;
+		}
+	}
+
+	&__coupon-section {
+		margin-bottom: var(--wp--preset--spacing--50);
+	}
+
+	&__coupon-toggle {
+		background: transparent;
+		border: none;
+		color: var(--wp--preset--color--contrast);
+		font-size: var(--wp--preset--font-size--base);
+		font-weight: 400;
+		cursor: pointer;
+		padding: 0;
+		text-align: left;
+		text-decoration: underline;
+
+		&:hover {
+			text-decoration: none;
+		}
+	}
+
+	&__coupon-form {
+		margin-top: var(--wp--preset--spacing--40);
+	}
+
+	&__coupon-label {
+		display: block;
+		font-size: var(--wp--preset--font-size--small);
+		color: var(--wp--preset--color--contrast-60);
+		margin-bottom: var(--wp--preset--spacing--30);
+	}
+
+	&__coupon-input-wrapper {
+		display: flex;
+		gap: 0;
+		overflow: hidden;
+		border-radius: 0.5rem;
+		border: 1px solid var(--wp--preset--color--gray-80);
+
+		input[type="text"] {
+			flex: 1;
+			padding: var(--wp--preset--spacing--40);
+			border: none;
+			font-size: var(--wp--preset--font-size--base);
+			outline: none;
+
+			&::placeholder {
+				color: var(--wp--preset--color--contrast-40);
+			}
+		}
+	}
+
+	&__coupon-submit {
+		padding: var(--wp--preset--spacing--40) var(--wp--preset--spacing--60);
+		background-color: var(--wp--preset--color--contrast-40);
+		color: var(--wp--preset--color--base);
+		border: none;
+		font-size: var(--wp--preset--font-size--base);
+		font-weight: 700;
+		cursor: pointer;
+		white-space: nowrap;
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background-color: var(--wp--preset--color--contrast-60);
+		}
+	}
+
+	&__total {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding-top: var(--wp--preset--spacing--50);
+		border-top: 1px solid var(--wp--preset--color--gray-80);
+		background-color: var(--wp--preset--color--accent);
+	}
+
+	&__total-label {
+		font-size: var(--wp--preset--font-size--large);
+		font-weight: 700;
+		color: var(--wp--preset--color--contrast);
+	}
+
+	&__total-value {
+		font-size: var(--wp--preset--font-size--large);
+		font-weight: 900;
+		color: var(--wp--preset--color--contrast);
+	}
+
+	&__actions {
+		display: flex;
+		flex-direction: column;
+		gap: var(--wp--preset--spacing--40);
+
+		.wc-proceed-to-checkout {
+			padding: 0;
+			.checkout-button {
+				box-sizing: border-box;
+				display: block;
+				width: 100%;
+				text-align: center;
+				padding: 1.25rem 2rem;
+				background-color: var(--wp--preset--color--primary);
+				color: var(--wp--preset--color--base);
+				border: none;
+				border-radius: 0.5rem;
+				font-size: var(--wp--preset--font-size--medium);
+				font-weight: 900;
+				text-decoration: none;
+				cursor: pointer;
+				transition: background-color 0.2s ease;
+				margin: 0 !important;
+
+				&:hover {
+					background-color: color-mix(in srgb, var(--wp--preset--color--primary) 85%, transparent);
+				}
+			}
+		}
+	}
+
+	&__continue-shopping {
+		display: block;
+		text-align: center;
+		color: var(--wp--preset--color--primary);
+		font-size: var(--wp--preset--font-size--base);
+		text-decoration: none;
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}
+
+// Quantity selector
+.quantity-selector {
+	display: inline-flex;
+	align-items: center;
+	border: 1px solid var(--wp--preset--color--gray-80);
+	border-radius: 0.5rem;
+	overflow: hidden;
+	background-color: var(--wp--preset--color--base);
+
+	&__button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		padding: 0;
+		background-color: transparent;
+		border: none;
+		color: var(--wp--preset--color--contrast);
+		cursor: pointer;
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background-color: var(--wp--preset--color--accent);
+		}
+
+		&:disabled {
+			opacity: 0.3;
+			cursor: not-allowed;
+
+			&:hover {
+				background-color: transparent;
+			}
+		}
+
+		svg {
+			width: 12px;
+			height: 12px;
+		}
+	}
+
+	&__input {
+		width: 3rem;
+		height: 2.5rem;
+		padding: 0;
+		border: none;
+		background: transparent;
+		text-align: center;
+		font-size: var(--wp--preset--font-size--base);
+		font-weight: 400;
+		color: var(--wp--preset--color--contrast);
+		-moz-appearance: textfield;
+
+		&::-webkit-outer-spin-button,
+		&::-webkit-inner-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+
+		&:focus {
+			outline: none;
+		}
+	}
+}
+
+// Loading states
+body.cart-updating {
+	cursor: wait;
+
+	* {
+		pointer-events: none;
+	}
+}
+
+.is-loading {
+	position: relative;
+	opacity: 0.6;
+	pointer-events: none;
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 20px;
+		height: 20px;
+		border: 2px solid var(--wp--preset--color--primary);
+		border-top-color: transparent;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+}
+
+@keyframes spin {
+	to {
+		transform: translate(-50%, -50%) rotate(360deg);
+	}
+}
+
+// WooCommerce notices
+.woocommerce-message {
+	padding: var(--wp--preset--spacing--40) var(--wp--preset--spacing--50);
+	margin-bottom: var(--wp--preset--spacing--50);
+	border-radius: 0.5rem;
+	font-size: var(--wp--preset--font-size--base);
+
+	&--success {
+		background-color: hsl(120, 45%, 92%);
+		color: hsl(120, 45%, 25%);
+		border-left: 4px solid hsl(120, 45%, 45%);
+	}
+
+	&--error {
+		background-color: hsl(0, 70%, 95%);
+		color: hsl(0, 70%, 30%);
+		border-left: 4px solid hsl(0, 70%, 50%);
+	}
+
+	&--info {
+		background-color: hsl(210, 70%, 95%);
+		color: hsl(210, 70%, 30%);
+		border-left: 4px solid hsl(210, 70%, 50%);
+	}
+}
+
+// Empty cart
+.woocommerce-cart-form__contents--empty {
+	text-align: center;
+	padding: var(--wp--preset--spacing--80);
+}

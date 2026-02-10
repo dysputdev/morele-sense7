@@ -20,6 +20,7 @@ module.exports = {
 	entry: {
 		...scriptConfig.entry(),
         'editor': './src/editor.js',
+        'app': './src/app.js',
 		// ...getPluginEntries(),
 		// 'plugins': './src/plugins'
 	},

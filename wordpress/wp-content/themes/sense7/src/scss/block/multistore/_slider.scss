@@ -1,0 +1,36 @@
+.multistore-block-slider {
+	.splide[data-pagination-desktop-position$="inside"] .splide__pagination,
+	.splide[data-pagination-tablet-position$="inside"] .splide__pagination,
+	.splide[data-pagination-mobile-position$="inside"] .splide__pagination {
+		background-color: var(--wp--preset--color--contrast);
+		padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+		border-radius: 100px;
+		width: auto;
+		left: 50%;
+		right: auto;
+		transform: translateX(-50%);
+	}
+	.splide[data-pagination-desktop-position$="bottom-inside"] .splide__pagination {
+		bottom: var(--wp--preset--spacing--50);
+	}
+
+	.splide__arrow {
+		background-color: var(--wp--preset--color--gray-80);
+		color: currentColor;
+		&:hover {
+			background-color: var(--wp--preset--color--primary);
+			color: white;
+		}
+	}
+
+	&.hero-slider {
+		.splide__arrow {
+			background-color: rgba(37, 37, 37, 0.6);
+			color: white;
+			&:hover {
+				background-color: rgba(37, 37, 37, 1);
+				color: white;
+			}
+		}
+	}
+}

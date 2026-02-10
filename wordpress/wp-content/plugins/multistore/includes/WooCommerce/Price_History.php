@@ -372,7 +372,7 @@ class Price_History {
 	 * @param float  $sale_price   Sale price (optional).
 	 * @return bool True on success, false on failure.
 	 */
-	public function manual_log_price( int $product_id, float $price, string $recorded_at = null, float $regular_price = null, float $sale_price = null ): bool {
+	public function manual_log_price( int $product_id, float $price, ?string $recorded_at = null, ?float $regular_price = null, ?float $sale_price = null ): bool {
 		global $wpdb;
 
 		$product = wc_get_product( $product_id );

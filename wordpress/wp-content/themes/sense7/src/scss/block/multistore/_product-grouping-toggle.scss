@@ -1,0 +1,48 @@
+/**
+ * Product Grouping Toggle Block Styles
+ *
+ * @package MultiStore\Plugin\Block\ProductGroupingToggle
+ */
+
+.multistore-block-product-grouping-toggle {
+	&__button {
+		gap: 0.5rem;
+		background: #fff;
+		border: 1px solid #ddd;
+		border-radius: 0.5rem;
+		font-size: var(--wp--preset--font-size--small);
+		font-weight: 300;
+		color: var(--wp--preset--color--contrast);
+
+		&:hover {
+			background: var(--wp--preset--color--accent);
+			border-color: var(--wp--preset--color--gray-80);
+		}
+
+		&:focus {
+			outline: 2px solid var(--wp--preset--color--primary);
+			outline-offset: 2px;
+		}
+
+		&--on {
+			background: var(--wp--preset--color--primary);
+			border-color: var(--wp--preset--color--primary);
+			color: #fff;
+
+			&:hover {
+				background: color-mix(in srgb, var(--wp--preset--color--primary) 85%, transparent);
+				border-color: color-mix(in srgb, var(--wp--preset--color--primary) 85%, transparent);
+			}
+		}
+
+		&--off {
+			// Default styles apply
+		}
+	}
+
+	&__icon {
+		width: 20px;
+		height: 20px;
+		flex-shrink: 0;
+	}
+}

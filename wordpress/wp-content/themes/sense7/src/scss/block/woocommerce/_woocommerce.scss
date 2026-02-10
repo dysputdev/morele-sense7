@@ -1,0 +1,10 @@
+@use './forms';
+@use './login-register';
+
+.woocommerce-cart main .woocommerce {
+	max-width: none;
+}
+
+.wc-block-breadcrumbs {
+	max-width: var(--wp--style--global--content-size) !important;
+}

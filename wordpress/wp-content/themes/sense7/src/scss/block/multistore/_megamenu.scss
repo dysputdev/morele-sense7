@@ -1,0 +1,30 @@
+nav.menu-main {
+	> ul {
+		> li {
+			border-bottom: 5px solid transparent;
+			&:hover,
+			&.is-active {
+				border-color: var(--wp--preset--color--primary);
+			}
+		}
+	}
+}
+
+.multistore-block-megamenu {
+	box-shadow: 0 .5rem .5rem rgba(0, 0, 0, 0.1);
+	box-sizing: border-box;
+	z-index: 99;
+	.wp-block-navigation-link {
+		font-weight: bold;
+	}
+	a:hover {
+		color: var(--wp--preset--color--primary);
+		text-decoration: underline;
+	}
+	.megamenu-cateogries a:hover {
+		text-decoration-style: dotted;
+		text-decoration-color: var(--wp--preset--color--primary);
+		text-decoration-offset: 2px;
+	}
+}
+ 

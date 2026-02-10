@@ -1,0 +1,13 @@
+.wc-block-mini-cart {
+	&__button {
+		gap: var(--wp--preset--spacing--50);
+	}
+	&__badge {
+		background-color: var(--wp--preset--color--primary);
+		color: var(--wp--preset--color--base);
+		line-height: 1;
+	}
+	&__amount {
+		font-weight: 900;
+	}
+}

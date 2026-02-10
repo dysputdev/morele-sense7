@@ -1,0 +1,27 @@
+.wp-block-multistore-product {
+	position: relative;
+	&.is-style-card {
+		border: 1px solid transparent;
+		box-sizing: border-box;
+		&:hover,
+		&:focus-within {
+			border: 1px solid var(--wp--preset--color--gray-80);
+			border-radius: 0.5rem;
+			box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+		}
+
+		a {
+			&:after {
+				content: '';
+				position: absolute;
+				inset: 0;
+				z-index: 1;
+				display: block;
+			}
+			&:hover,
+			&:focus {
+				text-decoration: none;
+			}
+		}
+	}
+}

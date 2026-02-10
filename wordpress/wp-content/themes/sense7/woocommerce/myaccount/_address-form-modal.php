@@ -20,8 +20,6 @@ $address_type = $args['address_type'];
 $address_name = $args['address_name'];
 $address_data = $args['address_data'];
 
-dump($address_data);
-
 // Get country for address fields.
 $country = ! empty( $address_data[ $address_name . '_country' ] )
 	? $address_data[ $address_name . '_country' ]

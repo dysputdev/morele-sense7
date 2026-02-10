@@ -6,7 +6,28 @@
 	"title": "Podgląd wariantów produktu",
 	"category": "woocommerce",
 	"description": "Wyświetla podgląd wariantów produktu z możliwością podmiany zdjęcia i ceny po najechaniu",
-	"attributes": {},
+	"attributes": {
+		"showGroupLabel": {
+			"type": "boolean",
+			"default": false
+		},
+		"showItemLabel": {
+			"type": "boolean",
+			"default": true
+		},
+		"visibility": {
+			"type": "string",
+			"default": "visbible",
+			"enum": [
+				"visbible",
+				"hidden"
+			]
+		},
+		"buttonText": {
+			"type": "string",
+			"default": "Więcej opcji"
+		}
+	},
 	"usesContext": [ "postId", "multistore/postId" ],
 	"textdomain": "multistore",
 	"editorScript": "file:./index.js",

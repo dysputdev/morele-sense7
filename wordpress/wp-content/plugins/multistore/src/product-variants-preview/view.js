@@ -17,6 +17,8 @@
 			this.container = containerElement;
 			this.productItem = this.findProductWrapper();
 
+			this.parsedMatrix = new Map();
+
 			this.init();
 		}
 
@@ -40,18 +42,33 @@
 			const groups = this.container.querySelectorAll( className + '__group' );
 			if ( groups.length === 0 ) return;
 
-			this.productItem.addEventListener( 'mouseleave', this.handleHoverOut.bind( this ) );
+			this.productItem.addEventListener( 'mouseleave', this.handleProductHoverOut.bind( this ) );
+			this.container.addEventListener( 'mouseleave', this.handlePreviewHoverOut.bind( this ) );
 
 			groups.forEach( ( group, index ) => {
 				const options = group.querySelectorAll( className + '__option' );
 				options.forEach( ( option ) => {
 					if ( ! clickable ) {
 						option.addEventListener( 'mouseenter', this.handleHoverIn.bind( this ) );
+						option.addEventListener( 'focus', this.handleHoverIn.bind( this ) );
 					} else if ( clickable ) {
 						option.addEventListener( 'click', this.handleClick.bind( this ) );
 					}
 				})
 			})
+
+			const moreButton = this.container.querySelector( className + '__more-button' );
+			if ( moreButton ) {
+				moreButton.addEventListener( 'mouseenter', this.handlePreviewVisibility.bind( this ) );
+				moreButton.addEventListener( 'focus', this.handlePreviewVisibility.bind( this ) );
+			}
+		}
+
+		handlePreviewVisibility(event) {
+			let _self = this;
+
+			// add is-visible class
+			this.container.classList.add('is-visible');
 		}
 
 		handleHoverIn( event ) {
@@ -63,25 +80,31 @@
 			options.forEach( ( option ) => option.classList.remove( 'is-active' ) );
 
 			// get matrix data
-			const matrix = event.target.dataset.related;
-			const matrixData = JSON.parse( matrix );
+			// const matrix = event.target.dataset.related;
+			// const matrixData = JSON.parse( matrix );
+			// Parse matrix only once per option
+			let matrixData = this.parsedMatrix.get(event.target);
+			if ( ! matrixData ) {
+				matrixData = JSON.parse(event.target.dataset.related);
+				this.parsedMatrix.set(event.target, matrixData);
+			}
 			
 			// get all groups.
 			const groups = _self.container.querySelectorAll( className + '__group' );
 			groups.forEach( ( group, index ) => {
 				// get group id from dataset
-				const groupId = group.dataset.groupId;
+				const groupId = parseInt(group.dataset.groupId);
 				// hide all options other then that in matrixData[groupId]
 				const options = group.querySelectorAll( className + '__option' );
 				options.forEach( ( option ) => {
-					const optionId = option.dataset.productSku;
-					if ( matrixData[groupId].indexOf( optionId ) === -1 ) {
+					const optionId = option.dataset.productId;
+					if ( ! matrixData[groupId].includes( parseInt( optionId ) ) ) {
 						option.classList.add( 'is-hidden' );
 					} else {
 						option.classList.remove( 'is-hidden' );
 					}
 
-					if ( optionId === event.target.dataset.productSku ) {
+					if ( optionId === event.target.dataset.productId ) {
 						option.classList.add( 'is-active' );
 						
 						_self.updateData( option );
@@ -91,19 +114,36 @@
 		}
 
 		// restore default variant when mouse leaves product item.
-		handleHoverOut( event ) {
-			console.log( 'mouse leave product' );
+		handleProductHoverOut( event ) {
+			// remove all .is-active classes from this group
+			const groups = this.container.querySelectorAll( className + '__group' );
+			groups.forEach( ( group ) => {
+				const options = group.querySelectorAll( className + '__option' );
+				options.forEach( ( option ) => option.classList.remove( 'is-active' ) );
+			})
+			// add is-active class to is-current element
+			const isCurrent = this.container.querySelector( className + '__option.is-current' );
+			if ( isCurrent ) {
+				isCurrent.classList.add( 'is-active' );
+				this.updateData( isCurrent );
+			}
+
+			this.container.classList.remove('is-visible');
+		}
+
+		handlePreviewHoverOut( event ) {
+			this.container.classList.remove('is-visible');
 		}
 
 		handleClick( event ) {
-			console.log( 'click option' );
+			// console.log( 'click option' );
 		}
 
 		updateData( option ) {
 			const productDetails = JSON.parse( option.dataset.productDetails );
 
 			// update product image
-			const productImageBlock = this.productItem.querySelector( '.wp-block-post-featured-image' );
+			const productImageBlock = this.productItem.querySelector( '.wp-block-post-featured-image, .wp-block-woocommerce-product-image' );
 			if ( productImageBlock && productDetails.image ) {
 				const productImage = productImageBlock.querySelector( 'img' );
 				const productLink = productImageBlock.querySelector( 'a' )

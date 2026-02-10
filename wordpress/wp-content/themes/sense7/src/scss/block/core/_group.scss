@@ -1,6 +1,6 @@
-.wp-block-group.is-style-card {
+.is-style-card {
 	position: relative;
-	overflow: clip;
+	// overflow: clip;
 	padding-bottom: var(--wp--preset--spacing--30);
 	&:has(a) {
 		border: 1px solid transparent;
@@ -11,14 +11,5 @@
 			// border-color: var(--wp--preset--color--gray-80);
 			box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 		}
-
-		a:after {
-			content: '';
-			position: absolute;
-			inset: 0;
-			z-index: 1;
-			display: block;
-		}
 	}
-	
 }

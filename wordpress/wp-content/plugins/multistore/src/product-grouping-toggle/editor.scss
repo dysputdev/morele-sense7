@@ -1,0 +1,14 @@
+/**
+ * Product Grouping Toggle Block Editor Styles
+ *
+ * @package MultiStore\Plugin\Block\ProductGroupingToggle
+ */
+
+.multistore-block-product-grouping-toggle {
+	.multistore-block-product-grouping-toggle__button {
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.7;
+		}
+	}
+}

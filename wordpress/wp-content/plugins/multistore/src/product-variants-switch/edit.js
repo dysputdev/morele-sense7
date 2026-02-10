@@ -14,7 +14,7 @@ export default function Edit({ attributes, setAttributes, context }) {
 		<>
 			<div {...blockProps}>
 				<div className="multistore-block-product-variants__preview">
-					
+					{ __( 'Dostępne warianty', 'multistore' ) }
 				</div>
 			</div>
 		</>

@@ -11,8 +11,11 @@
 namespace MultiStore\Plugin\Block\ProductVariantsPreview;
 
 use MultiStore\Plugin\Repository\Relations_Repository;
+use MultiStore\Plugin\Utils\Debug;
 use MultiStore\Plugin\Utils\Helpers;
 use MultiStore\Plugin\Utils\Price_History_Helpers;
+use MultiStore\Plugin\WooCommerce\Product_Group;
+use MultiStore\Plugin\WooCommerce\Product_Grouping;
 
 use function MultiStore\Plugin\Block\SimplifiedProductName\get_product_name;
 
@@ -21,8 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $post_id;
-
-$show_label = false;
 
 // Get postId from context.
 $product_id = $block->context['multistore/postId'] ?? $block->context['postId'] ?? get_the_ID();
@@ -38,27 +39,28 @@ if ( ! $product ) {
 	return;
 }
 
-// Get variants data.
-$relation_repository = new Relations_Repository();
-
-// Get relation map.
-// echo '<pre>';
-$relations = get_product_relations_groups( $product_id, 'archive' );
-if ( empty( $relations ) ) {
+$product_group = new Product_Group( $product_id );
+if ( ! $product_group->get_relations() ) {
 	return;
 }
 
-$relation_map = array();
-foreach ( $relations as $group_id => $group ) {
-	foreach ( $group['relations'] as $index => $relation ) {
-		$relation_map[ $relation['product_sku'] ] = $relation['relations'];
-	}
-}
+$visibility_layout = $attributes['visibility'] ?? 'visible';
+$button_text       = $attributes['buttonText'] ?? __( 'Wiecej opcji', 'multistore' );
+$show_group_label  = $attributes['showGroupLabel'] ?? false;
+$show_item_label   = $attributes['showItemLabel'] ?? true;
+$currency_format   = $attributes['currencyFormat'] ?? 'default';
+
+$product_group->set_currency_format( $currency_format );
+
+$css_class = array(
+	'multistore-block-product-variants-preview',
+	'multistore-block-product-variants-preview--layout-' . $visibility_layout,
+);
 
 // Get wrapper attributes.
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
-		'class'           => 'multistore-block-product-variants-preview',
+		'class'           => implode( ' ', $css_class ),
 		'data-product-id' => $product_id,
 	)
 );
@@ -66,13 +68,22 @@ $wrapper_attributes = get_block_wrapper_attributes(
 
 <div <?php echo wp_kses_data( $wrapper_attributes ); ?>>
 
-	<?php foreach ( $relations as $group_id => $group ) : ?>
+	<?php if ( 'hidden' === $visibility_layout ) : ?>
+		<div class="multistore-block-product-variants-preview__more">
+			<button type="button" class="multistore-block-product-variants-preview__more-button">
+				<?php echo esc_attr( $button_text ); ?>
+			</button>
+		</div>
+	<?php endif; ?>
+	
+	<div class="multistore-block-product-variants-preview__groups">
+	<?php foreach ( $product_group->get_groups() as $group_id => $group ) : ?>
 		<div class="multistore-block-product-variants-preview__group"
 			data-group-id="<?php echo esc_attr( $group_id ); ?>"
 			data-attribute-id="<?php echo esc_attr( $group['attribute_id'] ); ?>"
-			data-product-sku="<?php echo esc_attr( $product->get_sku() ); ?>"
+			data-product-id="<?php echo esc_attr( $product_id ); ?>"
 		>
-			<?php if ( $show_label ) : ?>
+			<?php if ( $show_group_label ) : ?>
 				<div class="multistore-block-product-variants-switch__label">
 					<?php echo esc_html( $group['group_name'] ); ?>:
 				</div>
@@ -80,18 +91,12 @@ $wrapper_attributes = get_block_wrapper_attributes(
 
 			<div class="multistore-block-product-variants-preview__options multistore-block-product-variants-preview__options--<?php echo esc_attr( $group['layout'] ); ?>">
 
-				<?php foreach ( $group['relations'] as $index => $relation ) : ?>
+				<?php foreach ( $group['relations'] as $_product_id ) : ?>
 
 					<?php
 
-					if ( ! empty( $relation['custom_label'] ) && 'custom' === $relation['label_source'] ) {
-						$label = $relation['custom_label'];
-					} else {
-						$attribute_values = $relation_repository->get_product_attribute_values( $relation['product_id'], $group['attribute_id'] );
-						$label            = ! empty( $attribute_values ) ? join( ',', $attribute_values ) : get_the_title( $relation['product_id'] );
-					}
-					$relation_product = wc_get_product( $relation['product_id'] );
-					if ( ! $relation_product ) {
+					$_product = $product_group->get_product( $_product_id ) ?? null;
+					if ( ! $_product || ! isset( $_product->product_id ) ) {
 						continue;
 					}
 
@@ -100,69 +105,47 @@ $wrapper_attributes = get_block_wrapper_attributes(
 						'multistore-block-product-variants-preview__option--' . $group['layout'],
 					);
 
-					if ( (string) $relation['product_sku'] === (string) $product->get_sku() ) {
+					if ( (int) $product_id === (int) $_product_id ) {
 						$option_class[] = 'is-current';
 						$option_class[] = 'is-active';
 					}
 
-					$product_map = $relation_map[ $relation['product_sku'] ] ?? array();
-					if ( isset( $product_map[ $group_id ] ) && ! in_array( $product->get_sku(), $product_map[ $group_id ], true ) ) {
+					$product_map = $product_group->get_product_relations_map( $_product_id );
+					if ( isset( $product_map[ $group_id ] ) && ! in_array( $product_id, $product_map[ $group_id ], true ) ) {
 						$option_class[] = 'is-hidden';
 					}
 
-					$current_price = $relation_product->get_price();
-					$regular_price = $product->get_regular_price();
-					$is_promotion  = $relation_product->is_on_sale();
-					$lowest_price  = '';
-					if ( $is_promotion ) {
-						$lowest_price_data = Price_History_Helpers::get_lowest_price( $relation['product_id'] );
-						if ( $lowest_price_data && isset( $lowest_price_data['price'] ) ) {
-							$lowest_price = (float) $lowest_price_data['price'];
-						}
-					}
-
-					$product_details = array(
-						'title'         => get_product_name( $relation['product_id'] ),
-						'simple_title'  => get_the_title( $relation['product_id'] ),
-						'image'         => $relation_product->get_image( 'medium' ),
-						'url'           => get_permalink( $relation['product_id'] ),
-						'current_price' => $current_price ? Helpers::format_price( $current_price, 'default' ) : '',
-						'is_promotion'  => $relation_product->is_on_sale(),
-						'currency'      => get_woocommerce_currency(),
-						'regular_price' => ( ! empty( $regular_price ) && $is_promotion ) ? Helpers::format_price( $regular_price, $currency_format ) : '',
-						'lowest_price'  => ( ! empty( $lowest_price ) && $is_promotion ) ? Helpers::format_price( $lowest_price, $currency_format ) : '',
-					);
+					$product_details = $product_group->get_product_details( $_product_id );
 
 					?>
-					<a href="<?php echo esc_url( get_permalink( $relation['product_id'] ) ); ?>"
-						title="<?php echo esc_attr( get_the_title( $relation['product_id'] ) ); ?>"
+					<a href="<?php echo esc_url( get_permalink( $_product_id ) ); ?>"
+						title="<?php echo esc_attr( get_the_title( $_product_id ) ); ?>"
 						class="<?php echo esc_attr( implode( ' ', $option_class ) ); ?>"
 						data-group-id="<?php echo esc_attr( $group_id ); ?>"
-						data-product-id="<?php echo esc_attr( $relation['product_id'] ); ?>"
-						data-product-sku="<?php echo esc_attr( $relation['product_sku'] ); ?>"
+						data-product-id="<?php echo esc_attr( $_product_id ); ?>"
 						data-related="<?php echo esc_attr( wp_json_encode( $product_map ) ); ?>"
 						data-product-details="<?php echo esc_attr( wp_json_encode( $product_details ) ); ?>"
 						>
 						<?php
-						if ( 'image_product' === $group['layout'] || 'image_custom' === $group['layout'] ) {
-							$layout   = 'image';
-							$image_id = 'image_custom' === $group['layout'] && ! empty( $relation['custom_image_id'] ) ? $relation['custom_image_id'] : 0;
-							if ( ! empty( $image_id ) ) {
-								$image = wp_get_attachment_image( $image_id, 'swatch', false, array( 'class' => 'multistore-block-product-variants-preview__option-image' ) );
-							} else {
-								// get product post featured image.
-								$image = $relation_product->get_image( 'swatch', array( 'class' => 'multistore-block-product-variants-preview__option-image' ) );
-							}
+						if ( in_array( $group['layout'], array( 'image_product', 'image_custom' ), true ) ) {
+							$image = $product_group->get_product_swatch_image( $_product_id, $group_id, 'swatch', array( 'class' => 'multistore-block-product-variants-preview__option-image' ) );
 							echo wp_kses_post( $image );
 						}
 						?>
-						<span class="multistore-block-product-variants-preview__option-label">
-							<?php echo esc_html( $label ); ?><br/>
-						</span>
+						
+						<?php if ( ! in_array( $group['layout'], array( 'image_product', 'image_custom' ), true ) || $show_item_label ) : ?>
+							<span class="multistore-block-product-variants-preview__option-label">
+								<?php
+								$label = $product_group->get_product_label( $_product_id, $group_id );
+								echo esc_html( $label );
+								?>
+							</span>
+						<?php endif; ?>
 					</a>
 				<?php endforeach; ?>
 
 			</div>
 		</div>
 	<?php endforeach; ?>
+	</div>
 </div>

@@ -1,6 +1,7 @@
 .multistore-block-product-variants-preview {
 	position: relative;
 	width: 100%;
+	z-index: 2;
 
 	.is-hidden {
 		display: none;
@@ -69,5 +70,40 @@
 		object-fit: cover;
 		width: 3rem;
 		border: 1px solid transparent;
+	}
+
+	&__more {
+		height: 2em;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	&__more-button {
+		cursor: pointer;
+		background-color: transparent;
+		border: none;
+		color: currentColor;
+	}
+
+	&--layout-hidden {
+		.multistore-block-product-variants-preview__groups {
+			display: none;
+			visibility: hidden;
+			pointer-events: none;
+			width: 100%;
+			position: absolute;
+			bottom: 0;
+			background-color: white;
+		}
+		&.is-visible {
+			.multistore-block-product-variants-preview__groups {
+				display: block;
+				visibility: visible;
+				pointer-events: all;
+			}
+			.multistore-block-product-variants-preview__more-button {
+				display: none;
+			}
+		}
 	}
 }

@@ -250,8 +250,8 @@ class Product_Group {
 			// base data.
 			'title'         => get_the_title( $product_id ),
 			'simple_title'  => get_post_meta( $product_id, '_simplified_product_name', true ),
-			'image_url'     => get_the_post_thumbnail_url( $product_id, 'thumbnail' ),
-			'image'         => get_the_post_thumbnail( $product_id, 'thumbnail' ),
+			'image_url'     => get_the_post_thumbnail_url( $product_id, 'listing' ),
+			'image'         => get_the_post_thumbnail( $product_id, 'listing' ),
 			'url'           => get_the_permalink( $product_id ),
 
 			// price data.

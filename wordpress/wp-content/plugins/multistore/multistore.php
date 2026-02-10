@@ -207,6 +207,7 @@ class Plugin {
 
 		// add image sizes.
 		add_image_size( 'swatch', 64, 64, true );
+		add_image_size( 'listing', 450, 450, false );
 
 		if ( self::$debug_timer ) {
 			do_action( 'qm/stop', 'initialize_wordpress' );
@@ -248,7 +249,7 @@ class Plugin {
 		// Initialize price history manager.
 		new WooCommerce\Apilo();
 		new WooCommerce\Price_History();
-		// new WooCommerce\Product_Grouping();
+		new WooCommerce\Product_Grouping();
 
 		$this->initialize_blocks();
 

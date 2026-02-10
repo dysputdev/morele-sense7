@@ -13,17 +13,13 @@ import { Orders } from './account/orders';
 	// Initialize on DOM ready
 	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', function() {
-			if (document.querySelector('.myaccount-orders__table')) {
-				Orders.init();
-			}
+			Orders.init();
 			Modal.init();
 			AccountSettings.init();
 			AddressSettings.init();
 		});
 	} else {
-		if (document.querySelector('.myaccount-orders__table')) {
-			Orders.init();
-		}
+		Orders.init();
 		Modal.init();
 		AccountSettings.init();
 		AddressSettings.init();

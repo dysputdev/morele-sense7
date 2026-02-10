@@ -70,8 +70,19 @@ class Account {
 	 * @since 1.0.0
 	 */
 	public function enqueue_assets() {
+		// Enqueue login/register tabs script on login page.
+		if ( is_account_page() && ! is_user_logged_in() && file_exists( SENSE7_THEME_DIR . '/assets/js/login-register.js' ) ) {
+			wp_enqueue_script(
+				'sense7-login-register',
+				SENSE7_THEME_URL . '/assets/js/login-register.js',
+				array(),
+				SENSE7_THEME_VERSION,
+				true
+			);
+		}
+
 		// Enqueue my account script on my account page.
-		if ( is_account_page() && file_exists( SENSE7_THEME_DIR . '/assets/js/myaccount.js' ) ) {
+		if ( is_account_page() && is_user_logged_in() && file_exists( SENSE7_THEME_DIR . '/assets/js/myaccount.js' ) ) {
 			wp_enqueue_script(
 				'sense7-myaccount',
 				SENSE7_THEME_URL . '/assets/js/myaccount.js',

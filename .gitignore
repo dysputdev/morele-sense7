@@ -1,7 +1,6 @@
 # Wordpress - ignore core, configuration, examples, uploads and logs.
 # https://github.com/github/gitignore/blob/main/WordPress.gitignore
 
-/.docker/mysql
 /.vscode/*
 !/.vscode/settings.json
 
@@ -68,6 +67,9 @@ wp
 /wordpress/feed
 
 docker-compose.override.yaml
+/.docker/mysql
+/.docker/redis
 .claude
 CLAUDE.md
 .views
+wordpress/wp-content/.defender-security-quarantine/

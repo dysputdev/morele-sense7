@@ -13,11 +13,25 @@ services:
     volumes:
       - ./.docker/mysql:/var/lib/mysql
 
+  redis:
+    container_name: sense7-redis
+    image: redis:alpine
+    restart: on-failure
+    depends_on:
+      - wordpress
+    ports:
+      - 6379
+    volumes:
+      - ./.docker/redis:/data
+
   wordpress:
     container_name: sense7-wp
     depends_on:
       - db
-    image: wordpress:php8.4-apache
+    # image: wordpress:php8.4-apache
+    build:
+      context: .
+      dockerfile: ./.docker/wordpress/Dockerfile
     restart: on-failure
     ports:
       - 80
@@ -28,7 +42,8 @@ services:
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - ./wordpress:/var/www/html
-      - ./php-custom.ini:/usr/local/etc/php/conf.d/php-custom.ini
+      - ./.docker/php-custom.ini:/usr/local/etc/php/conf.d/php-custom.ini
+      - ./xdebug-profiles:/tmp/xdebug-profiles
 
   wp-cli:
     container_name: sense7-wp-cli
@@ -57,3 +72,24 @@ services:
       PMA_PASSWORD: wordpress
     ports:
       - 80
+
+  webgrind:
+    container_name: sense7-webgrind
+    image: jokkedk/webgrind
+    platform: linux/amd64
+    depends_on:
+      - wordpress
+    ports:
+      - 80
+    volumes:
+      - ./xdebug-profiles:/tmp
+
+  mailhog:
+    container_name: sense7-mailhog
+    image: mailhog/mailhog
+    restart: on-failure
+    depends_on:
+      - wordpress
+    ports:
+      - 1025
+      - 8025

@@ -34,6 +34,10 @@
 @use './scss/block/woocommerce/quantity-selector';
 @use './scss/block/woocommerce/store-notices';
 
+:root {
+	--wp--preset--color--input-border: #949494;
+}
+
 input, select, textarea, button,
 table, td, th {
 	font-family: inherit;

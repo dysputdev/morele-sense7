@@ -1,6 +1,18 @@
-
+input[type="checkbox"],
+input[type="radio"] {
+	&:not(:disabled) {
+		cursor: pointer;
+		accent-color: var(--wp--preset--color--primary);
+	}
+}
 
 .select2-container {
+	.select2-selection {
+		border-radius: 0.5rem;
+		.select2-selection__rendered {
+			padding: var(--wp--preset--spacing--40);
+		}
+	}
 	.select2-results {
 		&__option {
 			&--highlighted[aria-selected],
@@ -133,7 +145,7 @@
 				padding: var(--wp--preset--spacing--40);
 				display: block;
 				background-color: var(--wp--preset--color--white);
-				border: 1px solid var(--wp--preset--color--gray-40);
+				border: 1px solid var(--wp--preset--color--input-border);
 				border-radius: 0.5rem;
 				color: var(--wp--preset--color--contrast);
 				box-sizing: border-box;
@@ -194,10 +206,10 @@
 			&.woocommerce-validated {
 				input.input-text,
 				select {
-					border-color: var(--wp--preset--color--gray-40);
+					border-color: var(--wp--preset--color--input-border);
 				}
 				.select2-container:not(.select2-container--open) .select2-selection {
-					border-color: var(--wp--preset--color--gray-40);
+					border-color: var(--wp--preset--color--input-border);
 				}
 			}
 		}

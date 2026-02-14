@@ -6,6 +6,8 @@ use WP_CLI;
 
 class Import_Galleries {
 
+	public static $command = 'import:galleries';
+
 	public function __invoke() {
 
 		require_once ABSPATH . 'wp-admin/includes/file.php';

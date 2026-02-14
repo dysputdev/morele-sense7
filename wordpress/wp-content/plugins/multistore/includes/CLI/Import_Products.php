@@ -14,6 +14,8 @@ use WP_CLI;
  */
 class Import_Products {
 
+	public static $command = 'import:products';
+
 	/**
 	 * Import products from products.csv located in wp-content/uploads/products.csv.
 	 *

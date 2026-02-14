@@ -14,6 +14,9 @@ use WP_CLI;
  * Import products from CSV file
  */
 class Import_Main_Product {
+
+	public static $command = 'import:main';
+
 	public function __invoke( $args, $assoc_args ) {
 		$upload_dir = wp_upload_dir();
 		$csv_file   = $upload_dir['basedir'] . '/multistore-import-data/main.csv';

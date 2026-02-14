@@ -15,6 +15,8 @@ use WC_Comments;
  */
 class Import_Reviews {
 
+	public static $command = 'import:reviews';
+
 	/**
 	 * Import product reviews from reviews.csv located in wp-content/uploads/reviews.csv.
 	 *

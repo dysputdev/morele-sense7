@@ -5,6 +5,9 @@ namespace MultiStore\Plugin\CLI;
 use WP_CLI;
 
 class Import_Files {
+
+	public static $command = 'import:files';
+
 	public function __invoke()
 	{
 		require_once ABSPATH . 'wp-admin/includes/file.php';

@@ -12,6 +12,8 @@ use WP_CLI;
 
 class Import_Attribute_Filters {
 
+	public static $commnad = 'import:filters';
+
 	private $skip_columns = array(
 		'Adres',
 		'Nazwa produktu',

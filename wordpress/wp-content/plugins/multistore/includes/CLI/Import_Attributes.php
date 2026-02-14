@@ -12,6 +12,8 @@ use WP_CLI;
  */
 class Import_Attributes
 {
+	public static $command = 'import:attributes';
+
 	public function __invoke( $args, $assoc_args ) {
 
 		$upload_dir = wp_upload_dir();

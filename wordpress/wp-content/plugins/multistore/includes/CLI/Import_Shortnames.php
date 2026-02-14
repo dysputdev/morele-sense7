@@ -14,6 +14,9 @@ use WP_CLI;
  * Import products from CSV file
  */
 class Import_Shortnames {
+
+	public static $command = 'import:shortnames';
+
 	public function __invoke( $args, $assoc_args ) {
 		$upload_dir = wp_upload_dir();
 		$csv_file   = $upload_dir['basedir'] . '/multistore-import-data/shortnames.csv';

@@ -14,6 +14,8 @@ use WP_CLI;
  */
 class Import_Images {
 
+	public static $command = 'import:images';
+
 	/**
 	 * Import products featured images from products.csv located in wp-content/uploads/images.csv.
 	 *

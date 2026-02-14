@@ -14,6 +14,8 @@ use WP_CLI;
  */
 class Import_Price {
 
+	public static $command = 'import:prices';
+
 	/**
 	 * Import products from products.csv located in wp-content/uploads/products.csv.
 	 *

@@ -14,6 +14,8 @@ use WP_CLI;
  */
 class Import_EAN {
 
+	public static $command = 'import:ean';
+
 	/**
 	 * Import products from products.csv located in wp-content/uploads/products.csv.
 	 *

@@ -9,6 +9,9 @@ use MultiStore\Plugin\Repository\Relations_Repository;
 use WP_CLI;
 
 class Import_Relations {
+
+	public static $command = 'import:relations';
+
 	public function __invoke() {
 		global $wpdb;
 

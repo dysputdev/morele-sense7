@@ -29,56 +29,52 @@ class Import_Images {
 	 * @when after_wp_load
 	 */
 	public function __invoke( $args, $assoc_args ) {
-		$upload_dir = wp_upload_dir();
-		$csv_file   = $upload_dir['basedir'] . '/multistore-import-data/images.csv';
+		$skip_existing = $assoc_args['skip-existing'] ?? true;
 
-		if ( ! file_exists( $csv_file ) ) {
-			WP_CLI::error( sprintf( 'File not found: %s', $csv_file ) );
-			return;
-		}
-
-		$csv = array_map( 'str_getcsv', file( $csv_file ) );
-		if ( empty( $csv ) ) {
-			WP_CLI::error( 'CSV file is empty.' );
-			return;
-		}
-
-		$total   = count( $csv );
-		$success = 0;
-		$skipped = 0;
+		$post_args = array(
+			'post_type'      => 'product',
+			'posts_per_page' => -1,
+			'lang'           => 'pl',
+			'fields'         => 'ids',
+			'numberposts'    => -1,
+		);
+		$products  = get_posts( $post_args );
+		$total     = count( $products );
+		$success   = 0;
+		$skipped   = array();
 
 		WP_CLI::line( sprintf( 'Starting import of %d products...', $total ) );
 
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Importing products', $total );
 
-		foreach ( $csv as $row ) {
-			if ( count( $row ) < 2 ) {
-				$skipped++;
-				$progress->tick();
-				continue;
-			}
-			
-			list( $sku, $url ) = $row;
+		foreach ( $products as $product_id ) {
 
-			$product_id = wc_get_product_id_by_sku( $sku );
-			$product    = $product_id ? wc_get_product( $product_id ) : null;
+			$product = wc_get_product( $product_id ) ?? null;
 
 			if ( ! $product ) {
-				$skipped++;
+				$skipped[ $product_id ] = sprintf( '(#%s) Product not found', $product_id );
 				$progress->tick();
 				continue;
 			}
 
+			$sku = $product->get_sku();
+			if ( empty( $sku ) ) {
+				$skipped[ $product_id ] = sprintf( '(#%s) Product SKU is empty', $product_id );
+				$progress->tick();
+				continue;
+			}
+
+			if ( $skip_existing && $product->get_image_id() ) {
+				$skipped[ $product_id ] = sprintf( '(#%s) [%s] Image already set', $product_id, $sku );
+				$progress->tick();
+				continue;
+			}
+
+			$url = sprintf( 'https://www.morele.net/product-%s/', $product->get_sku() );
 			$scraped_data = $this->scrap_product_data( $url );
 
 			if ( ! $scraped_data || empty( $scraped_data['image'] ) ) {
-				$skipped++;
-				$progress->tick();
-				continue;
-			}
-
-			if ( $product->get_image_id() ) {
-				$skipped++;
+				$skipped[ $product_id ] = sprintf( '(#%s) [%s] Image not found', $product_id, $sku );
 				$progress->tick();
 				continue;
 			}
@@ -87,24 +83,29 @@ class Import_Images {
 			$attachment_id = $this->download_image( $scraped_data['image'] );
 			if ( $attachment_id ) {
 				$product->set_image_id( $attachment_id );
+			} else {
+				$skipped[ $product_id ] = sprintf( '(#%s) [%s] Failed to download image', $product_id, $sku );
+				continue;
 			}
 
 			// Save product.
 			$result = $product->save();
 			if ( $result ) {
-				$success++;
+				++$success;
 			} else {
-				$skipped++;
+				$skipped[ $product_id ] = sprintf( '(#%s) [%s] Failed to save product', $product_id, $sku );
 			}
 
-			sleep(1); // to avoid being blocked by remote server
+			// to avoid being blocked by remote server.
+			sleep( 1 );
 
 			$progress->tick();
 		}
 
 		$progress->finish();
 
-		WP_CLI::success( sprintf( 'Imported %d products, skipped %d.', $success, $skipped ) );
+		WP_CLI::line( sprintf( 'Skipped products: %s', implode( PHP_EOL, $skipped ) ) );
+		WP_CLI::success( sprintf( 'Imported %d products, skipped %d.', $success, count( $skipped ) ) );
 	}
 
 	public function download_image( $image_url ) {

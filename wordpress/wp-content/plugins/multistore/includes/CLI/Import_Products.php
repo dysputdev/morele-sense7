@@ -29,8 +29,16 @@ class Import_Products {
 	 * @when after_wp_load
 	 */
 	public function __invoke( $args, $assoc_args ) {
+
+		$file_name = 'products.csv';
+		if ( isset( $assoc_args['file'] ) ) {
+			$file_name = $assoc_args['file'];
+		}
+
+		$skip_existing = $assoc_args['skip-existing'] ?? false;
+
 		$upload_dir = wp_upload_dir();
-		$csv_file   = $upload_dir['basedir'] . '/multistore-import-data/products.csv';
+		$csv_file   = $upload_dir['basedir'] . '/multistore-import-data/' . $file_name;
 
 		if ( ! file_exists( $csv_file ) ) {
 			WP_CLI::error( sprintf( 'File not found: %s', $csv_file ) );
@@ -60,8 +68,20 @@ class Import_Products {
 
 			list( $sku, $price, $price_regular, $shipping, $name, $category_name ) = $row;
 
+			if ( 'sku' === strtolower( $sku ) ) {
+				// Skip header row.
+				continue;
+			}
+
 			$product  = wc_get_product_id_by_sku( $sku );
 			$product  = $product ? wc_get_product( $product ) : null;
+
+			if ( $skip_existing && $product ) {
+				$skipped++;
+				$progress->tick();
+				continue;
+			}
+
 			$category = get_term_by( 'slug', $category_name, 'product_cat' );
 			if ( ! $category ) {
 				$category = wp_insert_term( $category_name, 'product_cat' );

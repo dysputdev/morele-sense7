@@ -8,7 +8,9 @@ class Import_Galleries {
 
 	public static $command = 'import:galleries';
 
-	public function __invoke() {
+	public function __invoke( $args, $assoc_args ) {
+
+		$skip_existing = $assoc_args['skip-existing'] ?? true;
 
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/media.php';
@@ -29,7 +31,7 @@ class Import_Galleries {
 		WP_CLI::line( sprintf( 'Starting import galleries of %d products...', $total ) );
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Importing product galleries', $total );
 		foreach ( $products as $product_id ) {
-			$this->import_galleries( $product_id );
+			$this->import_galleries( $product_id, $skip_existing );
 
 			$progress->tick();
 			usleep( wp_rand( 500000, 1000000 ) );
@@ -43,19 +45,19 @@ class Import_Galleries {
 
 		$product = wc_get_product( $product_id );
 		if ( ! $product ) {
-			WP_CLI::line( sprintf( 'Product %d not found...', $product_id ) );
+			WP_CLI::line( sprintf( '(%s) Product not found...', $product_id ) );
 			return;
 		}
 
 		$ids = $product->get_gallery_image_ids();
 		if ( ! empty( $ids ) ) {
-			WP_CLI::line( sprintf( 'Product %d already has galleries...', $product_id ) );
+			WP_CLI::line( sprintf( '(%s) Product already has galleries...', $product_id ) );
 			return;
 		}
 
 		$sku = $product->get_sku();
 		if ( empty( $sku ) ) {
-			WP_CLI::line( sprintf( 'Product %d has no SKU...', $product_id ) );
+			WP_CLI::line( sprintf( '(%s) Product has no SKU...', $product_id ) );
 			return;
 		}
 

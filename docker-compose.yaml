@@ -42,7 +42,7 @@ services:
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - ./wordpress:/var/www/html
-      - ./.docker/php-custom.ini:/usr/local/etc/php/conf.d/php-custom.ini
+      - ./.docker/wordpress.ini:/usr/local/etc/php/conf.d/php-custom.ini
       - ./xdebug-profiles:/tmp/xdebug-profiles
 
   wp-cli:
@@ -58,6 +58,7 @@ services:
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - ./wordpress:/var/www/html
+      - ./.docker/wp-cli.ini:/usr/local/etc/php/conf.d/php-custom.ini
     working_dir: /var/www/html
 
   phpmyadmin:

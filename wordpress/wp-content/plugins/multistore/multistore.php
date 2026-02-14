@@ -490,19 +490,18 @@ class Plugin {
 		if ( self::$debug_timer ) {
 			do_action( 'qm/start', 'register_cli_commands' );
 		}
-		\WP_CLI::add_command( 'multistore import products', 'MultiStore\Plugin\CLI\Import_Products' );
-		\WP_CLI::add_command( 'multistore import prices', 'MultiStore\Plugin\CLI\Import_Price' );
-		\WP_CLI::add_command( 'multistore import reviews', 'MultiStore\Plugin\CLI\Import_Reviews' );
-		\WP_CLI::add_command( 'multistore import images', 'MultiStore\Plugin\CLI\Import_Images' );
-		\WP_CLI::add_command( 'multistore import attributes', 'MultiStore\Plugin\CLI\Import_Attributes' );
-		\WP_CLI::add_command( 'multistore import galleries', 'MultiStore\Plugin\CLI\Import_Galleries' );
-		\WP_CLI::add_command( 'multistore import files', 'MultiStore\Plugin\CLI\Import_Files' );
-		\WP_CLI::add_command( 'multistore import relations', 'MultiStore\Plugin\CLI\Import_Relations' );
-		\WP_CLI::add_command( 'multistore import main', 'MultiStore\Plugin\CLI\Import_Main_Product' );
-		\WP_CLI::add_command( 'multistore import filters', 'MultiStore\Plugin\CLI\Import_Attribute_Filters' );
-		\WP_CLI::add_command( 'multistore import shortnames', 'MultiStore\Plugin\CLI\Import_Shortnames' );
-		\WP_CLI::add_command( 'multistore migrate-product-groups', 'MultiStore\Plugin\CLI\Migrate_Product_Groups' );
-		\WP_CLI::add_command( 'multistore import ean', 'MultiStore\Plugin\CLI\Import_EAN' );
+
+
+		// if class not loaded run "composer dump-autoload".
+		$classmap = require MULTISTORE_PLUGIN_DIR . 'vendor/composer/autoload_classmap.php';
+		foreach ( $classmap as $class => $file ) {
+			if ( str_starts_with( $class, 'MultiStore\\Plugin\\CLI\\' ) ) {
+				\WP_CLI::add_command(
+					'multistore ' . $class::$command,
+					$class
+				);
+			}
+		}
 
 		if ( self::$debug_timer ) {
 			do_action( 'qm/stop', 'register_cli_commands' );
